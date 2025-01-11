@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { adminID} = process.env;
 const embeds = require('../../embeds/embeds').embeds;
-const pool = require('../../database/database');
+//const pool = require('../../database/database');
 
 module.exports = {
 	data: new SlashCommandBuilder()

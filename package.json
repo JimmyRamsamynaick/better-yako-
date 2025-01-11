@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/voice": "^0.16.1",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.17.3",
     "discord.js-selfbot-v13": "^2.4.7",
     "dotenv": "^16.4.5",
     "easy-json-database": "^1.5.0",

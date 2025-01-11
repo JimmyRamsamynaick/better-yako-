@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-    error_embed(title, desc, color) {
+    message_embed(title, desc, color) {
         const embed = new EmbedBuilder()
             .setTitle(title)
             .setDescription(desc)
