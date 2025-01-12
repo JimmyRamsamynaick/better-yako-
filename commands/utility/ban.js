@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { adminID } = process.env;
 const embeds = require('../../embeds/embeds').embeds;
 
 module.exports = {
@@ -9,21 +8,30 @@ module.exports = {
         .addUserOption(option =>
             option.setName('utilisateur')
                 .setDescription('L\'utilisateur à bannir')
-                .setRequired(true)),
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('raison')
+                .setDescription('La raison du bannissement')
+                .setRequired(false)),
     async execute(ctx) {
         const user = ctx.options.getUser('utilisateur');
+        const reason = ctx.options.getString('raison') || 'Aucune raison spécifiée';
+        const color = '#FF0000'; // Couleur rouge pour le message embed
 
-        if (ctx.user.id !== adminID) {
-            return ctx.reply({ content: 'Vous n\'avez pas la permission d\'utiliser cette commande.', ephemeral: true });
+        const member = await ctx.guild.members.fetch(ctx.user.id);
+        if (!member.permissions.has('ADMINISTRATOR')) {
+            return ctx.reply({ content: 'Vous n\'avez pas la permission d\'utiliser cette commande.' });
         }
 
         try {
-            const member = await ctx.guild.members.fetch(user.id);
-            await member.ban();
-            ctx.reply({ embeds: [embeds['message'].message_embed(`${user.tag} a été banni avec succès !`)], ephemeral: true });
+            const targetMember = await ctx.guild.members.fetch(user.id);
+            await targetMember.send(`Vous avez été banni du serveur ${ctx.guild.name} pour la raison suivante : ${reason}`);
+            await targetMember.ban({ reason });
+
+            await ctx.reply({ embeds: [embeds['message'].message_embed(`${user.tag} banni`, `${user.tag} a été banni avec succès pour la raison suivante : ${reason}`, color)] });
         } catch (error) {
             console.error('Erreur lors du bannissement de l\'utilisateur:', error);
-            ctx.reply({ content: 'Une erreur est survenue lors du bannissement de cet utilisateur.', ephemeral: true });
+            return ctx.reply({ content: 'Une erreur est survenue lors du bannissement de cet utilisateur.' });
         }
     }
 };
