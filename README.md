@@ -1,9 +1,10 @@
 cahier des charges de Yako
 
-- [X] timeout
-- [X] untimeout
-- [X] ban
-- [X] unban
+- [] ping
+- [] timeout
+- [] untimeout
+- [] ban
+- [] unban
 - [] avoir les commandes slash
 - [] faire un welcome
 - [] mettre un auto role
