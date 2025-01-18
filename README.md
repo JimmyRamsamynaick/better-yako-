@@ -4,7 +4,7 @@ cahier des charges de Yako
 - [] timeout
 - [] untimeout
 - [x] ban
-- [] unban
+- [x] unban
 - [] avoir les commandes slash
 - [] faire un welcome
 - [] mettre un auto role
