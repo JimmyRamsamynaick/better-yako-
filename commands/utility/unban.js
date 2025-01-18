@@ -33,29 +33,7 @@ module.exports = {
                 return ctx.followUp({ content: 'Cet utilisateur n\'est pas banni.' });
             }
 
-            try {
-                const user = await ctx.client.users.fetch(userId);
-                await user.send(`Vous allez être débanni du serveur ${ctx.guild.name} pour la raison suivante : ${reason}`);
-            } catch (sendError) {
-                if (sendError.code === 50007) {
-                    console.warn('Impossible d\'envoyer un message à cet utilisateur. L\'utilisateur sera débanni.');
-                } else {
-                    throw sendError;
-                }
-            }
-
             await ctx.guild.bans.remove(userId, reason);
-
-            try {
-                const user = await ctx.client.users.fetch(userId);
-                await user.send(`Vous avez été débanni du serveur ${ctx.guild.name} pour la raison suivante : ${reason}`);
-            } catch (sendError) {
-                if (sendError.code === 50007) {
-                    console.warn('Impossible d\'envoyer un message à cet utilisateur après le débannissement.');
-                } else {
-                    throw sendError;
-                }
-            }
 
             await ctx.followUp({ embeds: [embeds['message'].message_embed(`Utilisateur débanni`, `L'utilisateur avec l'ID ${userId} a été débanni avec succès pour la raison suivante : ${reason}`, color)] });
         } catch (error) {
