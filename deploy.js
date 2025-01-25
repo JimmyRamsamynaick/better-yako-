@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { REST, Routes } = require('discord.js');
-const { clientId, guildId, token } = process.env;
+const { clientId, token } = process.env;
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -33,7 +33,7 @@ function deploy() {
 				await rest.delete(Routes.applicationCommand(clientId, command.id));
 			}
 			const data = await rest.put(
-				Routes.applicationGuildCommands(clientId, guildId),
+				Routes.applicationCommands(clientId),
 				{ body: globalCommands },
 			);
 
@@ -42,6 +42,6 @@ function deploy() {
 			console.error(error);
 		}
 	})();
-};
+}
 
 module.exports = { deploy };
