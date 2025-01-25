@@ -1,5 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const embeds = require('../../embeds/embeds').embeds;
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,7 +25,7 @@ module.exports = {
         const color = '#FFA500'; // Couleur orange pour le message embed
 
         const member = await ctx.guild.members.fetch(ctx.user.id);
-        if (!member.permissions.has('ADMINISTRATOR')) {
+        if (!member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return ctx.reply({ content: 'Vous n\'avez pas la permission d\'utiliser cette commande.' });
         }
 
@@ -71,7 +72,7 @@ async function muteMember(guild, targetMember, duration, reason) {
     for (const channel of guild.channels.cache.values()) {
         if (channel.isTextBased()) {
             await channel.permissionOverwrites.edit(targetMember, {
-                SEND_MESSAGES: false
+                [PermissionsBitField.Flags.SendMessages]: false
             }, { reason });
         }
     }
@@ -81,7 +82,7 @@ async function muteMember(guild, targetMember, duration, reason) {
             for (const channel of guild.channels.cache.values()) {
                 if (channel.isTextBased()) {
                     await channel.permissionOverwrites.edit(targetMember, {
-                        SEND_MESSAGES: null
+                        [PermissionsBitField.Flags.SendMessages]: null
                     }, { reason: 'Mute terminé' });
                 }
             }
