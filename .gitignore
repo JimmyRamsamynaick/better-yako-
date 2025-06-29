@@ -1,119 +1,90 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+Icon?
+._*
 
-# Created by https://www.gitignore.io/api/emacs,sublimetext,linux,windows,mac
-
-### Emacs ###
-# -*- mode: gitignore; -*-
-*~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-auto-save-list
-tramp
-.\#*
-*.env
-
-# Org-mode
-.org-id-locations
-*_archive
-
-# flymake-mode
-*_flymake.*
-
-# eshell files
-/eshell/history
-/eshell/lastdir
-
-# elpa packages
-/elpa/
-
-# reftex files
-*.rel
-
-# AUCTeX auto folder
-/auto/
-
-# cask packages
-.cask/
-dist/
-
-# Flycheck
-flycheck_*.el
-
-# server auth directory
-/server/
-
-# projectiles files
-.projectile
-
-# directory configuration
-.dir-locals.el
-
-
-### SublimeText ###
-# cache files for sublime text
-*.tmlanguage.cache
-*.tmPreferences.cache
-*.stTheme.cache
-
-# workspace files are user-specific
-*.sublime-workspace
-
-# project files should be checked into the repository, unless a significant
-# proportion of contributors will probably not be using SublimeText
-# *.sublime-project
-
-# sftp configuration file
-sftp-config.json
-
-# Package control specific files
-Package Control.last-run
-Package Control.ca-list
-Package Control.ca-bundle
-Package Control.system-ca-bundle
-Package Control.cache/
-Package Control.ca-certs/
-bh_unicode_properties.cache
-
-# Sublime-github package stores a github token in this file
-# https://packagecontrol.io/packages/sublime-github
-GitHub.sublime-settings
-
-
-### Linux ###
-
-# temporary files which can be created if a process still has a handle open of a deleted file
-.fuse_hidden*
-
-# KDE directory preferences
-.directory
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
-
-# .nfs files are created when an open file is removed but is still being accessed
-.nfs*
-
-
-### Windows ###
-# Windows image file caches
+# Windows
 Thumbs.db
 ehthumbs.db
-
-# Folder config file
 Desktop.ini
-
-# Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
+# Linux
+*~
+.nfs*
 
-# Windows shortcuts
-*.lnk
+# Node / npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
+# Logs
+logs/
+*.log
+*.log.*
 
-#!! ERROR: mac is undefined. Use list command to see defined gitignore types !!#
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.pyc
+*.pyo
+*.o
+*.obj
+*.class
+
+# Editor directories
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Vim / Emacs
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.temp
+*.~*
+
+# Python virtualenv (if any)
+venv/
+.env/
+
+# Node.js environment variables
+.env
+.env.*
+!.env.example
+
+# Coverage reports
+coverage/
+*.cover
+*.coverage
+*.lcov
+*.lcov.info
+
+# Misc
+*.orig
+*.rej
+
+# Installer logs
+install.log
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
