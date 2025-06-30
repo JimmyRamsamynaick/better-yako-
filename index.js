@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const client = new Client({
@@ -26,7 +27,7 @@ function loadTranslations() {
         const langFiles = fs.readdirSync(languagesPath).filter(file => file.endsWith('.json'));
 
         langFiles.forEach(file => {
-            const langName = file.replace('.json', '').replace('Lang_', '');
+            const langName = file.replace('.json', '').replace('lang_', '');
             const langPath = path.join(languagesPath, file);
             translations[langName] = JSON.parse(fs.readFileSync(langPath, 'utf8'));
         });
@@ -92,6 +93,8 @@ function loadCommands(dir) {
             commands.push(...loadCommands(filePath));
         } else if (file.endsWith('.js')) {
             try {
+                // Supprimer du cache pour permettre le rechargement à chaud
+                delete require.cache[require.resolve(filePath)];
                 const command = require(filePath);
 
                 // Vérifier si c'est une commande valide
@@ -113,35 +116,52 @@ function loadCommands(dir) {
     return commands;
 }
 
-// Charger toutes les commandes
-const commandsPath = path.join(__dirname, 'commands');
-const commands = loadCommands(commandsPath);
-
-// Enregistrer les slash commands
+// Déployer les commandes automatiquement à chaque démarrage
 async function deployCommands() {
     try {
-        console.log('🔄 Déploiement des slash commands...');
+        // Charger toutes les commandes
+        const commandsPath = path.join(__dirname, 'commands');
+        const commands = loadCommands(commandsPath);
+
+        console.log('🔄 Rechargement automatique des slash commands...');
+        console.log(`📊 Nombre de commandes à déployer: ${commands.length}`);
 
         const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
-        // Déployer globalement (ou par serveur en développement)
-        if (process.env.GUILD_ID) {
-            // Déploiement par serveur (plus rapide pour le développement)
-            await rest.put(
-                Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
-                { body: commands }
-            );
-            console.log(`✅ ${commands.length} slash commands déployées sur le serveur de test.`);
-        } else {
-            // Déploiement global (peut prendre jusqu'à 1 heure)
-            await rest.put(
-                Routes.applicationCommands(process.env.CLIENT_ID),
-                { body: commands }
-            );
-            console.log(`✅ ${commands.length} slash commands déployées globalement.`);
-        }
+        // Déploiement global pour tous les serveurs - FORCÉ à chaque démarrage
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENT_ID),
+            { body: commands }
+        );
+
+        console.log(`✅ ${commands.length} slash commands rechargées et disponibles immédiatement!`);
+        console.log('🎯 Les commandes sont maintenant visibles avec "/" dans tous les serveurs.');
+
+        // Afficher la liste des commandes déployées
+        console.log('📋 Commandes disponibles:');
+        commands.forEach(cmd => {
+            console.log(`   - /${cmd.name}: ${cmd.description}`);
+        });
+
     } catch (error) {
         console.error('❌ Erreur lors du déploiement des commandes:', error);
+
+        // En cas d'erreur, essayer de nettoyer les commandes
+        if (error.code === 50035) {
+            console.log('🧹 Tentative de nettoyage des commandes corrompues...');
+            try {
+                const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+
+                await rest.put(
+                    Routes.applicationCommands(process.env.CLIENT_ID),
+                    { body: [] }
+                );
+
+                console.log('✅ Commandes globales nettoyées, redémarrez le bot pour redéployer.');
+            } catch (cleanError) {
+                console.error('❌ Impossible de nettoyer les commandes:', cleanError);
+            }
+        }
     }
 }
 
@@ -157,11 +177,11 @@ client.once('ready', async () => {
         fs.mkdirSync(dataPath, { recursive: true });
     }
 
-    // Déployer les commandes
+    // RECHARGEMENT AUTOMATIQUE FORCÉ à chaque démarrage
     await deployCommands();
 
     // Définir le statut du bot
-    client.user.setActivity('Yako Bot | /help', { type: 'WATCHING' });
+    client.user.setActivity(`Yako Bot | ${client.commands.size} commandes`, { type: 'WATCHING' });
 });
 
 // Gestionnaire d'interactions (slash commands)
@@ -172,7 +192,10 @@ client.on('interactionCreate', async interaction => {
 
     if (!command) {
         console.error(`❌ Commande ${interaction.commandName} introuvable.`);
-        return;
+        return interaction.reply({
+            content: '❌ Cette commande n\'existe plus ou n\'est pas disponible.',
+            ephemeral: true
+        });
     }
 
     try {
@@ -204,3 +227,9 @@ client.on('warn', warning => {
 
 // Connexion du bot
 client.login(process.env.TOKEN);
+
+// Export des fonctions utiles pour d'autres modules
+module.exports = {
+    client,
+    getTranslation
+};

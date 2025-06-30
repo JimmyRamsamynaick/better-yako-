@@ -1,5 +1,61 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require('discord.js');
-const fs = require('fs');
+
+// Système de traduction intégré
+const translations = {
+    fr: {
+        no_permission_title: "Permission refusée",
+        no_permission_desc: "Vous n'avez pas la permission de gérer les salons.",
+        bot_no_permission_title: "Permission du bot manquante",
+        bot_no_permission_desc: "Je n'ai pas la permission de gérer les salons.",
+        default_reason: "Aucune raison fournie",
+        already_unlocked_title: "Salon déjà déverrouillé",
+        already_unlocked_desc: "Le salon {channel} n'est pas verrouillé.",
+        success_title: "Salon déverrouillé",
+        success_desc: "Le salon {channel} a été déverrouillé avec succès.",
+        channel_unlocked_title: "Salon déverrouillé",
+        channel_unlocked_desc: "Ce salon a été déverrouillé par un modérateur.",
+        log_title: "Action de modération - Unlock",
+        error_title: "Erreur",
+        error_desc: "Une erreur s'est produite lors du déverrouillage du salon.",
+        audit_reason: "Salon déverrouillé par",
+        moderator: "Modérateur",
+        reason: "Raison",
+        channel: "Salon"
+    },
+    en: {
+        no_permission_title: "Permission Denied",
+        no_permission_desc: "You don't have permission to manage channels.",
+        bot_no_permission_title: "Bot Permission Missing",
+        bot_no_permission_desc: "I don't have permission to manage channels.",
+        default_reason: "No reason provided",
+        already_unlocked_title: "Channel Already Unlocked",
+        already_unlocked_desc: "The channel {channel} is not locked.",
+        success_title: "Channel Unlocked",
+        success_desc: "The channel {channel} has been unlocked successfully.",
+        channel_unlocked_title: "Channel Unlocked",
+        channel_unlocked_desc: "This channel has been unlocked by a moderator.",
+        log_title: "Moderation Action - Unlock",
+        error_title: "Error",
+        error_desc: "An error occurred while unlocking the channel.",
+        audit_reason: "Channel unlocked by",
+        moderator: "Moderator",
+        reason: "Reason",
+        channel: "Channel"
+    }
+};
+
+// Fonction pour obtenir la langue du serveur (par défaut français)
+function getServerLanguage(guildId) {
+    // Vous pouvez implémenter une logique plus complexe ici
+    // Pour l'instant, on retourne 'fr' par défaut
+    return 'fr';
+}
+
+// Fonction pour obtenir une traduction
+function getTranslation(guildId, key) {
+    const lang = getServerLanguage(guildId);
+    return translations[lang]?.[key] || translations.fr[key] || key;
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,84 +73,83 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 
     async execute(interaction) {
-        // Chargement de la langue
-        const guildLang = JSON.parse(fs.readFileSync('./data/guildLang.json', 'utf8'));
-        const lang = guildLang[interaction.guild.id] || 'fr';
-        const langFile = JSON.parse(fs.readFileSync(`./lang/Lang_${lang}.json`, 'utf8'));
-
-        // Vérification des permissions
-        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
-            const embed = new EmbedBuilder()
-                .setColor('#FF0000')
-                .setTitle('❌ ' + langFile.unlock.no_permission_title)
-                .setDescription(langFile.unlock.no_permission_desc)
-                .setTimestamp();
-            return interaction.reply({ embeds: [embed], ephemeral: true });
-        }
-
-        // Vérification des permissions du bot
-        if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
-            const embed = new EmbedBuilder()
-                .setColor('#FF0000')
-                .setTitle('❌ ' + langFile.unlock.bot_no_permission_title)
-                .setDescription(langFile.unlock.bot_no_permission_desc)
-                .setTimestamp();
-            return interaction.reply({ embeds: [embed], ephemeral: true });
-        }
-
-        const targetChannel = interaction.options.getChannel('salon') || interaction.channel;
-        const reason = interaction.options.getString('raison') || langFile.unlock.default_reason;
-
         try {
+            // Vérification des permissions utilisateur
+            if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('❌ ' + getTranslation(interaction.guild.id, 'no_permission_title'))
+                    .setDescription(getTranslation(interaction.guild.id, 'no_permission_desc'))
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+
+            // Vérification des permissions du bot
+            if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('❌ ' + getTranslation(interaction.guild.id, 'bot_no_permission_title'))
+                    .setDescription(getTranslation(interaction.guild.id, 'bot_no_permission_desc'))
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+
+            const targetChannel = interaction.options.getChannel('salon') || interaction.channel;
+            const reason = interaction.options.getString('raison') || getTranslation(interaction.guild.id, 'default_reason');
+
+            // Déférer la réponse
             await interaction.deferReply();
 
             // Vérifier si le salon est déjà déverrouillé
             const everyoneRole = interaction.guild.roles.everyone;
             const permissions = targetChannel.permissionOverwrites.cache.get(everyoneRole.id);
-            
-            if (!permissions || permissions.allow.has(PermissionFlagsBits.SendMessages)) {
+
+            if (!permissions || !permissions.deny.has(PermissionFlagsBits.SendMessages)) {
                 const embed = new EmbedBuilder()
                     .setColor('#FF8C00')
-                    .setTitle('⚠️ ' + langFile.unlock.already_unlocked_title)
-                    .setDescription(langFile.unlock.already_unlocked_desc.replace('{channel}', targetChannel.toString()))
+                    .setTitle('⚠️ ' + getTranslation(interaction.guild.id, 'already_unlocked_title'))
+                    .setDescription(getTranslation(interaction.guild.id, 'already_unlocked_desc').replace('{channel}', targetChannel.toString()))
                     .setTimestamp();
                 return interaction.editReply({ embeds: [embed] });
             }
 
             // Déverrouiller le salon
             await targetChannel.permissionOverwrites.edit(everyoneRole, {
-                SendMessages: null, // Supprimer la restriction
+                SendMessages: null,
+                AddReactions: null,
                 SendMessagesInThreads: null,
                 CreatePublicThreads: null,
                 CreatePrivateThreads: null
-            }, { reason: `${langFile.unlock.audit_reason} ${interaction.user.tag} - ${reason}` });
+            }, {
+                reason: `${getTranslation(interaction.guild.id, 'audit_reason')} ${interaction.user.tag} - ${reason}`
+            });
 
             // Embed de confirmation
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
-                .setTitle('🔓 ' + langFile.unlock.success_title)
-                .setDescription(langFile.unlock.success_desc.replace('{channel}', targetChannel.toString()))
+                .setTitle('🔓 ' + getTranslation(interaction.guild.id, 'success_title'))
+                .setDescription(getTranslation(interaction.guild.id, 'success_desc').replace('{channel}', targetChannel.toString()))
                 .addFields([
                     {
-                        name: langFile.unlock.moderator,
+                        name: getTranslation(interaction.guild.id, 'moderator'),
                         value: `<@${interaction.user.id}>`,
                         inline: true
                     },
                     {
-                        name: langFile.unlock.reason,
+                        name: getTranslation(interaction.guild.id, 'reason'),
                         value: reason,
                         inline: true
                     },
                     {
-                        name: langFile.unlock.channel,
+                        name: getTranslation(interaction.guild.id, 'channel'),
                         value: targetChannel.toString(),
                         inline: true
                     }
                 ])
                 .setTimestamp()
-                .setFooter({ 
-                    text: 'Yako Bot', 
-                    iconURL: interaction.client.user.displayAvatarURL() 
+                .setFooter({
+                    text: 'Yako Bot',
+                    iconURL: interaction.client.user.displayAvatarURL()
                 });
 
             await interaction.editReply({ embeds: [embed] });
@@ -104,16 +159,16 @@ module.exports = {
                 try {
                     const channelEmbed = new EmbedBuilder()
                         .setColor('#00FF00')
-                        .setTitle('🔓 ' + langFile.unlock.channel_unlocked_title)
-                        .setDescription(langFile.unlock.channel_unlocked_desc)
+                        .setTitle('🔓 ' + getTranslation(interaction.guild.id, 'channel_unlocked_title'))
+                        .setDescription(getTranslation(interaction.guild.id, 'channel_unlocked_desc'))
                         .addFields([
                             {
-                                name: langFile.unlock.moderator,
+                                name: getTranslation(interaction.guild.id, 'moderator'),
                                 value: `<@${interaction.user.id}>`,
                                 inline: true
                             },
                             {
-                                name: langFile.unlock.reason,
+                                name: getTranslation(interaction.guild.id, 'reason'),
                                 value: reason,
                                 inline: true
                             }
@@ -128,24 +183,27 @@ module.exports = {
 
             // Log dans le salon de logs si configuré
             try {
-                const logChannel = interaction.guild.channels.cache.find(ch => ch.name === 'yako-logs');
+                const logChannel = interaction.guild.channels.cache.find(ch =>
+                    ['yako-logs', 'mod-logs', 'moderation-logs', 'logs'].includes(ch.name.toLowerCase())
+                );
+
                 if (logChannel) {
                     const logEmbed = new EmbedBuilder()
                         .setColor('#00FF00')
-                        .setTitle('🔓 ' + langFile.unlock.log_title)
+                        .setTitle('🔓 ' + getTranslation(interaction.guild.id, 'log_title'))
                         .addFields([
                             {
-                                name: langFile.unlock.moderator,
+                                name: getTranslation(interaction.guild.id, 'moderator'),
                                 value: `<@${interaction.user.id}> (${interaction.user.tag})`,
                                 inline: true
                             },
                             {
-                                name: langFile.unlock.channel,
+                                name: getTranslation(interaction.guild.id, 'channel'),
                                 value: `<#${targetChannel.id}> (${targetChannel.name})`,
                                 inline: true
                             },
                             {
-                                name: langFile.unlock.reason,
+                                name: getTranslation(interaction.guild.id, 'reason'),
                                 value: reason,
                                 inline: false
                             }
@@ -160,11 +218,11 @@ module.exports = {
 
         } catch (error) {
             console.error('Erreur lors du déverrouillage du salon:', error);
-            
+
             const errorEmbed = new EmbedBuilder()
                 .setColor('#FF0000')
-                .setTitle('❌ ' + langFile.unlock.error_title)
-                .setDescription(langFile.unlock.error_desc)
+                .setTitle('❌ ' + getTranslation(interaction.guild.id, 'error_title'))
+                .setDescription(getTranslation(interaction.guild.id, 'error_desc'))
                 .setTimestamp();
 
             if (interaction.deferred) {
