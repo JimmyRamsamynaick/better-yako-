@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jimmy - Portfolio Gaming</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                Jimmy_9708
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" data-section="home">Accueil</a></li>
+                <li><a href="#about" data-section="about">À propos</a></li>
+                <li><a href="#projects" data-section="projects">Projets</a></li>
+                <li><a href="#contact" data-section="contact">Contact</a></li>
+            </ul>
+            <div class="burger-menu" id="burgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="glitch" data-text="Jimmy_9708">Jimmy_9708</h1>
+                <p class="subtitle">Développeur & Gamer Passionné</p>
+                <p class="description">Bienvenue dans mon univers gaming ! Découvrez mes créations, projets futurs et rejoignez ma communauté.</p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="cta-button primary">
+                        <span>Mes Projets</span>
+                        <i class="fas fa-rocket"></i>
+                    </a>
+                    <a href="#contact" class="cta-button secondary">
+                        <span>Contact</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-gaming-elements">
+                <div class="floating-controller">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div class="floating-code">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="floating-bolt">
+                    <i class="fas fa-bolt"></i>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+            <span>Scroll</span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">À Propos</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="intro">Salut ! Je suis Jimmy, un développeur passionné par l'univers du gaming et de la technologie.</p>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <i class="fas fa-code"></i>
+                            <h3>Développement</h3>
+                            <p>Création d'applications et sites web modernes</p>
+                        </div>
+                        <div class="skill-card">
+                            <i class="fas fa-gamepad"></i>
+                            <h3>Gaming</h3>
+                            <p>Passionné de jeux et de streaming</p>
+                        </div>
+                        <div class="skill-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Communauté</h3>
+                            <p>Animation et création de contenu</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="50">0</div>
+                        <div class="stat-label">Projets Réalisés</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="1000">0</div>
+                        <div class="stat-label">Heures de Code</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="25">0</div>
+                        <div class="stat-label">Technologies Maîtrisées</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2 class="section-title">Mes Projets</h2>
+            <div class="projects-filter">
+                <button class="filter-btn active" data-filter="all">Tous</button>
+                <button class="filter-btn" data-filter="web">Web</button>
+                <button class="filter-btn" data-filter="game">Gaming</button>
+                <button class="filter-btn" data-filter="upcoming">À venir</button>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card" data-category="web">
+                    <div class="project-image">
+                        <div class="project-placeholder">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-github"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Site E-commerce Gaming</h3>
+                        <p>Plateforme de vente d'équipements gaming avec interface moderne</p>
+                        <div class="project-tech">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-category="game">
+                    <div class="project-image">
+                        <div class="project-placeholder">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="https://github.com/JimmyRamsamynaick/better-yako-" target="_blank" rel="noopener" class="project-github"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Bot Discord Administration</h3>
+                        <p>Bot d’administration complet pour serveurs Discord avec système de modération</p>
+                        <div class="project-tech">
+                            <span>Discord.js</span>
+                            <span>JavaScript</span>
+                            <span>SQLite</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-category="upcoming">
+                    <div class="project-image">
+                        <div class="project-placeholder upcoming">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <span class="coming-soon">Bientôt</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Application Mobile Gaming</h3>
+                        <p>App de suivi de performance pour gamers</p>
+                        <div class="project-tech">
+                            <span>React Native</span>
+                            <span>Firebase</span>
+                            <span>API Gaming</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-category="upcoming">
+                    <div class="project-image">
+                        <div class="project-placeholder upcoming">
+                            <i class="fas fa-vr-cardboard"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <span class="coming-soon">Bientôt</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Expérience VR</h3>
+                        <p>Jeu en réalité virtuelle immersif</p>
+                        <div class="project-tech">
+                            <span>Unity</span>
+                            <span>C#</span>
+                            <span>VR SDK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Rejoins Ma Communauté</h2>
+            <div class="contact-content">
+                <div class="contact-text">
+                    <p>Connectons-nous et créons ensemble ! Rejoins ma communauté gaming et suis mes aventures.</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://discord.gg/UTrYfA3n58" target="_blank" rel="noopener" class="social-card discord">
+                        <div class="social-icon">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <div class="social-content">
+                            <h3>Discord</h3>
+                            <p>Rejoins le serveur</p>
+                            <span class="social-handle">discord.gg/UTrYfA3n58</span>
+                        </div>
+                        <div class="social-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://www.twitch.tv/jimmy_9708" target="_blank" rel="noopener" class="social-card twitch">
+                        <div class="social-icon">
+                            <i class="fab fa-twitch"></i>
+                        </div>
+                        <div class="social-content">
+                            <h3>Twitch</h3>
+                            <p>Suis mes streams</p>
+                            <span class="social-handle">twitch.tv/jimmy_9708</span>
+                        </div>
+                        <div class="social-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="contact-form-container">
+                    <form class="contact-form" action="https://formspree.io/f/xvgrvkqr" method="POST">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" required placeholder=" ">
+                            <label for="name">Nom</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" required placeholder=" ">
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" required placeholder=" "></textarea>
+                            <label for="message">Message</label>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <span>Envoyer</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-gamepad"></i>
+                    Jimmy_9708
+                </div>
+                <p>&copy; 2025 Jimmy_9708. Tous droits réservés.</p>
+                <div class="footer-social">
+                    <a href="https://discord.gg/UTrYfA3n58" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="https://www.twitch.tv/jimmy_9708" target="_blank"><i class="fab fa-twitch"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
