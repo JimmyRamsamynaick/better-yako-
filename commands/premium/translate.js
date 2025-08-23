@@ -170,30 +170,42 @@ module.exports = {
                 prompt = `Traduis le texte suivant du ${languageMap[sourceLang]} vers le ${languageMap[targetLang]} ${styleMap[style]}. Fournis une traduction précise et naturelle :\n\n"${text}"`;
             }
             
-            // Appeler l'API OpenAI
-            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-                model: 'gpt-3.5-turbo',
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'Tu es un traducteur expert multilingue. Tu fournis des traductions précises, naturelles et adaptées au contexte. Tu détectes automatiquement la langue source si nécessaire et tu adaptes le style selon les instructions.'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                max_tokens: 2000,
-                temperature: 0.3
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                timeout: 30000
-            });
+            // Mapper les langues vers les codes ISO pour Hugging Face
+            const langCodeMap = {
+                'french': 'fr',
+                'english': 'en',
+                'spanish': 'es',
+                'german': 'de',
+                'italian': 'it',
+                'portuguese': 'pt',
+                'russian': 'ru',
+                'japanese': 'ja',
+                'korean': 'ko',
+                'chinese': 'zh',
+                'arabic': 'ar',
+                'hindi': 'hi'
+            };
             
-            const translation = response.data.choices[0].message.content;
+            const targetCode = langCodeMap[targetLang];
+            
+            // Utiliser LibreTranslate (API gratuite et open source)
+            const response = await axios.post(
+                'https://libretranslate.de/translate',
+                {
+                    q: text,
+                    source: sourceLang === 'auto' ? 'auto' : langCodeMap[sourceLang] || 'en',
+                    target: targetCode,
+                    format: 'text'
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    timeout: 30000
+                }
+            );
+            
+            const translation = response.data.translatedText || text;
             const endTime = Date.now();
             const translationTime = endTime - startTime;
             
