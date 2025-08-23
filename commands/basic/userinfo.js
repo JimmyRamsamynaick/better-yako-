@@ -112,9 +112,10 @@ module.exports = {
         }
         
         // Déterminer la couleur basée sur le rôle le plus élevé
-        let color = '#5865F2';
+        let color = 0x5865F2; // Couleur par défaut en entier
         if (member && member.displayHexColor !== '#000000') {
-            color = member.displayHexColor;
+            // Convertir la couleur hexadécimale en entier
+            color = parseInt(member.displayHexColor.replace('#', ''), 16);
         }
         
         // Créer l'embed avec les informations
