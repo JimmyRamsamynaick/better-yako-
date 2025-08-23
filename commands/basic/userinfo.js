@@ -117,27 +117,34 @@ module.exports = {
             color = member.displayHexColor;
         }
         
-        // Créer le message avec les composants modernes
-        const userInfoMessage = ModernComponents.createInfoMessage({
+        // Créer l'embed avec les informations
+        const userInfoEmbed = {
             title: `👤 Informations de ${targetUser.displayName || targetUser.username}`,
             description: `Voici les informations détaillées de ${targetUser.toString()}`,
             fields: fields,
             color: color,
-            thumbnail: targetUser.displayAvatarURL({ dynamic: true, size: 256 }),
-            buttons: [
-                {
-                    customId: `userinfo_refresh_${targetUser.id}`,
-                    label: '🔄 Actualiser',
-                    style: 2
-                },
-                {
-                    customId: `userinfo_avatar_${targetUser.id}`,
-                    label: '🖼️ Avatar',
-                    style: 2
-                }
-            ]
-        });
+            thumbnail: {
+                url: targetUser.displayAvatarURL({ dynamic: true, size: 256 })
+            }
+        };
         
-        await interaction.editReply(userInfoMessage);
+        // Créer les boutons
+        const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+        const actionRow = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`userinfo_refresh_${targetUser.id}`)
+                    .setLabel('🔄 Actualiser')
+                    .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                    .setCustomId(`userinfo_avatar_${targetUser.id}`)
+                    .setLabel('🖼️ Avatar')
+                    .setStyle(ButtonStyle.Primary)
+            );
+        
+        await interaction.editReply({
+            embeds: [userInfoEmbed],
+            components: [actionRow]
+        });
     }
 };
