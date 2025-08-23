@@ -29,8 +29,8 @@ module.exports = {
                     'es-ES': 'Modelo de IA a usar'
                 })
                 .addChoices(
-                    { name: 'GPT-4 (Recommandé)', value: 'gpt-4' },
-                    { name: 'GPT-3.5 Turbo (Rapide)', value: 'gpt-3.5-turbo' },
+                    { name: 'GPT-3.5 Turbo (Recommandé)', value: 'gpt-3.5-turbo' },
+                    { name: 'GPT-4o Mini (Rapide)', value: 'gpt-4o-mini' },
                     { name: 'Claude-3 Sonnet', value: 'claude-3-sonnet' },
                     { name: 'Gemini Pro', value: 'gemini-pro' }
                 )
@@ -48,7 +48,7 @@ module.exports = {
     
     async execute(interaction, client, getTranslation) {
         const question = interaction.options.getString('question');
-        const model = interaction.options.getString('model') || 'gpt-4';
+        const model = interaction.options.getString('model') || 'gpt-3.5-turbo';
         const isPrivate = interaction.options.getBoolean('private') || false;
         
         // Vérifier si les fonctionnalités IA sont activées

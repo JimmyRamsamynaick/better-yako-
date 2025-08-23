@@ -181,7 +181,7 @@ module.exports = {
             const startTime = Date.now();
             
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-                model: 'gpt-4',
+                model: 'gpt-3.5-turbo',
                 messages: [
                     {
                         role: 'system',
@@ -305,7 +305,7 @@ module.exports = {
             };
             
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-                model: 'gpt-4-vision-preview',
+                model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'user',
@@ -341,7 +341,7 @@ module.exports = {
             
             const successMessage = ModernComponents.createSuccessMessage({
                 title: '🖼️ Analyse d\'image terminée',
-                description: `**Focus:** ${focus}\n**Temps:** ${analysisTime}ms\n**Modèle:** GPT-4 Vision`,
+                description: `**Focus:** ${focus}\n**Temps:** ${analysisTime}ms\n**Modèle:** GPT-4o Mini`,
                 fields: [
                     {
                         name: '🔍 Analyse visuelle',
@@ -438,7 +438,7 @@ module.exports = {
             };
             
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-                model: 'gpt-4',
+                model: 'gpt-3.5-turbo',
                 messages: [
                     {
                         role: 'system',

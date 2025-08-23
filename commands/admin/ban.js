@@ -35,10 +35,10 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.ban.no_permission_desc')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.no_permission'),
+                    description: t('admin.ban.no_permission_desc')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -52,20 +52,20 @@ module.exports = {
             if (targetMember) {
                 // Vérification si on peut modérer cet utilisateur
                 if (!PermissionManager.canModerate(member, targetMember)) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('errors.cannot_moderate'),
-                        t('admin.ban.cannot_moderate_desc')
-                    );
+                    const embed = ModernComponents.createErrorMessage({
+                        title: t('errors.cannot_moderate'),
+                        description: t('admin.ban.cannot_moderate_desc')
+                    });
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
 
                 // Vérification si le bot peut bannir cet utilisateur
                 const botMember = interaction.guild.members.me;
                 if (!PermissionManager.canBotModerate(botMember, targetMember, 'ban')) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('errors.bot_cannot_moderate'),
-                        t('admin.ban.bot_cannot_moderate_desc')
-                    );
+                    const embed = ModernComponents.createErrorMessage({
+                        title: t('errors.bot_cannot_moderate'),
+                        description: t('admin.ban.bot_cannot_moderate_desc')
+                    });
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
             }
@@ -74,10 +74,10 @@ module.exports = {
             try {
                 const banInfo = await interaction.guild.bans.fetch(targetUser.id);
                 if (banInfo) {
-                    const embed = ModernComponents.createWarningMessage(
-                        t('admin.ban.already_banned'),
-                        t('admin.ban.already_banned_desc', targetUser.tag)
-                    );
+                    const embed = ModernComponents.createWarningMessage({
+                        title: t('admin.ban.already_banned'),
+                        description: t('admin.ban.already_banned_desc', targetUser.tag)
+                    });
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
             } catch (error) {
@@ -90,10 +90,10 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 if (targetMember) {
                     try {
-                        const dmEmbed = ModernComponents.createWarningMessage(
-                            t('admin.ban.dm_title'),
-                            t('admin.ban.dm_description', interaction.guild.name, reason)
-                        );
+                        const dmEmbed = ModernComponents.createWarningMessage({
+                            title: t('admin.ban.dm_title'),
+                            description: t('admin.ban.dm_description', interaction.guild.name, reason)
+                        });
                         await targetUser.send({ embeds: [dmEmbed] });
                     } catch (error) {
                         // Impossible d'envoyer le MP, on continue
@@ -116,10 +116,10 @@ module.exports = {
                 );
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createSuccessMessage(
-                    t('admin.ban.success'),
-                    t('admin.ban.success_desc', targetUser.tag, reason)
-                );
+                const successEmbed = ModernComponents.createSuccessMessage({
+                    title: t('admin.ban.success'),
+                    description: t('admin.ban.success_desc', targetUser.tag, reason)
+                });
 
                 const container = ModernComponents.createContainer()
                     .addComponent(successEmbed)
@@ -138,14 +138,14 @@ module.exports = {
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `🔨 ${t('admin.ban.log_title')}`,
-                            `**${t('admin.ban.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                        const logEmbed = ModernComponents.createInfoMessage({
+                            title: `🔨 ${t('admin.ban.log_title')}`,
+                            description: `**${t('admin.ban.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
                             `**${t('admin.ban.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
                             `**${t('admin.ban.reason')}:** ${reason}\n` +
                             `**${t('admin.ban.deleted_messages')}:** ${deleteMessageDays} ${t('admin.ban.days')}\n` +
                             `**${t('admin.ban.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        });
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -153,19 +153,19 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors du bannissement:', error);
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    t('admin.ban.error_desc', error.message)
-                );
+                const errorEmbed = ModernComponents.createErrorMessage({
+                    title: t('errors.command_failed'),
+                    description: t('admin.ban.error_desc', error.message)
+                });
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande ban:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = ModernComponents.createErrorMessage({
+                title: t('errors.unexpected'),
+                description: t('errors.try_again')
+            });
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

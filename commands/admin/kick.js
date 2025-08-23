@@ -29,10 +29,10 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.kick.no_permission_desc')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.no_permission'),
+                    description: t('admin.kick.no_permission_desc')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -43,29 +43,29 @@ module.exports = {
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.user_not_found'),
-                    t('admin.kick.user_not_in_server')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.user_not_found'),
+                    description: t('admin.kick.user_not_in_server')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification si on peut modérer cet utilisateur
             if (!PermissionManager.canModerate(member, targetMember)) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.cannot_moderate'),
-                    t('admin.kick.cannot_moderate_desc')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.cannot_moderate'),
+                    description: t('admin.kick.cannot_moderate_desc')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification si le bot peut expulser cet utilisateur
             const botMember = interaction.guild.members.me;
             if (!PermissionManager.canBotModerate(botMember, targetMember, 'kick')) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.bot_cannot_moderate'),
-                    t('admin.kick.bot_cannot_moderate_desc')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.bot_cannot_moderate'),
+                    description: t('admin.kick.bot_cannot_moderate_desc')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -74,10 +74,10 @@ module.exports = {
             try {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
-                    const dmEmbed = ModernComponents.createWarningMessage(
-                        t('admin.kick.dm_title'),
-                        t('admin.kick.dm_description', interaction.guild.name, reason)
-                    );
+                    const dmEmbed = ModernComponents.createWarningMessage({
+                        title: t('admin.kick.dm_title'),
+                        description: t('admin.kick.dm_description', interaction.guild.name, reason)
+                    });
                     await targetUser.send({ embeds: [dmEmbed] });
                 } catch (error) {
                     // Impossible d'envoyer le MP, on continue
@@ -96,10 +96,10 @@ module.exports = {
                 );
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createSuccessMessage(
-                    t('admin.kick.success'),
-                    t('admin.kick.success_desc', targetUser.tag, reason)
-                );
+                const successEmbed = ModernComponents.createSuccessMessage({
+                    title: t('admin.kick.success'),
+                    description: t('admin.kick.success_desc', targetUser.tag, reason)
+                });
 
                 const container = ModernComponents.createContainer()
                     .addComponent(successEmbed)
@@ -117,13 +117,13 @@ module.exports = {
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `👢 ${t('admin.kick.log_title')}`,
-                            `**${t('admin.kick.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                        const logEmbed = ModernComponents.createInfoMessage({
+                            title: `👢 ${t('admin.kick.log_title')}`,
+                            description: `**${t('admin.kick.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
                             `**${t('admin.kick.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
                             `**${t('admin.kick.reason')}:** ${reason}\n` +
                             `**${t('admin.kick.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        });
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -131,19 +131,19 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors de l\'expulsion:', error);
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    t('admin.kick.error_desc', error.message)
-                );
+                const errorEmbed = ModernComponents.createErrorMessage({
+                    title: t('errors.command_failed'),
+                    description: t('admin.kick.error_desc', error.message)
+                });
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande kick:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = ModernComponents.createErrorMessage({
+                title: t('errors.unexpected'),
+                description: t('errors.try_again')
+            });
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

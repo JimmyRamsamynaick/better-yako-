@@ -32,10 +32,10 @@ module.exports = {
             const isAdmin = await PermissionManager.isAdmin(member, guildConfig);
             
             if (!isAdmin) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.setlang.no_permission_desc')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.no_permission'),
+                    description: t('admin.setlang.no_permission_desc')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -43,13 +43,14 @@ module.exports = {
 
             // Vérification si la langue est déjà définie
             if (currentLang === newLang) {
-                const embed = ModernComponents.createWarningMessage(
-                    t('admin.setlang.already_set'),
-                    t('admin.setlang.already_set_desc', newLang)
-                );
+                const embed = ModernComponents.createWarningMessage({
+                    title: t('admin.setlang.already_set'),
+                    description: t('admin.setlang.already_set_desc', newLang)
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
+            // Defer la réponse seulement si on arrive ici
             await interaction.deferReply();
 
             try {
@@ -59,10 +60,10 @@ module.exports = {
                 });
 
                 if (!updatedConfig) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('errors.database_error'),
-                        t('admin.setlang.database_error_desc')
-                    );
+                    const embed = ModernComponents.createErrorMessage({
+                        title: t('errors.database_error'),
+                        description: t('admin.setlang.database_error_desc')
+                    });
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -164,10 +165,10 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors du changement de langue:', error);
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    t('admin.setlang.error_desc', error.message)
-                );
+                const errorEmbed = ModernComponents.createErrorMessage({
+                    title: t('errors.command_failed'),
+                    description: t('admin.setlang.error_desc', error.message)
+                });
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
@@ -175,11 +176,12 @@ module.exports = {
             console.error('Erreur dans la commande setlang:', error);
             
             // Utilisation de la langue par défaut en cas d'erreur
+            const { ModernComponents: MC } = require('../../utils/modernComponents');
             const t = (key, ...args) => getTranslation('fr', key, ...args);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = MC.createErrorMessage({
+                title: t('errors.unexpected'),
+                description: t('errors.try_again')
+            });
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

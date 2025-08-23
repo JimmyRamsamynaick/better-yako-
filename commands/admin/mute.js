@@ -33,10 +33,10 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.mute.no_permission_desc')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.no_permission'),
+                    description: t('admin.mute.no_permission_desc')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -48,10 +48,10 @@ module.exports = {
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.user_not_found'),
-                    t('admin.mute.user_not_in_server')
-                );
+                const embed = ModernComponents.createErrorMessage({
+                    title: t('errors.user_not_found'),
+                    description: t('admin.mute.user_not_in_server')
+                });
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
