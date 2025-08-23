@@ -1,0 +1,33 @@
+{
+  "name": "better-yako-v2",
+  "version": "2.0.0",
+  "description": "Bot Discord moderne avec composants v2 et support multilingue",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
+    "mongoose": "^8.18.0",
+    "openai": "^4.20.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "ai",
+    "multilingual",
+    "components-v2"
+  ],
+  "author": "Better Yako Team",
+  "license": "MIT"
+}

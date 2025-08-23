@@ -1,0 +1,289 @@
+# ================================
+# DISCORD BOT - GITIGNORE
+# ================================
+
+# ================================
+# ENVIRONMENT & SECRETS
+# ================================
+.env
+.env.*
+!.env.example
+config.json
+!config.example.json
+
+# Bot tokens and sensitive data
+token.txt
+secrets/
+credentials/
+
+# ================================
+# NODE.JS & NPM
+# ================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Lock files (optionnel - décommentez si vous voulez les ignorer)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ================================
+# PROJECT SPECIFIC
+# ================================
+# Backup and refonte directory
+backup_refonte/
+
+# ================================
+# LOGS & DEBUGGING
+# ================================
+logs/
+*.log
+*.log.*
+debug.log
+error.log
+combined.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ================================
+# DATABASES & DATA
+# ================================
+# Base de données locales
+*.db
+*.sqlite
+*.sqlite3
+database.db
+
+# Fichiers de données sensibles
+data/users.json
+data/guilds.json
+data/private/
+
+# Sauvegardes automatiques (gardez les manuelles)
+backups/auto/
+*.backup
+
+# ================================
+# CACHE & TEMPORARY FILES
+# ================================
+# Cache directories
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+dist/
+build/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*.rej
+
+# ================================
+# OPERATING SYSTEMS
+# ================================
+# macOS
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.fseventsd
+Icon?
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.nfs*
+.directory
+
+# ================================
+# EDITORS & IDEs
+# ================================
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+*.swn
+.vimrc.local
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Atom
+.atom/
+
+# ================================
+# TESTING & COVERAGE
+# ================================
+# Coverage reports
+coverage/
+*.cover
+*.coverage
+*.lcov
+*.lcov.info
+.nyc_output/
+
+# Jest
+jest.config.js
+__tests__/
+*.test.js
+*.spec.js
+
+# ================================
+# DEPLOYMENT & BUILD
+# ================================
+# Build outputs
+dist/
+build/
+out/
+
+# Docker
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+
+# Heroku
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# ================================
+# MUSIC & MEDIA (pour bot Discord)
+# ================================
+# Fichiers audio temporaires
+downloads/
+music_cache/
+*.mp3
+*.mp4
+*.wav
+*.flac
+*.ogg
+
+# ================================
+# MISC
+# ================================
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Python (si utilisé pour des scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Installer logs
+install.log
+
+# ESLint
+.eslintrc.local
+
+# Prettier
+.prettierrc.local
+
+# TypeScript (si utilisé)
+*.tsbuildinfo
+
+# Microbundle
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional stylelint cache
+.stylelintcache
+
+# SvelteKit
+.svelte-kit
+
+# End of file
