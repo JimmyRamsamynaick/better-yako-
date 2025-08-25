@@ -14,6 +14,9 @@ module.exports = {
         await interaction.deferReply();
         const startTime = Date.now();
         
+        // Simuler une petite opération pour mesurer la latence réelle
+        await new Promise(resolve => setTimeout(resolve, 1));
+        
         // Calculer la latence
         const botLatency = Date.now() - startTime;
         const apiLatency = Math.round(client.ws.ping);
@@ -34,7 +37,7 @@ module.exports = {
         // Créer l'embed avec les informations de ping
         const pingEmbed = new EmbedBuilder()
             .setTitle('🏓 Pong!')
-            .setDescription(`**Latence du bot:** ${botLatency}ms\n**Latence API Discord:** ${apiLatency}ms\n**Qualité de connexion:** ${connectionQuality}`)
+            .setDescription(`🤖 **Latence du bot:** \`${botLatency}ms\`\n🌐 **Latence API Discord:** \`${apiLatency}ms\`\n📶 **Qualité de connexion:** ${connectionQuality}`)
             .setColor(parseInt(color.replace('#', ''), 16))
             .addFields(
                 {

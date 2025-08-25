@@ -162,13 +162,15 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.lock.success'))
-                    .setDescription(t('admin.lock.success_desc', targetChannel.name))
-                    .setColor(0xFEE75C)
+                    .setTitle(`🔒 ${t('admin.lock.success')}`)
+                    .setDescription(`✅ ${t('admin.lock.success_desc', targetChannel.name)}`)
+                    .setColor('#ffcc00')
                     .addFields(
-                        { name: '🔒 Canal', value: targetChannel.toString(), inline: true },
-                        { name: '⏰ Durée', value: durationText, inline: true },
-                        { name: '📝 Raison', value: reason, inline: false }
+                        { name: '🔒 Canal verrouillé', value: `${targetChannel.toString()}\n\`#${targetChannel.name}\``, inline: true },
+                        { name: '⏰ Durée du verrouillage', value: `\`${durationText}\``, inline: true },
+                        { name: '📝 Raison du verrouillage', value: `\`${reason}\``, inline: false },
+                        { name: '👮 Modérateur', value: `${interaction.user.toString()}\n\`${interaction.user.tag}\``, inline: true },
+                        { name: '📅 Date', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
                     )
                     .setTimestamp();
 
@@ -188,10 +190,11 @@ module.exports = {
                 // Message dans le canal verrouillé
                 const lockNotification = new EmbedBuilder()
                     .setTitle(`🔒 ${t('admin.lock.channel_locked')}`)
-                    .setDescription(t('admin.lock.channel_locked_desc', interaction.user.tag, reason) +
-                        (expiresAt ? `\n\n⏰ **${t('admin.lock.unlock_time')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:R>` : ''))
-                    .setColor('#ffcc00')
-                    .setTimestamp();
+                    .setDescription(`🚫 **Ce canal a été verrouillé par ${interaction.user.tag}**\n\n📝 **Raison:** ${reason}` +
+                        (expiresAt ? `\n\n⏰ **Déverrouillage automatique:** <t:${Math.floor(expiresAt.getTime() / 1000)}:R>` : '\n\n♾️ **Durée:** Indéterminée'))
+                    .setColor('#ff6b6b')
+                    .setTimestamp()
+                    .setFooter({ text: '🔒 Canal temporairement inaccessible', iconURL: interaction.guild.iconURL() });
 
                 await targetChannel.send({ embeds: [lockNotification] });
 

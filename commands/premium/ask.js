@@ -46,6 +46,8 @@ module.exports = {
         ),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply({ ephemeral: interaction.options.getBoolean('private') || false });
+        
         const question = interaction.options.getString('question');
         const model = interaction.options.getString('model') || 'gpt-3.5-turbo';
         const isPrivate = interaction.options.getBoolean('private') || false;
@@ -83,7 +85,7 @@ module.exports = {
             const startTime = Date.now();
             
             // Préparer le contexte système
-            const systemPrompt = `Tu es un assistant IA intelligent et utile. Tu réponds de manière claire, précise et détaillée. Tu peux répondre à toutes sortes de questions sur n'importe quel sujet. Adapte ton niveau de langage à la question posée. Si la question est en français, réponds en français. Si elle est en anglais, réponds en anglais. Si elle est en espagnol, réponds en espagnol.`;
+            const systemPrompt = `Tu es YAKO, un assistant IA amical, intelligent et serviable. Tu réponds TOUJOURS aux questions, même les plus simples ou personnelles. Tu peux parler de tout : comment tu vas, ton âge, ton nom, tes goûts, etc. Sois créatif et engageant dans tes réponses. Tu as une personnalité chaleureuse et tu aimes aider les utilisateurs. Réponds dans la même langue que la question posée.`;
             
             // Appeler l'API selon le modèle choisi
             if (model.startsWith('gpt')) {
@@ -142,7 +144,14 @@ module.exports = {
             const responseTime = endTime - startTime;
             
             // Diviser la réponse si elle est trop longue
-            const chunks = ModernComponents.splitLongText(response, 1800);
+            const chunks = [];
+            if (response.length <= 1800) {
+                chunks.push(response);
+            } else {
+                for (let i = 0; i < response.length; i += 1800) {
+                    chunks.push(response.slice(i, i + 1800));
+                }
+            }
             
             // Créer le message de réponse principal
             const responseEmbed = new EmbedBuilder()

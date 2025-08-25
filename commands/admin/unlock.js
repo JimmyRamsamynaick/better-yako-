@@ -120,15 +120,16 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.unlock.success'))
-                    .setDescription(t('admin.unlock.success_desc', targetChannel.name))
+                    .setTitle(`🔓 ${t('admin.unlock.success')}`)
+                    .setDescription(`✅ ${t('admin.unlock.success_desc', targetChannel.name)}`)
                     .addFields(
-                        { name: '🔓 Canal', value: `${targetChannel.name} (${targetChannel.id})`, inline: true },
-                        { name: '👮 Modérateur', value: interaction.user.tag, inline: true },
-                        { name: '📝 Raison', value: reason, inline: false },
-                        { name: '✅ Permissions restaurées', value: t('admin.unlock.permissions_list'), inline: false }
+                        { name: '🔓 Canal déverrouillé', value: `${targetChannel.toString()}\n\`#${targetChannel.name}\``, inline: true },
+                        { name: '👮 Modérateur', value: `${interaction.user.toString()}\n\`${interaction.user.tag}\``, inline: true },
+                        { name: '📝 Raison du déverrouillage', value: `\`${reason}\``, inline: false },
+                        { name: '✅ Permissions restaurées', value: '💬 Envoyer des messages\n😀 Ajouter des réactions\n🧵 Créer des fils\n📝 Écrire dans les fils', inline: false },
+                        { name: '📅 Date', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
                     )
-                    .setColor('#00FF00')
+                    .setColor('#57f287')
                     .setTimestamp();
 
                 // Affichage des informations sur les verrouillages précédents
@@ -171,9 +172,10 @@ module.exports = {
                 // Message dans le canal déverrouillé
                 const unlockNotification = new EmbedBuilder()
                     .setTitle(`🔓 ${t('admin.unlock.channel_unlocked')}`)
-                    .setDescription(t('admin.unlock.channel_unlocked_desc', interaction.user.tag, reason))
-                    .setColor('#00FF00')
-                    .setTimestamp();
+                    .setDescription(`🎉 **Ce canal a été déverrouillé par ${interaction.user.tag}**\n\n📝 **Raison:** ${reason}\n\n✅ **Vous pouvez maintenant écrire à nouveau dans ce canal !**`)
+                    .setColor('#57f287')
+                    .setTimestamp()
+                    .setFooter({ text: '🔓 Canal accessible à nouveau', iconURL: interaction.guild.iconURL() });
 
                 await targetChannel.send({ embeds: [unlockNotification] });
 
