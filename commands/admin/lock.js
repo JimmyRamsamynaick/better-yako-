@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -33,19 +32,21 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.lock.no_permission_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.lock.no_permission_desc'))
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification des permissions du bot
             if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.bot_no_permission'),
-                    t('admin.lock.bot_no_permission_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.bot_no_permission'))
+                    .setDescription(t('admin.lock.bot_no_permission_desc'))
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -55,22 +56,25 @@ module.exports = {
 
             // Vérification que c'est un canal textuel
             if (!targetChannel.isTextBased()) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('admin.lock.invalid_channel'),
-                    t('admin.lock.invalid_channel_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('admin.lock.invalid_channel'))
+                    .setDescription(t('admin.lock.invalid_channel_desc'))
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification des permissions du bot sur le canal cible
             if (!targetChannel.permissionsFor(interaction.guild.members.me).has(PermissionFlagsBits.ManageChannels)) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.bot_no_permission'),
-                    t('admin.lock.bot_no_channel_permission_desc', targetChannel.name)
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.bot_no_permission'))
+                    .setDescription(t('admin.lock.bot_no_channel_permission_desc', targetChannel.name))
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
+            // DEFER REPLY ICI - après toutes les vérifications qui peuvent retourner early
             await interaction.deferReply();
 
             try {
@@ -103,10 +107,11 @@ module.exports = {
                         
                         expiresAt = new Date(Date.now() + duration);
                     } else {
-                        const embed = ModernComponents.createErrorMessage(
-                            t('admin.lock.invalid_duration'),
-                            t('admin.lock.invalid_duration_desc')
-                        );
+                        const embed = new EmbedBuilder()
+                            .setTitle(t('admin.lock.invalid_duration'))
+                            .setDescription(t('admin.lock.invalid_duration_desc'))
+                            .setColor(0xED4245)
+                            .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
                     }
                 }
@@ -116,10 +121,11 @@ module.exports = {
                 const currentPermissions = targetChannel.permissionOverwrites.cache.get(everyoneRole.id);
                 
                 if (currentPermissions && currentPermissions.deny.has(PermissionFlagsBits.SendMessages)) {
-                    const embed = ModernComponents.createWarningMessage(
-                        t('admin.lock.already_locked'),
-                        t('admin.lock.already_locked_desc', targetChannel.name)
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.lock.already_locked'))
+                        .setDescription(t('admin.lock.already_locked_desc', targetChannel.name))
+                        .setColor(0xFEE75C)
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -155,25 +161,18 @@ module.exports = {
                 }
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createWarningMessage(
-                    t('admin.lock.success'),
-                    t('admin.lock.success_desc', targetChannel.name)
-                );
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(t('admin.lock.success'))
+                    .setDescription(t('admin.lock.success_desc', targetChannel.name))
+                    .setColor(0xFEE75C)
+                    .addFields(
+                        { name: '🔒 Canal', value: targetChannel.toString(), inline: true },
+                        { name: '⏰ Durée', value: durationText, inline: true },
+                        { name: '📝 Raison', value: reason, inline: false }
+                    )
+                    .setTimestamp();
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${t('admin.lock.details')}**\n` +
-                        `🔒 **${t('admin.lock.channel')}:** ${targetChannel.name} (${targetChannel.id})\n` +
-                        `👮 **${t('admin.lock.moderator')}:** ${interaction.user.tag}\n` +
-                        `📝 **${t('admin.lock.reason')}:** ${reason}\n` +
-                        `⏱️ **${t('admin.lock.duration')}:** ${durationText}\n` +
-                        (expiresAt ? `📅 **${t('admin.lock.expires_at')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
-                        `🚫 **${t('admin.lock.restrictions')}:** ${t('admin.lock.restrictions_list')}`
-                    ));
-
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds: [successEmbed] });
 
                 // Enregistrement de la sanction dans la base de données
                 await DatabaseManager.addSanction(
@@ -286,15 +285,36 @@ module.exports = {
 
         } catch (error) {
             console.error('Erreur dans la commande lock:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
             
-            if (interaction.deferred) {
-                await interaction.editReply({ embeds: [errorEmbed] });
-            } else {
-                await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            // Créer un embed d'erreur basique au cas où ModernComponents ne serait pas disponible
+            const errorEmbed = {
+                color: 0xff0000,
+                title: '❌ Erreur',
+                description: 'Une erreur inattendue s\'est produite. Veuillez réessayer.',
+                timestamp: new Date().toISOString()
+            };
+
+            // Essayer d'utiliser ModernComponents si disponible
+            try {
+                const modernErrorEmbed = ModernComponents.createErrorMessage(
+                    t('errors.unexpected'),
+                    t('errors.try_again')
+                );
+                
+                if (interaction.deferred || interaction.replied) {
+                    await interaction.editReply({ embeds: [modernErrorEmbed] });
+                } else {
+                    await interaction.reply({ embeds: [modernErrorEmbed], ephemeral: true });
+                }
+            } catch (fallbackError) {
+                // Fallback si ModernComponents n'est pas disponible
+                console.error('Erreur fallback:', fallbackError);
+                
+                if (interaction.deferred || interaction.replied) {
+                    await interaction.editReply({ embeds: [errorEmbed] });
+                } else {
+                    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                }
             }
         }
     }

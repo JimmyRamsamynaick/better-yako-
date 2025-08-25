@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -35,19 +34,21 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.clear.no_permission_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.clear.no_permission_desc'))
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification des permissions du bot
             if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.bot_no_permission'),
-                    t('admin.clear.bot_no_permission_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.bot_no_permission'))
+                    .setDescription(t('admin.clear.bot_no_permission_desc'))
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -74,10 +75,11 @@ module.exports = {
                     const messagesToDelete = userMessages.first(amount);
                     
                     if (messagesToDelete.length === 0) {
-                        const embed = ModernComponents.createWarningMessage(
-                            t('admin.clear.no_messages'),
-                            t('admin.clear.no_user_messages_desc', targetUser.tag)
-                        );
+                        const embed = new EmbedBuilder()
+                            .setTitle(t('admin.clear.no_messages'))
+                            .setDescription(t('admin.clear.no_user_messages_desc', targetUser.tag))
+                            .setColor(0xFEE75C)
+                            .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
                     }
 
@@ -96,10 +98,11 @@ module.exports = {
                     );
                     
                     if (recentMessages.size === 0) {
-                        const embed = ModernComponents.createWarningMessage(
-                            t('admin.clear.no_messages'),
-                            t('admin.clear.no_recent_messages_desc')
-                        );
+                        const embed = new EmbedBuilder()
+                            .setTitle(t('admin.clear.no_messages'))
+                            .setDescription(t('admin.clear.no_recent_messages_desc'))
+                            .setColor(0xFEE75C)
+                            .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
                     }
 
@@ -110,25 +113,28 @@ module.exports = {
                 }
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createSuccessMessage(
-                    t('admin.clear.success'),
-                    t('admin.clear.success_desc', deletedCount, interaction.channel.name)
-                );
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(t('admin.clear.success'))
+                    .setDescription(t('admin.clear.success_desc', deletedCount, interaction.channel.name))
+                    .setColor(0x57F287)
+                    .addFields(
+                        { name: '📊 Demandé', value: amount.toString(), inline: true },
+                        { name: '✅ Supprimé', value: deletedCount.toString(), inline: true },
+                        { name: '📍 Canal', value: interaction.channel.name, inline: true },
+                        { name: '👮 Modérateur', value: interaction.user.tag, inline: true },
+                        { name: '📝 Raison', value: reason, inline: false }
+                    )
+                    .setTimestamp();
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${t('admin.clear.details')}**\n` +
-                        `📊 **${t('admin.clear.requested')}:** ${amount}\n` +
-                        `✅ **${t('admin.clear.deleted')}:** ${deletedCount}\n` +
-                        (skippedCount > 0 ? `⚠️ **${t('admin.clear.skipped')}:** ${skippedCount}\n` : '') +
-                        (oldMessagesCount > 0 ? `🕒 **${t('admin.clear.too_old')}:** ${oldMessagesCount}\n` : '') +
-                        `📍 **${t('admin.clear.channel')}:** ${interaction.channel.name}\n` +
-                        (targetUser ? `👤 **${t('admin.clear.target_user')}:** ${targetUser.tag}\n` : '') +
-                        `👮 **${t('admin.clear.moderator')}:** ${interaction.user.tag}\n` +
-                        `📝 **${t('admin.clear.reason')}:** ${reason}`
-                    ));
+                if (skippedCount > 0) {
+                    successEmbed.addFields({ name: '⚠️ Ignoré', value: skippedCount.toString(), inline: true });
+                }
+                if (oldMessagesCount > 0) {
+                    successEmbed.addFields({ name: '🕒 Trop ancien', value: oldMessagesCount.toString(), inline: true });
+                }
+                if (targetUser) {
+                    successEmbed.addFields({ name: '👤 Utilisateur ciblé', value: targetUser.tag, inline: true });
+                }
 
                 // Ajouter des avertissements si nécessaire
                 if (skippedCount > 0 || oldMessagesCount > 0) {
@@ -140,14 +146,14 @@ module.exports = {
                         warningText += t('admin.clear.skipped_warning', skippedCount);
                     }
                     
-                    const warningEmbed = ModernComponents.createWarningMessage(
-                        `⚠️ ${t('admin.clear.limitations')}`,
-                        warningText.trim()
-                    );
-                    container.addComponent(warningEmbed);
+                    successEmbed.addFields({
+                        name: `⚠️ ${t('admin.clear.limitations')}`,
+                        value: warningText.trim(),
+                        inline: false
+                    });
                 }
 
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds: [successEmbed] });
 
                 // Enregistrement de la sanction dans la base de données
                 await DatabaseManager.addSanction(
@@ -164,25 +170,29 @@ module.exports = {
                 if (guildConfig?.logChannelId && guildConfig.logChannelId !== interaction.channel.id) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `🗑️ ${t('admin.clear.log_title')}`,
-                            `**${t('admin.clear.channel')}:** ${interaction.channel.name} (${interaction.channel.id})\n` +
-                            `**${t('admin.clear.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${t('admin.clear.deleted')}:** ${deletedCount} ${t('admin.clear.messages')}\n` +
-                            (targetUser ? `**${t('admin.clear.target_user')}:** ${targetUser.tag} (${targetUser.id})\n` : '') +
-                            `**${t('admin.clear.reason')}:** ${reason}\n` +
-                            `**${t('admin.clear.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`🗑️ ${t('admin.clear.log_title')}`)
+                            .setDescription(
+                                `**${t('admin.clear.channel')}:** ${interaction.channel.name} (${interaction.channel.id})\n` +
+                                `**${t('admin.clear.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${t('admin.clear.deleted')}:** ${deletedCount} ${t('admin.clear.messages')}\n` +
+                                (targetUser ? `**${t('admin.clear.target_user')}:** ${targetUser.tag} (${targetUser.id})\n` : '') +
+                                `**${t('admin.clear.reason')}:** ${reason}\n` +
+                                `**${t('admin.clear.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            )
+                            .setColor(0x5865F2)
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
                 }
 
                 // Message temporaire dans le canal pour informer les utilisateurs
-                const publicNotification = ModernComponents.createInfoMessage(
-                    `🗑️ ${t('admin.clear.public_notification')}`,
-                    t('admin.clear.public_notification_desc', deletedCount, interaction.user.tag, reason)
-                );
+                const publicNotification = new EmbedBuilder()
+                    .setTitle(`🗑️ ${t('admin.clear.public_notification')}`)
+                    .setDescription(t('admin.clear.public_notification_desc', deletedCount, interaction.user.tag, reason))
+                    .setColor(0x5865F2)
+                    .setTimestamp();
 
                 const notificationMessage = await interaction.channel.send({ embeds: [publicNotification] });
                 
@@ -206,19 +216,21 @@ module.exports = {
                     errorMessage = t('admin.clear.bulk_delete_error');
                 }
                 
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    errorMessage
-                );
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(errorMessage)
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande clear:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor(0xED4245)
+                .setTimestamp();
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

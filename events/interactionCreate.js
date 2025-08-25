@@ -17,10 +17,8 @@ module.exports = {
             try {
                 console.log(`🎯 Exécution de /${interaction.commandName} par ${interaction.user.tag}`);
                 
-                // Déférer la réponse pour éviter les timeouts
-                if (!interaction.deferred && !interaction.replied) {
-                    await interaction.deferReply();
-                }
+                // SUPPRIMÉ: Ne plus déférer automatiquement
+                // Laisser chaque commande gérer sa propre réponse
                 
                 // Exécuter la commande avec la fonction de traduction
                 await command.execute(interaction, client, (key, ...args) => 
@@ -30,20 +28,32 @@ module.exports = {
             } catch (error) {
                 console.error(`❌ Erreur lors de l'exécution de /${interaction.commandName}:`, error);
                 
-                const errorMessage = ModernComponents.createErrorMessage({
-                    title: 'Erreur de commande',
-                    description: 'Une erreur s\'est produite lors de l\'exécution de cette commande.',
-                    error: error.message
-                });
-                
-                try {
-                    if (interaction.deferred || interaction.replied) {
-                        await interaction.editReply(errorMessage);
-                    } else {
+                // Ne répondre que si l'interaction n'a pas déjà été gérée
+                if (!interaction.replied && !interaction.deferred) {
+                    try {
+                        const errorMessage = ModernComponents.createErrorMessage({
+                            title: 'Erreur de commande',
+                            description: 'Une erreur s\'est produite lors de l\'exécution de cette commande.',
+                            error: error.message
+                        });
+                        
                         await interaction.reply({ ...errorMessage, ephemeral: true });
+                    } catch (replyError) {
+                        console.error('❌ Erreur lors de l\'envoi du message d\'erreur:', replyError);
                     }
-                } catch (replyError) {
-                    console.error('❌ Erreur lors de l\'envoi du message d\'erreur:', replyError);
+                } else {
+                    // Si l'interaction a déjà été gérée, essayer editReply
+                    try {
+                        const errorMessage = ModernComponents.createErrorMessage({
+                            title: 'Erreur de commande',
+                            description: 'Une erreur s\'est produite lors de l\'exécution de cette commande.',
+                            error: error.message
+                        });
+                        
+                        await interaction.editReply(errorMessage);
+                    } catch (editError) {
+                        console.error('❌ Impossible de modifier la réponse:', editError);
+                    }
                 }
             }
         }
@@ -51,7 +61,7 @@ module.exports = {
         // Gestion des boutons
         else if (interaction.isButton()) {
             const customId = interaction.customId;
-            console.log(`🔘 Bouton cliqué: ${customId} par ${interaction.user.tag}`);
+            console.log(`📘 Bouton cliqué: ${customId} par ${interaction.user.tag}`);
             
             try {
                 // Logique pour les boutons spécifiques
@@ -183,7 +193,7 @@ module.exports = {
                             },
                             {
                                 customId: 'help_language',
-                                label: '🌍 Changer la langue',
+                                label: '🌐 Changer la langue',
                                 style: 2
                             }
                         ]
@@ -213,7 +223,7 @@ module.exports = {
                             },
                             {
                                 customId: 'help_language',
-                                label: '🌍 Changer la langue',
+                                label: '🌐 Changer la langue',
                                 style: 2
                             }
                         ]
@@ -224,7 +234,7 @@ module.exports = {
                 
                 else if (customId === 'help_language') {
                     const helpMessage = ModernComponents.createInfoMessage({
-                        title: '🌍 Changer la langue',
+                        title: '🌐 Changer la langue',
                         description: 'Utilisez la commande `/setlang` pour changer la langue du bot.\n\n**Langues disponibles:**\n🇺🇸 Anglais (en)\n🇪🇸 Espagnol (es)\n🇫🇷 Français (fr)',
                         color: '#5865F2',
                         buttons: [
@@ -240,7 +250,7 @@ module.exports = {
                             },
                             {
                                 customId: 'help_language',
-                                label: '🌍 Changer la langue',
+                                label: '🌐 Changer la langue',
                                 style: 1
                             }
                         ]
@@ -321,7 +331,7 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: '🌍 Langues',
+                                name: '🌐 Langues',
                                 value: `**Supportées:** ${interaction.client.languages.size}\n**Disponibles:** en, es, fr`,
                                 inline: true
                             },
@@ -512,7 +522,7 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: '🔒 Sécurité',
+                                name: '🔐 Sécurité',
                                 value: `**Niveau:** ${guild.verificationLevel}\n**Filtre:** ${guild.explicitContentFilter}\n**MFA:** ${guild.mfaLevel ? 'Activé' : 'Désactivé'}`,
                                 inline: true
                             },
@@ -527,7 +537,7 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: '📍 Région et ID',
+                                name: '📝 Région et ID',
                                 value: `**ID:** ${guild.id}\n**Créé:** <t:${Math.floor(guild.createdTimestamp / 1000)}:R>`,
                                 inline: true
                             }
