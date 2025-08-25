@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -32,10 +31,11 @@ module.exports = {
             const isAdmin = await PermissionManager.isAdmin(member, guildConfig);
             
             if (!isAdmin) {
-                const embed = ModernComponents.createErrorMessage({
-                    title: t('errors.no_permission'),
-                    description: t('admin.setlang.no_permission_desc')
-                });
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.setlang.no_permission_desc'))
+                    .setColor(0xFF0000)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -43,10 +43,11 @@ module.exports = {
 
             // Vérification si la langue est déjà définie
             if (currentLang === newLang) {
-                const embed = ModernComponents.createWarningMessage({
-                    title: t('admin.setlang.already_set'),
-                    description: t('admin.setlang.already_set_desc', newLang)
-                });
+                const embed = new EmbedBuilder()
+                    .setTitle(t('admin.setlang.already_set'))
+                    .setDescription(t('admin.setlang.already_set_desc', newLang))
+                    .setColor(0xFFA500)
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -60,10 +61,11 @@ module.exports = {
                 });
 
                 if (!updatedConfig) {
-                    const embed = ModernComponents.createErrorMessage({
-                        title: t('errors.database_error'),
-                        description: t('admin.setlang.database_error_desc')
-                    });
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('errors.database_error'))
+                        .setDescription(t('admin.setlang.database_error_desc'))
+                        .setColor(0xFF0000)
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -84,54 +86,59 @@ module.exports = {
                 const newLanguageName = languageNames[newLang] || newLang;
 
                 // Message de confirmation dans la nouvelle langue
-                const successEmbed = ModernComponents.createSuccessMessage(
-                    newT('admin.setlang.success'),
-                    newT('admin.setlang.success_desc', newLanguageName)
-                );
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(newT('admin.setlang.success'))
+                    .setDescription(newT('admin.setlang.success_desc', newLanguageName))
+                    .setColor(0x00FF00)
+                    .setTimestamp()
+                    .addFields(
+                        { name: '🌐 ' + newT('admin.setlang.previous_language'), value: oldLanguageName, inline: true },
+                        { name: '🌐 ' + newT('admin.setlang.new_language'), value: newLanguageName, inline: true },
+                        { name: '👮 ' + newT('admin.setlang.changed_by'), value: interaction.user.tag, inline: true },
+                        { name: '🏠 ' + newT('admin.setlang.server'), value: interaction.guild.name, inline: false },
+                        { name: '📅 ' + newT('admin.setlang.timestamp'), value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+                    );
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${newT('admin.setlang.details')}**\n` +
-                        `🌐 **${newT('admin.setlang.previous_language')}:** ${oldLanguageName}\n` +
-                        `🌐 **${newT('admin.setlang.new_language')}:** ${newLanguageName}\n` +
-                        `👮 **${newT('admin.setlang.changed_by')}:** ${interaction.user.tag}\n` +
-                        `🏠 **${newT('admin.setlang.server')}:** ${interaction.guild.name}\n` +
-                        `📅 **${newT('admin.setlang.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                    ));
+                const embeds = [successEmbed];
 
                 // Informations sur les fonctionnalités multilingues
-                const infoEmbed = ModernComponents.createInfoMessage(
-                    `ℹ️ ${newT('admin.setlang.info_title')}`,
-                    newT('admin.setlang.info_desc')
-                );
-                container.addComponent(infoEmbed);
+                const infoEmbed = new EmbedBuilder()
+                    .setTitle(`ℹ️ ${newT('admin.setlang.info_title')}`)
+                    .setDescription(newT('admin.setlang.info_desc'))
+                    .setColor(0x0099FF)
+                    .setTimestamp();
+                embeds.push(infoEmbed);
 
                 // Exemples de commandes dans la nouvelle langue
-                const examplesEmbed = ModernComponents.createInfoMessage(
-                    `📚 ${newT('admin.setlang.examples_title')}`,
-                    `• \`/help\` - ${newT('admin.setlang.help_example')}\n` +
-                    `• \`/ban\` - ${newT('admin.setlang.ban_example')}\n` +
-                    `• \`/warn\` - ${newT('admin.setlang.warn_example')}\n` +
-                    `• \`/setlang\` - ${newT('admin.setlang.setlang_example')}`
-                );
-                container.addComponent(examplesEmbed);
+                const examplesEmbed = new EmbedBuilder()
+                    .setTitle(`📚 ${newT('admin.setlang.examples_title')}`)
+                    .setDescription(
+                        `• \`/help\` - ${newT('admin.setlang.help_example')}\n` +
+                        `• \`/ban\` - ${newT('admin.setlang.ban_example')}\n` +
+                        `• \`/warn\` - ${newT('admin.setlang.warn_example')}\n` +
+                        `• \`/setlang\` - ${newT('admin.setlang.setlang_example')}`
+                    )
+                    .setColor(0x0099FF)
+                    .setTimestamp();
+                embeds.push(examplesEmbed);
 
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds });
 
                 // Log dans le canal de logs
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `🌐 ${newT('admin.setlang.log_title')}`,
-                            `**${newT('admin.setlang.server')}:** ${interaction.guild.name} (${interaction.guild.id})\n` +
-                            `**${newT('admin.setlang.changed_by')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${newT('admin.setlang.previous_language')}:** ${oldLanguageName}\n` +
-                            `**${newT('admin.setlang.new_language')}:** ${newLanguageName}\n` +
-                            `**${newT('admin.setlang.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`🌐 ${newT('admin.setlang.log_title')}`)
+                            .setDescription(
+                                `**${newT('admin.setlang.server')}:** ${interaction.guild.name} (${interaction.guild.id})\n` +
+                                `**${newT('admin.setlang.changed_by')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${newT('admin.setlang.previous_language')}:** ${oldLanguageName}\n` +
+                                `**${newT('admin.setlang.new_language')}:** ${newLanguageName}\n` +
+                                `**${newT('admin.setlang.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            )
+                            .setColor(0x0099FF)
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -139,10 +146,11 @@ module.exports = {
 
                 // Message d'annonce publique (optionnel)
                 try {
-                    const announcementEmbed = ModernComponents.createInfoMessage(
-                        `🌐 ${newT('admin.setlang.announcement_title')}`,
-                        newT('admin.setlang.announcement_desc', newLanguageName, interaction.user.tag)
-                    );
+                    const announcementEmbed = new EmbedBuilder()
+                        .setTitle(`🌐 ${newT('admin.setlang.announcement_title')}`)
+                        .setDescription(newT('admin.setlang.announcement_desc', newLanguageName, interaction.user.tag))
+                        .setColor(0x0099FF)
+                        .setTimestamp();
 
                     // Envoyer l'annonce dans le canal système ou le canal général
                     let announcementChannel = interaction.guild.systemChannel;
@@ -165,10 +173,11 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors du changement de langue:', error);
-                const errorEmbed = ModernComponents.createErrorMessage({
-                    title: t('errors.command_failed'),
-                    description: t('admin.setlang.error_desc', error.message)
-                });
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(t('admin.setlang.error_desc', error.message))
+                    .setColor(0xFF0000)
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
@@ -176,12 +185,12 @@ module.exports = {
             console.error('Erreur dans la commande setlang:', error);
             
             // Utilisation de la langue par défaut en cas d'erreur
-            const { ModernComponents: MC } = require('../../utils/modernComponents');
             const t = (key, ...args) => getTranslation('fr', key, ...args);
-            const errorEmbed = MC.createErrorMessage({
-                title: t('errors.unexpected'),
-                description: t('errors.try_again')
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor(0xFF0000)
+                .setTimestamp();
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

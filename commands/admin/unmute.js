@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -29,10 +28,11 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.unmute.no_permission_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.unmute.no_permission_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -43,10 +43,11 @@ module.exports = {
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.user_not_found'),
-                    t('admin.unmute.user_not_in_server')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.user_not_found'))
+                    .setDescription(t('admin.unmute.user_not_in_server'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -57,10 +58,11 @@ module.exports = {
                 const muteRole = await PermissionManager.getMuteRole(interaction.guild, guildConfig);
                 
                 if (!muteRole) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('admin.unmute.role_error'),
-                        t('admin.unmute.role_error_desc')
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.unmute.role_error'))
+                        .setDescription(t('admin.unmute.role_error_desc'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -68,19 +70,21 @@ module.exports = {
                 const isMuted = targetMember.roles.cache.has(muteRole.id) || targetMember.isCommunicationDisabled();
                 
                 if (!isMuted) {
-                    const embed = ModernComponents.createWarningMessage(
-                        t('admin.unmute.not_muted'),
-                        t('admin.unmute.not_muted_desc', targetUser.tag)
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.unmute.not_muted'))
+                        .setDescription(t('admin.unmute.not_muted_desc', targetUser.tag))
+                        .setColor('#FFA500')
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
-                    const dmEmbed = ModernComponents.createSuccessMessage(
-                        t('admin.unmute.dm_title'),
-                        t('admin.unmute.dm_description', interaction.guild.name, reason)
-                    );
+                    const dmEmbed = new EmbedBuilder()
+                        .setTitle(t('admin.unmute.dm_title'))
+                        .setDescription(t('admin.unmute.dm_description', interaction.guild.name, reason))
+                        .setColor('#00FF00')
+                        .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
                 } catch (error) {
                     // Impossible d'envoyer le MP, on continue
@@ -114,34 +118,33 @@ module.exports = {
                 }
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createSuccessMessage(
-                    t('admin.unmute.success'),
-                    t('admin.unmute.success_desc', targetUser.tag, reason)
-                );
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(t('admin.unmute.success'))
+                    .setDescription(t('admin.unmute.success_desc', targetUser.tag, reason))
+                    .addFields(
+                        { name: '👤 Utilisateur', value: `${targetUser.tag} (${targetUser.id})`, inline: true },
+                        { name: '👮 Modérateur', value: interaction.user.tag, inline: true },
+                        { name: '📝 Raison', value: reason, inline: false }
+                    )
+                    .setColor('#00FF00')
+                    .setTimestamp();
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${t('admin.unmute.details')}**\n` +
-                        `👤 **${t('admin.unmute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                        `👮 **${t('admin.unmute.moderator')}:** ${interaction.user.tag}\n` +
-                        `📝 **${t('admin.unmute.reason')}:** ${reason}`
-                    ));
-
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds: [successEmbed] });
 
                 // Log dans le canal de logs
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `🔊 ${t('admin.unmute.log_title')}`,
-                            `**${t('admin.unmute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                            `**${t('admin.unmute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${t('admin.unmute.reason')}:** ${reason}\n` +
-                            `**${t('admin.unmute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`🔊 ${t('admin.unmute.log_title')}`)
+                            .setDescription(
+                                `**${t('admin.unmute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                `**${t('admin.unmute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${t('admin.unmute.reason')}:** ${reason}\n` +
+                                `**${t('admin.unmute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            )
+                            .setColor('#0099FF')
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -149,19 +152,21 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors du démute:', error);
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    t('admin.unmute.error_desc', error.message)
-                );
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(t('admin.unmute.error_desc', error.message))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande unmute:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor('#FF0000')
+                .setTimestamp();
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -33,10 +32,11 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage({
-                    title: t('errors.no_permission'),
-                    description: t('admin.mute.no_permission_desc')
-                });
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.mute.no_permission_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -48,29 +48,32 @@ module.exports = {
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
-                const embed = ModernComponents.createErrorMessage({
-                    title: t('errors.user_not_found'),
-                    description: t('admin.mute.user_not_in_server')
-                });
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.user_not_found'))
+                    .setDescription(t('admin.mute.user_not_in_server'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification si on peut modérer cet utilisateur
             if (!PermissionManager.canModerate(member, targetMember)) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.cannot_moderate'),
-                    t('admin.mute.cannot_moderate_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.cannot_moderate'))
+                    .setDescription(t('admin.mute.cannot_moderate_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification si le bot peut mute cet utilisateur
             const botMember = interaction.guild.members.me;
             if (!PermissionManager.canBotModerate(botMember, targetMember, 'mute')) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.bot_cannot_moderate'),
-                    t('admin.mute.bot_cannot_moderate_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.bot_cannot_moderate'))
+                    .setDescription(t('admin.mute.bot_cannot_moderate_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -84,10 +87,11 @@ module.exports = {
                 const match = durationStr.match(durationRegex);
                 
                 if (!match) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('admin.mute.invalid_duration'),
-                        t('admin.mute.duration_format')
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.mute.invalid_duration'))
+                        .setDescription(t('admin.mute.duration_format'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
                 
@@ -117,10 +121,11 @@ module.exports = {
                 
                 // Vérification de la durée maximale (30 jours)
                 if (durationMs > 30 * 24 * 60 * 60 * 1000) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('admin.mute.duration_too_long'),
-                        t('admin.mute.max_duration')
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.mute.duration_too_long'))
+                        .setDescription(t('admin.mute.max_duration'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
             } else {
@@ -134,28 +139,31 @@ module.exports = {
                 const muteRole = await PermissionManager.getMuteRole(interaction.guild, guildConfig);
                 
                 if (!muteRole) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('admin.mute.role_error'),
-                        t('admin.mute.role_error_desc')
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.mute.role_error'))
+                        .setDescription(t('admin.mute.role_error_desc'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
                 // Vérification si l'utilisateur est déjà muet
                 if (targetMember.roles.cache.has(muteRole.id)) {
-                    const embed = ModernComponents.createWarningMessage(
-                        t('admin.mute.already_muted'),
-                        t('admin.mute.already_muted_desc', targetUser.tag)
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.mute.already_muted'))
+                        .setDescription(t('admin.mute.already_muted_desc', targetUser.tag))
+                        .setColor('#FFA500')
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
-                    const dmEmbed = ModernComponents.createWarningMessage(
-                        t('admin.mute.dm_title'),
-                        t('admin.mute.dm_description', interaction.guild.name, duration, reason)
-                    );
+                    const dmEmbed = new EmbedBuilder()
+                         .setTitle(t('admin.mute.dm_title'))
+                         .setDescription(t('admin.mute.dm_description', interaction.guild.name, duration, reason))
+                         .setColor('#FFA500')
+                         .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
                 } catch (error) {
                     // Impossible d'envoyer le MP, on continue
@@ -180,38 +188,40 @@ module.exports = {
                 );
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createSuccessMessage(
-                    t('admin.mute.success'),
-                    t('admin.mute.success_desc', targetUser.tag, duration, reason)
-                );
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(t('admin.mute.success'))
+                    .setDescription(t('admin.mute.success_desc', targetUser.tag, duration, reason))
+                    .addFields(
+                        { name: t('admin.mute.details'), value: 
+                            `👤 **${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                            `👮 **${t('admin.mute.moderator')}:** ${interaction.user.tag}\n` +
+                            `⏱️ **${t('admin.mute.duration')}:** ${duration}\n` +
+                            `📝 **${t('admin.mute.reason')}:** ${reason}` +
+                            (expiresAt ? `\n⏰ **${t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>` : ''),
+                            inline: false
+                        }
+                    )
+                    .setColor('#00FF00')
+                    .setTimestamp();
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${t('admin.mute.details')}**\n` +
-                        `👤 **${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                        `👮 **${t('admin.mute.moderator')}:** ${interaction.user.tag}\n` +
-                        `⏱️ **${t('admin.mute.duration')}:** ${duration}\n` +
-                        `📝 **${t('admin.mute.reason')}:** ${reason}` +
-                        (expiresAt ? `\n⏰ **${t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>` : '')
-                    ));
-
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds: [successEmbed] });
 
                 // Log dans le canal de logs
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `🔇 ${t('admin.mute.log_title')}`,
-                            `**${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                            `**${t('admin.mute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${t('admin.mute.duration')}:** ${duration}\n` +
-                            `**${t('admin.mute.reason')}:** ${reason}\n` +
-                            (expiresAt ? `**${t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
-                            `**${t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`🔇 ${t('admin.mute.log_title')}`)
+                            .setDescription(
+                                `**${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                `**${t('admin.mute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${t('admin.mute.duration')}:** ${duration}\n` +
+                                `**${t('admin.mute.reason')}:** ${reason}\n` +
+                                (expiresAt ? `**${t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
+                                `**${t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            )
+                            .setColor('#0099FF')
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -233,12 +243,15 @@ module.exports = {
                                 if (guildConfig?.logChannelId) {
                                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                                     if (logChannel) {
-                                        const unmuteEmbed = ModernComponents.createInfoMessage(
-                                            `🔊 ${t('admin.mute.auto_unmute_title')}`,
-                                            `**${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                            `**${t('admin.mute.reason')}:** ${t('admin.mute.auto_unmute_reason')}\n` +
-                                            `**${t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                                        );
+                                        const unmuteEmbed = new EmbedBuilder()
+                                            .setTitle(`🔊 ${t('admin.mute.auto_unmute_title')}`)
+                                            .setDescription(
+                                                `**${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                                `**${t('admin.mute.reason')}:** ${t('admin.mute.auto_unmute_reason')}\n` +
+                                                `**${t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                            )
+                                            .setColor('#0099FF')
+                                            .setTimestamp();
                                         await logChannel.send({ embeds: [unmuteEmbed] });
                                     }
                                 }
@@ -251,19 +264,21 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors du mute:', error);
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    t('admin.mute.error_desc', error.message)
-                );
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(t('admin.mute.error_desc', error.message))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande mute:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor('#FF0000')
+                .setTimestamp();
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

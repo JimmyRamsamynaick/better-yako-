@@ -186,11 +186,12 @@ module.exports = {
                 );
 
                 // Message dans le canal verrouillé
-                const lockNotification = ModernComponents.createWarningMessage(
-                    `🔒 ${t('admin.lock.channel_locked')}`,
-                    t('admin.lock.channel_locked_desc', interaction.user.tag, reason) +
-                    (expiresAt ? `\n\n⏰ **${t('admin.lock.unlock_time')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:R>` : '')
-                );
+                const lockNotification = new EmbedBuilder()
+                    .setTitle(`🔒 ${t('admin.lock.channel_locked')}`)
+                    .setDescription(t('admin.lock.channel_locked_desc', interaction.user.tag, reason) +
+                        (expiresAt ? `\n\n⏰ **${t('admin.lock.unlock_time')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:R>` : ''))
+                    .setColor('#ffcc00')
+                    .setTimestamp();
 
                 await targetChannel.send({ embeds: [lockNotification] });
 
@@ -198,15 +199,16 @@ module.exports = {
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createWarningMessage(
-                            `🔒 ${t('admin.lock.log_title')}`,
-                            `**${t('admin.lock.channel')}:** ${targetChannel.name} (${targetChannel.id})\n` +
-                            `**${t('admin.lock.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${t('admin.lock.reason')}:** ${reason}\n` +
-                            `**${t('admin.lock.duration')}:** ${durationText}\n` +
-                            (expiresAt ? `**${t('admin.lock.expires_at')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
-                            `**${t('admin.lock.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`🔒 ${t('admin.lock.log_title')}`)
+                            .setDescription(`**${t('admin.lock.channel')}:** ${targetChannel.name} (${targetChannel.id})\n` +
+                                `**${t('admin.lock.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${t('admin.lock.reason')}:** ${reason}\n` +
+                                `**${t('admin.lock.duration')}:** ${durationText}\n` +
+                                (expiresAt ? `**${t('admin.lock.expires_at')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
+                                `**${t('admin.lock.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`)
+                            .setColor('#ffcc00')
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -238,10 +240,11 @@ module.exports = {
                             }
 
                             // Message de déverrouillage automatique
-                            const unlockNotification = ModernComponents.createSuccessMessage(
-                                `🔓 ${t('admin.lock.auto_unlock')}`,
-                                t('admin.lock.auto_unlock_desc')
-                            );
+                            const unlockNotification = new EmbedBuilder()
+                                .setTitle(`🔓 ${t('admin.lock.auto_unlock')}`)
+                                .setDescription(t('admin.lock.auto_unlock_desc'))
+                                .setColor('#00ff00')
+                                .setTimestamp();
 
                             await channel.send({ embeds: [unlockNotification] });
 
@@ -249,12 +252,13 @@ module.exports = {
                             if (guildConfig?.logChannelId) {
                                 const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                                 if (logChannel) {
-                                    const autoUnlockLogEmbed = ModernComponents.createSuccessMessage(
-                                        `🔓 ${t('admin.lock.auto_unlock_log')}`,
-                                        `**${t('admin.lock.channel')}:** ${channel.name} (${channel.id})\n` +
-                                        `**${t('admin.lock.original_moderator')}:** ${interaction.user.tag}\n` +
-                                        `**${t('admin.lock.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                                    );
+                                    const autoUnlockLogEmbed = new EmbedBuilder()
+                                        .setTitle(`🔓 ${t('admin.lock.auto_unlock_log')}`)
+                                        .setDescription(`**${t('admin.lock.channel')}:** ${channel.name} (${channel.id})\n` +
+                                            `**${t('admin.lock.original_moderator')}:** ${interaction.user.tag}\n` +
+                                            `**${t('admin.lock.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`)
+                                        .setColor('#00ff00')
+                                        .setTimestamp();
                                     await logChannel.send({ embeds: [autoUnlockLogEmbed] });
                                 }
                             }
@@ -276,10 +280,11 @@ module.exports = {
                     errorMessage = t('admin.lock.access_error');
                 }
                 
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    errorMessage
-                );
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(errorMessage)
+                    .setColor(0xED4245)
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
@@ -294,27 +299,16 @@ module.exports = {
                 timestamp: new Date().toISOString()
             };
 
-            // Essayer d'utiliser ModernComponents si disponible
-            try {
-                const modernErrorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.unexpected'),
-                    t('errors.try_again')
-                );
-                
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply({ embeds: [modernErrorEmbed] });
-                } else {
-                    await interaction.reply({ embeds: [modernErrorEmbed], ephemeral: true });
-                }
-            } catch (fallbackError) {
-                // Fallback si ModernComponents n'est pas disponible
-                console.error('Erreur fallback:', fallbackError);
-                
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply({ embeds: [errorEmbed] });
-                } else {
-                    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-                }
+            const modernErrorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor(0xED4245)
+                .setTimestamp();
+            
+            if (interaction.deferred || interaction.replied) {
+                await interaction.editReply({ embeds: [modernErrorEmbed] });
+            } else {
+                await interaction.reply({ embeds: [modernErrorEmbed], ephemeral: true });
             }
         }
     }

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -163,19 +162,17 @@ module.exports = {
             professional: 'Évalue le ton professionnel de ce texte et suggère des améliorations pour un contexte business.'
         };
         
-        const loadingMessage = ModernComponents.createInfoMessage({
-            title: '🔍 Analyse en cours...',
-            description: `**Type:** ${analysisType}\n**Longueur:** ${content.length} caractères`,
-            fields: [
-                {
-                    name: '📝 Extrait du texte',
-                    value: `\`\`\`${content.substring(0, 200)}${content.length > 200 ? '...' : ''}\`\`\``
-                }
-            ],
-            color: '#9c88ff'
-        });
+        const loadingEmbed = new EmbedBuilder()
+            .setTitle('🔍 Analyse en cours...')
+            .setDescription(`**Type:** ${analysisType}\n**Longueur:** ${content.length} caractères`)
+            .addFields({
+                name: '📝 Extrait du texte',
+                value: `\`\`\`${content.substring(0, 200)}${content.length > 200 ? '...' : ''}\`\`\``
+            })
+            .setColor('#9c88ff')
+            .setTimestamp();
         
-        await interaction.editReply(loadingMessage);
+        await interaction.editReply({ embeds: [loadingEmbed] });
         
         try {
             const startTime = Date.now();
@@ -206,46 +203,54 @@ module.exports = {
             const endTime = Date.now();
             const analysisTime = endTime - startTime;
             
-            const chunks = ModernComponents.splitLongText(analysis, 1800);
-            
-            const successMessage = ModernComponents.createSuccessMessage({
-                title: '🔍 Analyse textuelle terminée',
-                description: `**Type d\'analyse:** ${analysisType}\n**Temps:** ${analysisTime}ms\n**Longueur:** ${content.length} caractères`,
-                fields: [
-                    {
-                        name: '📊 Résultats de l\'analyse',
-                        value: chunks[0]
+            // Fonction pour diviser le texte long
+            function splitText(text, maxLength) {
+                const chunks = [];
+                let currentChunk = '';
+                const words = text.split(' ');
+                
+                for (const word of words) {
+                    if ((currentChunk + word).length > maxLength) {
+                        if (currentChunk) {
+                            chunks.push(currentChunk.trim());
+                            currentChunk = word + ' ';
+                        } else {
+                            chunks.push(word);
+                        }
+                    } else {
+                        currentChunk += word + ' ';
                     }
-                ],
-                buttons: [
-                    {
-                        customId: `analyze_rerun_${Date.now()}`,
-                        label: '🔄 Autre analyse',
-                        style: 2
-                    },
-                    {
-                        customId: `analyze_detailed_${Date.now()}`,
-                        label: '🔍 Plus de détails',
-                        style: 1
-                    }
-                ]
-            });
+                }
+                
+                if (currentChunk) {
+                    chunks.push(currentChunk.trim());
+                }
+                
+                return chunks;
+            }
             
-            await interaction.editReply(successMessage);
+            const chunks = splitText(analysis, 1800);
+            
+            const successEmbed = new EmbedBuilder()
+                .setTitle('🔍 Analyse textuelle terminée')
+                .setDescription(`**Type d\'analyse:** ${analysisType}\n**Temps:** ${analysisTime}ms\n**Longueur:** ${content.length} caractères`)
+                .addFields({
+                    name: '📊 Résultats de l\'analyse',
+                    value: chunks[0]
+                })
+                .setColor('#51cf66')
+                .setTimestamp();
+            
+            await interaction.editReply({ embeds: [successEmbed] });
             
             // Envoyer les chunks supplémentaires
             if (chunks.length > 1) {
                 for (let i = 1; i < chunks.length; i++) {
-                    const followUpMessage = ModernComponents.createContainer({
-                        components: [
-                            ModernComponents.createTextDisplay({
-                                content: `**Suite de l\'analyse:**\n${chunks[i]}`,
-                                style: 'paragraph'
-                            })
-                        ]
-                    });
+                    const followUpEmbed = new EmbedBuilder()
+                        .setDescription(`**Suite de l\'analyse:**\n${chunks[i]}`)
+                        .setColor('#51cf66');
                     
-                    await interaction.followUp(followUpMessage);
+                    await interaction.followUp({ embeds: [followUpEmbed] });
                 }
             }
             
@@ -530,10 +535,10 @@ module.exports = {
             }
         }
         
-        const errorMessage = ModernComponents.createErrorMessage({
-            title: errorTitle,
-            description: errorDescription,
-            fields: [
+        const errorEmbed = new EmbedBuilder()
+            .setTitle(errorTitle)
+            .setDescription(errorDescription)
+            .addFields(
                 {
                     name: '🔧 Détails techniques',
                     value: `**Type:** ${type}\n**Erreur:** ${error.message || 'Erreur inconnue'}`
@@ -542,16 +547,10 @@ module.exports = {
                     name: '💡 Solutions',
                     value: '• Vérifiez le contenu fourni\n• Réessayez dans quelques minutes\n• Contactez le support si le problème persiste'
                 }
-            ],
-            buttons: [
-                {
-                    customId: `analyze_retry_${Date.now()}`,
-                    label: '🔄 Réessayer',
-                    style: 2
-                }
-            ]
-        });
+            )
+            .setColor('#ff6b6b')
+            .setTimestamp();
         
-        await interaction.editReply(errorMessage);
+        await interaction.editReply({ embeds: [errorEmbed] });
     }
 };

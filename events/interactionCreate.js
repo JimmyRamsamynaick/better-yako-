@@ -1,6 +1,5 @@
-const { Events } = require('discord.js');
+const { Events, EmbedBuilder } = require('discord.js');
 const { getTranslation } = require('../index.js');
-const ModernComponents = require('../utils/modernComponents.js');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -31,26 +30,26 @@ module.exports = {
                 // Ne répondre que si l'interaction n'a pas déjà été gérée
                 if (!interaction.replied && !interaction.deferred) {
                     try {
-                        const errorMessage = ModernComponents.createErrorMessage({
-                            title: 'Erreur de commande',
-                            description: 'Une erreur s\'est produite lors de l\'exécution de cette commande.',
-                            error: error.message
-                        });
+                        const errorMessage = new EmbedBuilder()
+                            .setTitle('Erreur de commande')
+                            .setDescription('Une erreur s\'est produite lors de l\'exécution de cette commande.\n\n**Erreur:** ' + error.message)
+                            .setColor(0xFF0000)
+                            .setTimestamp();
                         
-                        await interaction.reply({ ...errorMessage, ephemeral: true });
+                        await interaction.reply({ embeds: [errorMessage], ephemeral: true });
                     } catch (replyError) {
                         console.error('❌ Erreur lors de l\'envoi du message d\'erreur:', replyError);
                     }
                 } else {
                     // Si l'interaction a déjà été gérée, essayer editReply
                     try {
-                        const errorMessage = ModernComponents.createErrorMessage({
-                            title: 'Erreur de commande',
-                            description: 'Une erreur s\'est produite lors de l\'exécution de cette commande.',
-                            error: error.message
-                        });
+                        const errorMessage = new EmbedBuilder()
+                            .setTitle('Erreur de commande')
+                            .setDescription('Une erreur s\'est produite lors de l\'exécution de cette commande.\n\n**Erreur:** ' + error.message)
+                            .setColor(0xFF0000)
+                            .setTimestamp();
                         
-                        await interaction.editReply(errorMessage);
+                        await interaction.editReply({ embeds: [errorMessage] });
                     } catch (editError) {
                         console.error('❌ Impossible de modifier la réponse:', editError);
                     }
@@ -75,12 +74,13 @@ module.exports = {
                         'es': 'Español 🇪🇸'
                     };
                     
-                    const successMessage = ModernComponents.createSuccessMessage({
-                        title: 'Langue modifiée',
-                        description: `La langue a été changée en ${langNames[lang] || lang}`
-                    });
+                    const successMessage = new EmbedBuilder()
+                        .setTitle('Langue modifiée')
+                        .setDescription(`La langue a été changée en ${langNames[lang] || lang}`)
+                        .setColor(0x00FF00)
+                        .setTimestamp();
                     
-                    await interaction.reply({ ...successMessage, ephemeral: true });
+                    await interaction.reply({ embeds: [successMessage], ephemeral: true });
                 }
                 
                 // Boutons de la commande ping
@@ -101,43 +101,36 @@ module.exports = {
                         color = '#ED4245';
                     }
                     
-                    const refreshedMessage = ModernComponents.createInfoMessage({
-                        title: '🏓 Pong! (Actualisé)',
-                        description: `**Latence du bot:** ${botLatency}ms\n**Latence API Discord:** ${apiLatency}ms\n**Qualité de connexion:** ${connectionQuality}`,
-                        color: color,
-                        fields: [
+                    const refreshedMessage = new EmbedBuilder()
+                        .setTitle('🏓 Pong! (Actualisé)')
+                        .setDescription(`**Latence du bot:** ${botLatency}ms\n**Latence API Discord:** ${apiLatency}ms\n**Qualité de connexion:** ${connectionQuality}`)
+                        .setColor(parseInt(color.replace('#', ''), 16))
+                        .setTimestamp()
+                        .addFields(
                             {
                                 name: '📊 Statistiques',
-                                value: `**Serveurs:** ${interaction.client.guilds.cache.size}\n**Utilisateurs:** ${interaction.client.users.cache.size}\n**Temps de fonctionnement:** ${Math.floor(process.uptime() / 60)} minutes`
+                                value: `**Serveurs:** ${interaction.client.guilds.cache.size}\n**Utilisateurs:** ${interaction.client.users.cache.size}\n**Temps de fonctionnement:** ${Math.floor(process.uptime() / 60)} minutes`,
+                                inline: false
                             },
                             {
                                 name: '🔧 Informations techniques',
-                                value: `**Version Node.js:** ${process.version}\n**Mémoire utilisée:** ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB\n**Plateforme:** ${process.platform}`
+                                value: `**Version Node.js:** ${process.version}\n**Mémoire utilisée:** ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB\n**Plateforme:** ${process.platform}`,
+                                inline: false
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'ping_refresh',
-                                label: '🔄 Actualiser',
-                                style: 1
-                            },
-                            {
-                                customId: 'ping_stats',
-                                label: '📊 Plus de stats',
-                                style: 2
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(refreshedMessage);
+                    // Note: Les boutons nécessitent ActionRowBuilder, pour l'instant on les retire
+                    
+                    await interaction.update({ embeds: [refreshedMessage] });
                 }
                 
                 else if (customId === 'ping_stats') {
-                    const statsMessage = ModernComponents.createInfoMessage({
-                        title: '📊 Statistiques détaillées du bot',
-                        description: 'Voici les statistiques complètes du bot Better Yako v2',
-                        color: '#5865F2',
-                        fields: [
+                    const statsMessage = new EmbedBuilder()
+                        .setTitle('📊 Statistiques détaillées du bot')
+                        .setDescription('Voici les statistiques complètes du bot Better Yako v2')
+                        .setColor(0x5865F2)
+                        .setTimestamp()
+                        .addFields(
                             {
                                 name: '🏰 Serveurs et utilisateurs',
                                 value: `**Serveurs:** ${interaction.client.guilds.cache.size}\n**Utilisateurs:** ${interaction.client.users.cache.size}\n**Canaux:** ${interaction.client.channels.cache.size}`,
@@ -158,17 +151,10 @@ module.exports = {
                                 value: `**Total:** ${interaction.client.commands.size}\n**Langues:** ${interaction.client.languages.size}\n**Événements:** Actifs`,
                                 inline: true
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'ping_refresh',
-                                label: '🔄 Retour au ping',
-                                style: 2
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(statsMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [statsMessage] });
                 }
                 
                 // Boutons de la commande help
@@ -176,96 +162,50 @@ module.exports = {
                     const basicCommands = interaction.client.commands.filter(cmd => cmd.category === 'Basic');
                     const commandList = basicCommands.map(cmd => `**/${cmd.data.name}** - ${cmd.data.description}`).join('\n');
                     
-                    const helpMessage = ModernComponents.createInfoMessage({
-                        title: '📚 Commandes de base',
-                        description: commandList,
-                        color: '#57F287',
-                        buttons: [
-                            {
-                                customId: 'help_basic',
-                                label: '📚 Commandes de base',
-                                style: 1
-                            },
-                            {
-                                customId: 'help_premium',
-                                label: '⭐ Commandes premium',
-                                style: 2
-                            },
-                            {
-                                customId: 'help_language',
-                                label: '🌐 Changer la langue',
-                                style: 2
-                            }
-                        ]
-                    });
+                    const helpMessage = new EmbedBuilder()
+                        .setTitle('📚 Commandes de base')
+                        .setDescription(commandList)
+                        .setColor(0x57F287)
+                        .setTimestamp();
                     
-                    await interaction.update(helpMessage);
+                    // Note: Boutons retirés temporairement
+                    
+                    await interaction.update({ embeds: [helpMessage] });
                 }
                 
                 else if (customId === 'help_premium') {
                     const premiumCommands = interaction.client.commands.filter(cmd => cmd.category === 'Premium');
                     const commandList = premiumCommands.map(cmd => `**/${cmd.data.name}** - ${cmd.data.description}`).join('\n');
                     
-                    const helpMessage = ModernComponents.createInfoMessage({
-                        title: '⭐ Commandes premium',
-                        description: commandList,
-                        color: '#FEE75C',
-                        buttons: [
-                            {
-                                customId: 'help_basic',
-                                label: '📚 Commandes de base',
-                                style: 2
-                            },
-                            {
-                                customId: 'help_premium',
-                                label: '⭐ Commandes premium',
-                                style: 1
-                            },
-                            {
-                                customId: 'help_language',
-                                label: '🌐 Changer la langue',
-                                style: 2
-                            }
-                        ]
-                    });
+                    const helpMessage = new EmbedBuilder()
+                        .setTitle('⭐ Commandes premium')
+                        .setDescription(commandList)
+                        .setColor(0xFEE75C)
+                        .setTimestamp();
                     
-                    await interaction.update(helpMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [helpMessage] });
                 }
                 
                 else if (customId === 'help_language') {
-                    const helpMessage = ModernComponents.createInfoMessage({
-                        title: '🌐 Changer la langue',
-                        description: 'Utilisez la commande `/setlang` pour changer la langue du bot.\n\n**Langues disponibles:**\n🇺🇸 Anglais (en)\n🇪🇸 Espagnol (es)\n🇫🇷 Français (fr)',
-                        color: '#5865F2',
-                        buttons: [
-                            {
-                                customId: 'help_basic',
-                                label: '📚 Commandes de base',
-                                style: 2
-                            },
-                            {
-                                customId: 'help_premium',
-                                label: '⭐ Commandes premium',
-                                style: 2
-                            },
-                            {
-                                customId: 'help_language',
-                                label: '🌐 Changer la langue',
-                                style: 1
-                            }
-                        ]
-                    });
+                    const helpMessage = new EmbedBuilder()
+                        .setTitle('🌐 Changer la langue')
+                        .setDescription('Utilisez la commande `/setlang` pour changer la langue du bot.\n\n**Langues disponibles:**\n🇺🇸 Anglais (en)\n🇪🇸 Espagnol (es)\n🇫🇷 Français (fr)')
+                        .setColor(0x5865F2)
+                        .setTimestamp();
                     
-                    await interaction.update(helpMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [helpMessage] });
                 }
                 
                 // Boutons de la commande stats
                 else if (customId === 'stats_refresh') {
-                    const statsMessage = ModernComponents.createInfoMessage({
-                        title: '📊 Statistiques du bot (Actualisées)',
-                        description: `Voici les statistiques actualisées de **${interaction.client.user.username}**`,
-                        color: '#57F287',
-                        fields: [
+                    const statsMessage = new EmbedBuilder()
+                        .setTitle('📊 Statistiques du bot (Actualisées)')
+                        .setDescription(`Voici les statistiques actualisées de **${interaction.client.user.username}**`)
+                        .setColor(0x57F287)
+                        .setTimestamp()
+                        .addFields(
                             {
                                 name: '🏰 Serveurs',
                                 value: `${interaction.client.guilds.cache.size}`,
@@ -296,35 +236,19 @@ module.exports = {
                                 value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`,
                                 inline: true
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'stats_refresh',
-                                label: '🔄 Actualiser',
-                                style: 1
-                            },
-                            {
-                                customId: 'stats_detailed',
-                                label: '📊 Détails',
-                                style: 2
-                            },
-                            {
-                                customId: 'stats_system',
-                                label: '🖥️ Système',
-                                style: 2
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(statsMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [statsMessage] });
                 }
                 
                 else if (customId === 'stats_detailed') {
-                    const detailedMessage = ModernComponents.createInfoMessage({
-                        title: '📊 Statistiques détaillées',
-                        description: 'Informations détaillées sur le bot',
-                        color: '#FEE75C',
-                        fields: [
+                    const detailedMessage = new EmbedBuilder()
+                        .setTitle('📊 Statistiques détaillées')
+                        .setDescription('Informations détaillées sur le bot')
+                        .setColor(0xFEE75C)
+                        .setTimestamp()
+                        .addFields(
                             {
                                 name: '📚 Commandes',
                                 value: `**Total:** ${interaction.client.commands.size}\n**Basic:** ${interaction.client.commands.filter(cmd => cmd.category === 'Basic').size}\n**Premium:** ${interaction.client.commands.filter(cmd => cmd.category === 'Premium').size}\n**Admin:** ${interaction.client.commands.filter(cmd => cmd.category === 'Autre').size}`,
@@ -340,35 +264,19 @@ module.exports = {
                                 value: `**Actifs:** 4\n**Types:** Interactions, Membres`,
                                 inline: true
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'stats_refresh',
-                                label: '🔄 Retour',
-                                style: 2
-                            },
-                            {
-                                customId: 'stats_detailed',
-                                label: '📊 Détails',
-                                style: 1
-                            },
-                            {
-                                customId: 'stats_system',
-                                label: '🖥️ Système',
-                                style: 2
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(detailedMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [detailedMessage] });
                 }
                 
                 else if (customId === 'stats_system') {
-                    const systemMessage = ModernComponents.createInfoMessage({
-                        title: '🖥️ Informations système',
-                        description: 'Détails techniques du serveur',
-                        color: '#5865F2',
-                        fields: [
+                    const systemMessage = new EmbedBuilder()
+                        .setTitle('🖥️ Informations système')
+                        .setDescription('Détails techniques du serveur')
+                        .setColor(0x5865F2)
+                        .setTimestamp()
+                        .addFields(
                             {
                                 name: '🔧 Node.js',
                                 value: `**Version:** ${process.version}\n**Plateforme:** ${process.platform}\n**Architecture:** ${process.arch}`,
@@ -384,27 +292,10 @@ module.exports = {
                                 value: `**PID:** ${process.pid}\n**Uptime:** ${Math.floor(process.uptime())}s\n**CPU:** ${process.cpuUsage().user}μs`,
                                 inline: true
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'stats_refresh',
-                                label: '🔄 Retour',
-                                style: 2
-                            },
-                            {
-                                customId: 'stats_detailed',
-                                label: '📊 Détails',
-                                style: 2
-                            },
-                            {
-                                customId: 'stats_system',
-                                label: '🖥️ Système',
-                                style: 1
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(systemMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [systemMessage] });
                 }
                 
                 // Boutons de la commande serverinfo
@@ -412,12 +303,13 @@ module.exports = {
                     const guild = interaction.guild;
                     const owner = await guild.fetchOwner();
                     
-                    const refreshedMessage = ModernComponents.createInfoMessage({
-                        title: `🏰 ${guild.name} (Actualisé)`,
-                        description: `Informations actualisées sur le serveur`,
-                        color: '#57F287',
-                        thumbnail: guild.iconURL({ dynamic: true, size: 256 }),
-                        fields: [
+                    const refreshedMessage = new EmbedBuilder()
+                        .setTitle(`🏰 ${guild.name} (Actualisé)`)
+                        .setDescription(`Informations actualisées sur le serveur`)
+                        .setColor(0x57F287)
+                        .setTimestamp()
+                        .setThumbnail(guild.iconURL({ dynamic: true, size: 256 }))
+                        .addFields(
                             {
                                 name: '👑 Propriétaire',
                                 value: `${owner.user.tag}`,
@@ -448,56 +340,23 @@ module.exports = {
                                 value: `${guild.roles.cache.size}`,
                                 inline: true
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'serverinfo_refresh',
-                                label: '🔄 Actualiser',
-                                style: 1
-                            },
-                            {
-                                customId: 'serverinfo_icon',
-                                label: '🖼️ Icône',
-                                style: 2
-                            },
-                            {
-                                customId: 'serverinfo_stats',
-                                label: '📊 Plus de stats',
-                                style: 2
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(refreshedMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [refreshedMessage] });
                 }
                 
                 else if (customId === 'serverinfo_icon') {
                     const guild = interaction.guild;
-                    const iconMessage = ModernComponents.createInfoMessage({
-                        title: `🖼️ Icône de ${guild.name}`,
-                        description: guild.iconURL() ? 'Voici l\'icône du serveur en haute qualité' : 'Ce serveur n\'a pas d\'icône',
-                        color: '#5865F2',
-                        image: guild.iconURL({ dynamic: true, size: 1024 }),
-                        buttons: [
-                            {
-                                customId: 'serverinfo_refresh',
-                                label: '🔄 Retour',
-                                style: 2
-                            },
-                            {
-                                customId: 'serverinfo_icon',
-                                label: '🖼️ Icône',
-                                style: 1
-                            },
-                            {
-                                customId: 'serverinfo_stats',
-                                label: '📊 Plus de stats',
-                                style: 2
-                            }
-                        ]
-                    });
+                    const iconMessage = new EmbedBuilder()
+                        .setTitle(`🖼️ Icône de ${guild.name}`)
+                        .setDescription(guild.iconURL() ? 'Voici l\'icône du serveur en haute qualité' : 'Ce serveur n\'a pas d\'icône')
+                        .setColor(0x5865F2)
+                        .setTimestamp()
+                        .setImage(guild.iconURL({ dynamic: true, size: 1024 }));
                     
-                    await interaction.update(iconMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [iconMessage] });
                 }
                 
                 else if (customId === 'serverinfo_stats') {
@@ -506,11 +365,12 @@ module.exports = {
                     const voiceChannels = guild.channels.cache.filter(c => c.type === 2).size;
                     const categories = guild.channels.cache.filter(c => c.type === 4).size;
                     
-                    const statsMessage = ModernComponents.createInfoMessage({
-                        title: `📊 Statistiques de ${guild.name}`,
-                        description: 'Statistiques détaillées du serveur',
-                        color: '#FEE75C',
-                        fields: [
+                    const statsMessage = new EmbedBuilder()
+                        .setTitle(`📊 Statistiques de ${guild.name}`)
+                        .setDescription('Statistiques détaillées du serveur')
+                        .setColor(0xFEE75C)
+                        .setTimestamp()
+                        .addFields(
                             {
                                 name: '📺 Canaux détaillés',
                                 value: `**Texte:** ${textChannels}\n**Vocal:** ${voiceChannels}\n**Catégories:** ${categories}`,
@@ -541,27 +401,10 @@ module.exports = {
                                 value: `**ID:** ${guild.id}\n**Créé:** <t:${Math.floor(guild.createdTimestamp / 1000)}:R>`,
                                 inline: true
                             }
-                        ],
-                        buttons: [
-                            {
-                                customId: 'serverinfo_refresh',
-                                label: '🔄 Retour',
-                                style: 2
-                            },
-                            {
-                                customId: 'serverinfo_icon',
-                                label: '🖼️ Icône',
-                                style: 2
-                            },
-                            {
-                                customId: 'serverinfo_stats',
-                                label: '📊 Plus de stats',
-                                style: 1
-                            }
-                        ]
-                    });
+                        );
                     
-                    await interaction.update(statsMessage);
+                    // Note: Boutons retirés temporairement
+                    await interaction.update({ embeds: [statsMessage] });
                 }
                 
                 // Autres boutons...
@@ -575,13 +418,14 @@ module.exports = {
             } catch (error) {
                 console.error(`❌ Erreur lors du traitement du bouton ${customId}:`, error);
                 
-                const errorMessage = ModernComponents.createErrorMessage({
-                    title: 'Erreur de bouton',
-                    description: 'Une erreur s\'est produite lors du traitement de cette action.'
-                });
-                
+                const errorMessage = new EmbedBuilder()
+                    .setTitle('Erreur de bouton')
+                    .setDescription('Une erreur s\'est produite lors du traitement de cette action.')
+                    .setColor(0xFF0000)
+                    .setTimestamp();
+
                 try {
-                    await interaction.reply({ ...errorMessage, ephemeral: true });
+                    await interaction.reply({ embeds: [errorMessage], ephemeral: true });
                 } catch (replyError) {
                     console.error('❌ Erreur lors de l\'envoi du message d\'erreur:', replyError);
                 }
@@ -607,12 +451,13 @@ module.exports = {
                         'es': 'Español 🇪🇸'
                     };
                     
-                    const successMessage = ModernComponents.createSuccessMessage({
-                        title: 'Langue modifiée',
-                        description: `La langue a été changée en ${langNames[lang] || lang}`
-                    });
+                    const successMessage = new EmbedBuilder()
+                        .setTitle('Langue modifiée')
+                        .setDescription(`La langue a été changée en ${langNames[lang] || lang}`)
+                        .setColor(0x00FF00)
+                        .setTimestamp();
                     
-                    await interaction.reply({ ...successMessage, ephemeral: true });
+                    await interaction.reply({ embeds: [successMessage], ephemeral: true });
                 }
                 
                 // Autres menus...
@@ -626,13 +471,14 @@ module.exports = {
             } catch (error) {
                 console.error(`❌ Erreur lors du traitement du menu ${customId}:`, error);
                 
-                const errorMessage = ModernComponents.createErrorMessage({
-                    title: 'Erreur de menu',
-                    description: 'Une erreur s\'est produite lors du traitement de cette sélection.'
-                });
-                
+                const errorMessage = new EmbedBuilder()
+                    .setTitle('Erreur de menu')
+                    .setDescription('Une erreur s\'est produite lors du traitement de cette sélection.')
+                    .setColor(0xFF0000)
+                    .setTimestamp();
+
                 try {
-                    await interaction.reply({ ...errorMessage, ephemeral: true });
+                    await interaction.reply({ embeds: [errorMessage], ephemeral: true });
                 } catch (replyError) {
                     console.error('❌ Erreur lors de l\'envoi du message d\'erreur:', replyError);
                 }

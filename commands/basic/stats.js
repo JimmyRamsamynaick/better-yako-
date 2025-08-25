@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const os = require('os');
 
 module.exports = {
@@ -111,32 +110,16 @@ module.exports = {
             value: `**Mémoire Bot:** ${createProgressBar(memoryPercent)}\n**Mémoire Système:** ${createProgressBar(systemMemoryPercent)}`
         });
         
-        // Créer le message avec les composants modernes
-        const statsMessage = ModernComponents.createInfoMessage({
-            title: '📊 Statistiques du Bot',
-            description: `Voici les statistiques détaillées de **${client.user.username}**`,
-            fields: fields,
-            color: ping < 100 ? '#00ff00' : ping < 200 ? '#ffff00' : ping < 300 ? '#ff8000' : '#ff0000',
-            thumbnail: client.user.displayAvatarURL({ dynamic: true, size: 256 }),
-            buttons: [
-                {
-                    customId: 'stats_refresh',
-                    label: '🔄 Actualiser',
-                    style: 2
-                },
-                {
-                    customId: 'stats_detailed',
-                    label: '📋 Détails avancés',
-                    style: 1
-                },
-                {
-                    customId: 'stats_system',
-                    label: '💻 Info système',
-                    style: 2
-                }
-            ]
-        });
+        // Créer le message avec EmbedBuilder
+        const statsMessage = new EmbedBuilder()
+            .setTitle('📊 Statistiques du Bot')
+            .setDescription(`Voici les statistiques détaillées de **${client.user.username}**`)
+            .addFields(fields)
+            .setColor(ping < 100 ? 0x00ff00 : ping < 200 ? 0xffff00 : ping < 300 ? 0xff8000 : 0xff0000)
+            .setThumbnail(client.user.displayAvatarURL({ dynamic: true, size: 256 }))
+            .setTimestamp();
         
-        await interaction.editReply(statsMessage);
+        // Note: Boutons retirés temporairement
+        await interaction.editReply({ embeds: [statsMessage] });
     }
 };

@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
 
 module.exports = {
     category: 'Basic',

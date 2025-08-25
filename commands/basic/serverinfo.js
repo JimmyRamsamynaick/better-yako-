@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     category: 'Basic',
@@ -115,32 +114,16 @@ module.exports = {
             });
         }
         
-        // Créer le message avec les composants modernes
-        const serverInfoMessage = ModernComponents.createInfoMessage({
-            title: `🏰 ${guild.name}`,
-            description: `Informations détaillées du serveur ${guild.name}`,
-            fields: fields,
-            color: '#5865F2',
-            thumbnail: guild.iconURL({ dynamic: true, size: 256 }),
-            buttons: [
-                {
-                    customId: 'serverinfo_refresh',
-                    label: '🔄 Actualiser',
-                    style: 2
-                },
-                {
-                    customId: 'serverinfo_icon',
-                    label: '🖼️ Icône du serveur',
-                    style: 2
-                },
-                {
-                    customId: 'serverinfo_stats',
-                    label: '📊 Plus de stats',
-                    style: 1
-                }
-            ]
-        });
+        // Créer le message avec EmbedBuilder
+        const serverInfoMessage = new EmbedBuilder()
+            .setTitle(`🏰 ${guild.name}`)
+            .setDescription(`Informations détaillées du serveur ${guild.name}`)
+            .addFields(fields)
+            .setColor(0x5865F2)
+            .setThumbnail(guild.iconURL({ dynamic: true, size: 256 }))
+            .setTimestamp();
         
-        await interaction.editReply(serverInfoMessage);
+        // Note: Boutons retirés temporairement
+        await interaction.editReply({ embeds: [serverInfoMessage] });
     }
 };

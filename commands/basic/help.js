@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     category: 'Basic',
@@ -28,18 +27,19 @@ module.exports = {
             const command = client.commands.get(specificCommand);
             
             if (!command) {
-                const errorMessage = ModernComponents.createErrorMessage({
-                    title: 'Commande introuvable',
-                    description: `La commande \`${specificCommand}\` n'existe pas.`
-                });
+                const errorMessage = new EmbedBuilder()
+                    .setTitle('Commande introuvable')
+                    .setDescription(`La commande \`${specificCommand}\` n'existe pas.`)
+                    .setColor(0xFF0000)
+                    .setTimestamp();
                 
-                return await interaction.editReply(errorMessage);
+                return await interaction.editReply({ embeds: [errorMessage] });
             }
             
-            const commandHelp = ModernComponents.createInfoMessage({
-                title: `📖 Aide pour /${command.data.name}`,
-                description: command.data.description,
-                fields: [
+            const commandHelp = new EmbedBuilder()
+                .setTitle(`📖 Aide pour /${command.data.name}`)
+                .setDescription(command.data.description)
+                .addFields(
                     {
                         name: '📝 Utilisation',
                         value: `\`/${command.data.name}\``
@@ -48,11 +48,11 @@ module.exports = {
                         name: '📂 Catégorie',
                         value: command.category || 'Non définie'
                     }
-                ],
-                color: '#5865F2'
-            });
+                )
+                .setColor(0x5865F2)
+                .setTimestamp();
             
-            return await interaction.editReply(commandHelp);
+            return await interaction.editReply({ embeds: [commandHelp] });
         }
         
         // Aide générale - organiser les commandes par catégorie
@@ -94,30 +94,14 @@ module.exports = {
         });
         
         // Créer le message d'aide principal
-        const helpMessage = ModernComponents.createInfoMessage({
-            title: '📚 Better Yako v2 - Aide',
-            description: `Bienvenue dans Better Yako v2 ! Voici toutes les commandes disponibles :\n\n**Total des commandes:** ${client.commands.size}\n**Serveurs:** ${client.guilds.cache.size}\n**Utilisateurs:** ${client.users.cache.size}`,
-            fields: fields,
-            color: '#5865F2',
-            buttons: [
-                {
-                    customId: 'help_basic',
-                    label: '🔧 Commandes de base',
-                    style: 1
-                },
-                {
-                    customId: 'help_premium',
-                    label: '💎 Premium',
-                    style: 1
-                },
-                {
-                    customId: 'help_language',
-                    label: '🌍 Changer la langue',
-                    style: 2
-                }
-            ]
-        });
+        const helpMessage = new EmbedBuilder()
+            .setTitle('📚 Better Yako v2 - Aide')
+            .setDescription(`Bienvenue dans Better Yako v2 ! Voici toutes les commandes disponibles :\n\n**Total des commandes:** ${client.commands.size}\n**Serveurs:** ${client.guilds.cache.size}\n**Utilisateurs:** ${client.users.cache.size}`)
+            .addFields(fields)
+            .setColor(0x5865F2)
+            .setTimestamp();
         
-        await interaction.editReply(helpMessage);
+        // Note: Boutons retirés temporairement
+        await interaction.editReply({ embeds: [helpMessage] });
     }
 };

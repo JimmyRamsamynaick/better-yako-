@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -53,34 +52,31 @@ module.exports = {
         
         // Vérifier si les fonctionnalités IA sont activées
         if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY && !process.env.GOOGLE_API_KEY) {
-            const errorMessage = ModernComponents.createErrorMessage({
-                title: '❌ Fonctionnalités IA désactivées',
-                description: 'Les fonctionnalités d\'intelligence artificielle ne sont pas configurées sur ce bot.',
-                fields: [
-                    {
-                        name: '💡 Information',
-                        value: 'Contactez l\'administrateur du bot pour activer ces fonctionnalités.'
-                    }
-                ]
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle('❌ Fonctionnalités IA désactivées')
+                .setDescription('Les fonctionnalités d\'intelligence artificielle ne sont pas configurées sur ce bot.')
+                .addFields({
+                    name: '💡 Information',
+                    value: 'Contactez l\'administrateur du bot pour activer ces fonctionnalités.'
+                })
+                .setColor('#ff6b6b')
+                .setTimestamp();
             
-            return await interaction.editReply(errorMessage);
+            return await interaction.editReply({ embeds: [errorEmbed] });
         }
         
         // Créer le message de chargement
-        const loadingMessage = ModernComponents.createInfoMessage({
-            title: '🤖 IA en cours de réflexion...',
-            description: `**Question:** ${question}\n**Modèle:** ${model}`,
-            fields: [
-                {
-                    name: '⏳ Statut',
-                    value: '🔄 Génération de la réponse en cours...'
-                }
-            ],
-            color: '#ffaa00'
-        });
+        const loadingEmbed = new EmbedBuilder()
+            .setTitle('🤖 IA en cours de réflexion...')
+            .setDescription(`**Question:** ${question}\n**Modèle:** ${model}`)
+            .addFields({
+                name: '⏳ Statut',
+                value: '🔄 Génération de la réponse en cours...'
+            })
+            .setColor('#ffaa00')
+            .setTimestamp();
         
-        await interaction.editReply(loadingMessage);
+        await interaction.editReply({ embeds: [loadingEmbed] });
         
         try {
             let response;
@@ -149,49 +145,26 @@ module.exports = {
             const chunks = ModernComponents.splitLongText(response, 1800);
             
             // Créer le message de réponse principal
-            const responseMessage = ModernComponents.createSuccessMessage({
-                title: '🤖 Réponse de l\'IA',
-                description: `**Question:** ${question}\n**Modèle:** ${model} • **Temps:** ${responseTime}ms`,
-                fields: [
-                    {
-                        name: '💬 Réponse',
-                        value: chunks[0]
-                    }
-                ],
-                buttons: [
-                    {
-                        customId: `ask_regenerate_${Date.now()}`,
-                        label: '🔄 Régénérer',
-                        style: 2
-                    },
-                    {
-                        customId: `ask_continue_${Date.now()}`,
-                        label: '➡️ Continuer',
-                        style: 1
-                    },
-                    {
-                        customId: `ask_translate_${Date.now()}`,
-                        label: '🌐 Traduire',
-                        style: 2
-                    }
-                ]
-            });
+            const responseEmbed = new EmbedBuilder()
+                .setTitle('🤖 Réponse de l\'IA')
+                .setDescription(`**Question:** ${question}\n**Modèle:** ${model} • **Temps:** ${responseTime}ms`)
+                .addFields({
+                    name: '💬 Réponse',
+                    value: chunks[0]
+                })
+                .setColor('#51cf66')
+                .setTimestamp();
             
-            await interaction.editReply(responseMessage);
+            await interaction.editReply({ embeds: [responseEmbed], ephemeral: isPrivate });
             
             // Envoyer les chunks supplémentaires si nécessaire
             if (chunks.length > 1) {
                 for (let i = 1; i < chunks.length; i++) {
-                    const followUpMessage = ModernComponents.createContainer({
-                        components: [
-                            ModernComponents.createTextDisplay({
-                                content: chunks[i],
-                                style: 'paragraph'
-                            })
-                        ]
-                    });
+                    const followUpEmbed = new EmbedBuilder()
+                        .setDescription(chunks[i])
+                        .setColor('#51cf66');
                     
-                    await interaction.followUp({ ...followUpMessage, ephemeral: isPrivate });
+                    await interaction.followUp({ embeds: [followUpEmbed], ephemeral: isPrivate });
                 }
             }
             
@@ -217,10 +190,10 @@ module.exports = {
                 errorDescription = 'La requête a pris trop de temps. Veuillez réessayer.';
             }
             
-            const errorMessage = ModernComponents.createErrorMessage({
-                title: errorTitle,
-                description: errorDescription,
-                fields: [
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(errorTitle)
+                .setDescription(errorDescription)
+                .addFields(
                     {
                         name: '🔧 Détails techniques',
                         value: `**Modèle:** ${model}\n**Erreur:** ${error.message || 'Erreur inconnue'}`
@@ -229,17 +202,11 @@ module.exports = {
                         name: '💡 Solutions',
                         value: '• Vérifiez votre question\n• Essayez un autre modèle\n• Réessayez dans quelques minutes'
                     }
-                ],
-                buttons: [
-                    {
-                        customId: `ask_retry_${Date.now()}`,
-                        label: '🔄 Réessayer',
-                        style: 2
-                    }
-                ]
-            });
+                )
+                .setColor('#ff6b6b')
+                .setTimestamp();
             
-            await interaction.editReply(errorMessage);
+            await interaction.editReply({ embeds: [errorEmbed] });
         }
     }
 };

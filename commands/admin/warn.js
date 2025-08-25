@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -29,10 +28,11 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.no_permission'),
-                    t('admin.warn.no_permission_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.warn.no_permission_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -43,19 +43,21 @@ module.exports = {
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.user_not_found'),
-                    t('admin.warn.user_not_in_server')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.user_not_found'))
+                    .setDescription(t('admin.warn.user_not_in_server'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             // Vérification si on peut modérer cet utilisateur
             if (!PermissionManager.canModerate(member, targetMember)) {
-                const embed = ModernComponents.createErrorMessage(
-                    t('errors.cannot_moderate'),
-                    t('admin.warn.cannot_moderate_desc')
-                );
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.cannot_moderate'))
+                    .setDescription(t('admin.warn.cannot_moderate_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -71,10 +73,11 @@ module.exports = {
                 );
 
                 if (!warning) {
-                    const embed = ModernComponents.createErrorMessage(
-                        t('errors.database_error'),
-                        t('admin.warn.database_error_desc')
-                    );
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('errors.database_error'))
+                        .setDescription(t('admin.warn.database_error_desc'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -84,20 +87,22 @@ module.exports = {
 
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
-                    const dmEmbed = ModernComponents.createWarningMessage(
-                        t('admin.warn.dm_title'),
-                        t('admin.warn.dm_description', interaction.guild.name, reason, warningCount)
-                    );
+                    const dmEmbed = new EmbedBuilder()
+                        .setTitle(t('admin.warn.dm_title'))
+                        .setDescription(t('admin.warn.dm_description', interaction.guild.name, reason, warningCount))
+                        .setColor('#FFA500')
+                        .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
                 } catch (error) {
                     // Impossible d'envoyer le MP, on continue
                 }
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createWarningMessage(
-                    t('admin.warn.success'),
-                    t('admin.warn.success_desc', targetUser.tag, reason)
-                );
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(t('admin.warn.success'))
+                    .setDescription(t('admin.warn.success_desc', targetUser.tag, reason))
+                    .setColor('#FFA500')
+                    .setTimestamp();
 
                 // Déterminer la couleur selon le nombre d'avertissements
                 let warningLevel = 'info';
@@ -114,42 +119,46 @@ module.exports = {
                     warningLevelText = t('admin.warn.level_medium');
                 }
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${t('admin.warn.details')}**\n` +
+                successEmbed.addFields(
+                    { name: t('admin.warn.details'), value: 
                         `👤 **${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
                         `👮 **${t('admin.warn.moderator')}:** ${interaction.user.tag}\n` +
                         `📝 **${t('admin.warn.reason')}:** ${reason}\n` +
                         `⚠️ **${t('admin.warn.total_warnings')}:** ${warningCount}\n` +
-                        `📊 **${t('admin.warn.warning_level')}:** ${warningLevelText}`
-                    ));
+                        `📊 **${t('admin.warn.warning_level')}:** ${warningLevelText}`,
+                        inline: false
+                    }
+                );
 
                 // Ajouter un avertissement si le nombre d'avertissements est élevé
+                const embeds = [successEmbed];
                 if (warningCount >= 3) {
-                    const alertEmbed = ModernComponents.createErrorMessage(
-                        `⚠️ ${t('admin.warn.alert_title')}`,
-                        t('admin.warn.alert_desc', targetUser.tag, warningCount)
-                    );
-                    container.addComponent(alertEmbed);
+                    const alertEmbed = new EmbedBuilder()
+                        .setTitle(`⚠️ ${t('admin.warn.alert_title')}`)
+                        .setDescription(t('admin.warn.alert_desc', targetUser.tag, warningCount))
+                        .setColor('#FF0000')
+                        .setTimestamp();
+                    embeds.push(alertEmbed);
                 }
 
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds });
 
                 // Log dans le canal de logs
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage(
-                            `⚠️ ${t('admin.warn.log_title')}`,
-                            `**${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                            `**${t('admin.warn.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${t('admin.warn.reason')}:** ${reason}\n` +
-                            `**${t('admin.warn.warning_id')}:** ${warning._id}\n` +
-                            `**${t('admin.warn.total_warnings')}:** ${warningCount}\n` +
-                            `**${t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        );
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`⚠️ ${t('admin.warn.log_title')}`)
+                            .setDescription(
+                                `**${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                `**${t('admin.warn.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${t('admin.warn.reason')}:** ${reason}\n` +
+                                `**${t('admin.warn.warning_id')}:** ${warning._id}\n` +
+                                `**${t('admin.warn.total_warnings')}:** ${warningCount}\n` +
+                                `**${t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            )
+                            .setColor('#0099FF')
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -164,10 +173,11 @@ module.exports = {
                             deleteMessageDays: 1
                         });
 
-                        const autoBanEmbed = ModernComponents.createErrorMessage(
-                            `🔨 ${t('admin.warn.auto_ban_title')}`,
-                            t('admin.warn.auto_ban_desc', targetUser.tag, warningCount)
-                        );
+                        const autoBanEmbed = new EmbedBuilder()
+                            .setTitle(`🔨 ${t('admin.warn.auto_ban_title')}`)
+                            .setDescription(t('admin.warn.auto_ban_desc', targetUser.tag, warningCount))
+                            .setColor('#FF0000')
+                            .setTimestamp();
                         
                         await interaction.followUp({ embeds: [autoBanEmbed] });
 
@@ -175,12 +185,15 @@ module.exports = {
                         if (guildConfig?.logChannelId) {
                             const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                             if (logChannel) {
-                                const autoBanLogEmbed = ModernComponents.createErrorMessage(
-                                    `🔨 ${t('admin.warn.auto_ban_log_title')}`,
-                                    `**${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                    `**${t('admin.warn.reason')}:** ${t('admin.warn.auto_ban_reason', warningCount)}\n` +
-                                    `**${t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                                );
+                                const autoBanLogEmbed = new EmbedBuilder()
+                                    .setTitle(`🔨 ${t('admin.warn.auto_ban_log_title')}`)
+                                    .setDescription(
+                                        `**${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                        `**${t('admin.warn.reason')}:** ${t('admin.warn.auto_ban_reason', warningCount)}\n` +
+                                        `**${t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                    )
+                                    .setColor('#FF0000')
+                                    .setTimestamp();
                                 await logChannel.send({ embeds: [autoBanLogEmbed] });
                             }
                         }
@@ -195,10 +208,11 @@ module.exports = {
                             await targetMember.roles.add(muteRole, `Auto-mute: ${warningCount} avertissements`);
                             await targetMember.timeout(60 * 60 * 1000, `Auto-mute: ${warningCount} avertissements`); // 1 heure
 
-                            const autoMuteEmbed = ModernComponents.createWarningMessage(
-                                `🔇 ${t('admin.warn.auto_mute_title')}`,
-                                t('admin.warn.auto_mute_desc', targetUser.tag, warningCount)
-                            );
+                            const autoMuteEmbed = new EmbedBuilder()
+                                .setTitle(`🔇 ${t('admin.warn.auto_mute_title')}`)
+                                .setDescription(t('admin.warn.auto_mute_desc', targetUser.tag, warningCount))
+                                .setColor('#FFA500')
+                                .setTimestamp();
                             
                             await interaction.followUp({ embeds: [autoMuteEmbed] });
                         }
@@ -209,19 +223,21 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors de l\'avertissement:', error);
-                const errorEmbed = ModernComponents.createErrorMessage(
-                    t('errors.command_failed'),
-                    t('admin.warn.error_desc', error.message)
-                );
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(t('admin.warn.error_desc', error.message))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande warn:', error);
-            const errorEmbed = ModernComponents.createErrorMessage(
-                t('errors.unexpected'),
-                t('errors.try_again')
-            );
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor('#FF0000')
+                .setTimestamp();
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

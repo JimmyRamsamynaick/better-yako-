@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -104,18 +103,17 @@ module.exports = {
         
         // Vérifier si les fonctionnalités IA sont activées
         if (!process.env.OPENAI_API_KEY) {
-            const errorMessage = ModernComponents.createErrorMessage({
-                title: '❌ Traduction IA désactivée',
-                description: 'La traduction par IA n\'est pas configurée sur ce bot.',
-                fields: [
-                    {
-                        name: '💡 Information',
-                        value: 'Contactez l\'administrateur du bot pour activer cette fonctionnalité.'
-                    }
-                ]
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle('❌ Traduction IA désactivée')
+                .setDescription('La traduction par IA n\'est pas configurée sur ce bot.')
+                .addFields({
+                    name: '💡 Information',
+                    value: 'Contactez l\'administrateur du bot pour activer cette fonctionnalité.'
+                })
+                .setColor('#ff6b6b')
+                .setTimestamp();
             
-            return await interaction.editReply(errorMessage);
+            return await interaction.editReply({ embeds: [errorEmbed] });
         }
         
         // Mappage des langues
@@ -145,19 +143,17 @@ module.exports = {
         };
         
         // Créer le message de chargement
-        const loadingMessage = ModernComponents.createInfoMessage({
-            title: '🌐 Traduction en cours...',
-            description: `**Texte:** ${text.substring(0, 100)}${text.length > 100 ? '...' : ''}\n**De:** ${sourceLang === 'auto' ? '🔍 Auto-détection' : languageMap[sourceLang]}\n**Vers:** ${languageMap[targetLang]}\n**Style:** ${style}`,
-            fields: [
-                {
-                    name: '⏳ Statut',
-                    value: '🔄 L\'IA traduit votre texte...'
-                }
-            ],
-            color: '#4dabf7'
-        });
+        const loadingEmbed = new EmbedBuilder()
+            .setTitle('🌐 Traduction en cours...')
+            .setDescription(`**Texte:** ${text.substring(0, 100)}${text.length > 100 ? '...' : ''}\n**De:** ${sourceLang === 'auto' ? '🔍 Auto-détection' : languageMap[sourceLang]}\n**Vers:** ${languageMap[targetLang]}\n**Style:** ${style}`)
+            .addFields({
+                name: '⏳ Statut',
+                value: '🔄 L\'IA traduit votre texte...'
+            })
+            .setColor('#4dabf7')
+            .setTimestamp();
         
-        await interaction.editReply(loadingMessage);
+        await interaction.editReply({ embeds: [loadingEmbed] });
         
         try {
             const startTime = Date.now();
@@ -238,14 +234,21 @@ module.exports = {
                 }
             }
             
-            // Diviser la traduction si elle est trop longue
-            const chunks = ModernComponents.splitLongText(translation, 1800);
+            // Diviser la traduction si elle est trop longue (fonction simple)
+            const splitText = (text, maxLength) => {
+                const chunks = [];
+                for (let i = 0; i < text.length; i += maxLength) {
+                    chunks.push(text.substring(i, i + maxLength));
+                }
+                return chunks;
+            };
+            const chunks = splitText(translation, 1800);
             
             // Créer le message de succès
-            const successMessage = ModernComponents.createSuccessMessage({
-                title: '🌐 Traduction terminée !',
-                description: `**Langue source:** ${sourceLang === 'auto' ? `🔍 ${detectedLang}` : languageMap[sourceLang]}\n**Langue cible:** ${languageMap[targetLang]}\n**Style:** ${style} • **Temps:** ${translationTime}ms`,
-                fields: [
+            const successEmbed = new EmbedBuilder()
+                .setTitle('🌐 Traduction terminée !')
+                .setDescription(`**Langue source:** ${sourceLang === 'auto' ? `🔍 ${detectedLang}` : languageMap[sourceLang]}\n**Langue cible:** ${languageMap[targetLang]}\n**Style:** ${style} • **Temps:** ${translationTime}ms`)
+                .addFields(
                     {
                         name: '📝 Texte original',
                         value: `\`\`\`${text.substring(0, 500)}${text.length > 500 ? '...' : ''}\`\`\``
@@ -254,41 +257,20 @@ module.exports = {
                         name: '🌐 Traduction',
                         value: chunks[0]
                     }
-                ],
-                buttons: [
-                    {
-                        customId: `translate_reverse_${Date.now()}`,
-                        label: '🔄 Traduction inverse',
-                        style: 2
-                    },
-                    {
-                        customId: `translate_alternative_${Date.now()}`,
-                        label: '🎲 Alternative',
-                        style: 1
-                    },
-                    {
-                        customId: `translate_explain_${Date.now()}`,
-                        label: '💡 Expliquer',
-                        style: 2
-                    }
-                ]
-            });
+                )
+                .setColor('#51cf66')
+                .setTimestamp();
             
-            await interaction.editReply(successMessage);
+            await interaction.editReply({ embeds: [successEmbed] });
             
             // Envoyer les chunks supplémentaires si nécessaire
             if (chunks.length > 1) {
                 for (let i = 1; i < chunks.length; i++) {
-                    const followUpMessage = ModernComponents.createContainer({
-                        components: [
-                            ModernComponents.createTextDisplay({
-                                content: `**Suite de la traduction:**\n${chunks[i]}`,
-                                style: 'paragraph'
-                            })
-                        ]
-                    });
+                    const followUpEmbed = new EmbedBuilder()
+                        .setDescription(`**Suite de la traduction:**\n${chunks[i]}`)
+                        .setColor('#51cf66');
                     
-                    await interaction.followUp({ ...followUpMessage, ephemeral: isPrivate });
+                    await interaction.followUp({ embeds: [followUpEmbed], ephemeral: isPrivate });
                 }
             }
             
@@ -314,10 +296,10 @@ module.exports = {
                 errorDescription = 'La traduction a pris trop de temps. Veuillez réessayer.';
             }
             
-            const errorMessage = ModernComponents.createErrorMessage({
-                title: errorTitle,
-                description: errorDescription,
-                fields: [
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(errorTitle)
+                .setDescription(errorDescription)
+                .addFields(
                     {
                         name: '🔧 Détails techniques',
                         value: `**Langues:** ${sourceLang} → ${targetLang}\n**Style:** ${style}\n**Erreur:** ${error.message || 'Erreur inconnue'}`
@@ -326,17 +308,11 @@ module.exports = {
                         name: '💡 Solutions',
                         value: '• Vérifiez que le texte est dans la bonne langue\n• Essayez un style différent\n• Réessayez dans quelques minutes'
                     }
-                ],
-                buttons: [
-                    {
-                        customId: `translate_retry_${Date.now()}`,
-                        label: '🔄 Réessayer',
-                        style: 2
-                    }
-                ]
-            });
+                )
+                .setColor('#ff6b6b')
+                .setTimestamp();
             
-            await interaction.editReply(errorMessage);
+            await interaction.editReply({ embeds: [errorEmbed] });
         }
     }
 };

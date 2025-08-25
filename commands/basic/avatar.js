@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     category: 'Basic',
@@ -97,16 +96,16 @@ module.exports = {
             });
         }
         
-        // Créer le message avec les composants modernes
-        const avatarMessage = ModernComponents.createInfoMessage({
-            title: `🖼️ Avatar de ${targetUser.displayName || targetUser.username}`,
-            description: `Avatar ${hasServerAvatar && serverAvatar !== globalAvatar ? 'global' : ''} de ${targetUser.toString()}`,
-            fields: fields,
-            color: member?.displayHexColor || '#5865F2',
-            image: globalAvatar,
-            buttons: buttons
-        });
+        // Créer le message avec EmbedBuilder
+        const avatarMessage = new EmbedBuilder()
+            .setTitle(`🖼️ Avatar de ${targetUser.displayName || targetUser.username}`)
+            .setDescription(`Avatar ${hasServerAvatar && serverAvatar !== globalAvatar ? 'global' : ''} de ${targetUser.toString()}`)
+            .addFields(fields)
+            .setColor(member?.displayHexColor || 0x5865F2)
+            .setImage(globalAvatar)
+            .setTimestamp();
         
-        await interaction.editReply(avatarMessage);
+        // Note: Boutons retirés temporairement
+        await interaction.editReply({ embeds: [avatarMessage] });
     }
 };

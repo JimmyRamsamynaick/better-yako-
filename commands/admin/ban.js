@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { ModernComponents } = require('../../utils/modernComponents');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const PermissionManager = require('../../utils/permissions');
 const DatabaseManager = require('../../utils/database');
 
@@ -35,10 +34,11 @@ module.exports = {
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
-                const embed = ModernComponents.createErrorMessage({
-                    title: t('errors.no_permission'),
-                    description: t('admin.ban.no_permission_desc')
-                });
+                const embed = new EmbedBuilder()
+                    .setTitle(t('errors.no_permission'))
+                    .setDescription(t('admin.ban.no_permission_desc'))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -52,20 +52,22 @@ module.exports = {
             if (targetMember) {
                 // Vérification si on peut modérer cet utilisateur
                 if (!PermissionManager.canModerate(member, targetMember)) {
-                    const embed = ModernComponents.createErrorMessage({
-                        title: t('errors.cannot_moderate'),
-                        description: t('admin.ban.cannot_moderate_desc')
-                    });
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('errors.cannot_moderate'))
+                        .setDescription(t('admin.ban.cannot_moderate_desc'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
 
                 // Vérification si le bot peut bannir cet utilisateur
                 const botMember = interaction.guild.members.me;
                 if (!PermissionManager.canBotModerate(botMember, targetMember, 'ban')) {
-                    const embed = ModernComponents.createErrorMessage({
-                        title: t('errors.bot_cannot_moderate'),
-                        description: t('admin.ban.bot_cannot_moderate_desc')
-                    });
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('errors.bot_cannot_moderate'))
+                        .setDescription(t('admin.ban.bot_cannot_moderate_desc'))
+                        .setColor('#FF0000')
+                        .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
             }
@@ -74,10 +76,11 @@ module.exports = {
             try {
                 const banInfo = await interaction.guild.bans.fetch(targetUser.id);
                 if (banInfo) {
-                    const embed = ModernComponents.createWarningMessage({
-                        title: t('admin.ban.already_banned'),
-                        description: t('admin.ban.already_banned_desc', targetUser.tag)
-                    });
+                    const embed = new EmbedBuilder()
+                        .setTitle(t('admin.ban.already_banned'))
+                        .setDescription(t('admin.ban.already_banned_desc', targetUser.tag))
+                        .setColor('#FFA500')
+                        .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
             } catch (error) {
@@ -90,10 +93,11 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 if (targetMember) {
                     try {
-                        const dmEmbed = ModernComponents.createWarningMessage({
-                            title: t('admin.ban.dm_title'),
-                            description: t('admin.ban.dm_description', interaction.guild.name, reason)
-                        });
+                        const dmEmbed = new EmbedBuilder()
+                            .setTitle(t('admin.ban.dm_title'))
+                            .setDescription(t('admin.ban.dm_description', interaction.guild.name, reason))
+                            .setColor('#FFA500')
+                            .setTimestamp();
                         await targetUser.send({ embeds: [dmEmbed] });
                     } catch (error) {
                         // Impossible d'envoyer le MP, on continue
@@ -116,36 +120,36 @@ module.exports = {
                 );
 
                 // Message de confirmation
-                const successEmbed = ModernComponents.createSuccessMessage({
-                    title: t('admin.ban.success'),
-                    description: t('admin.ban.success_desc', targetUser.tag, reason)
-                });
+                const successEmbed = new EmbedBuilder()
+                    .setTitle(t('admin.ban.success'))
+                    .setDescription(t('admin.ban.success_desc', targetUser.tag, reason))
+                    .setColor('#00FF00')
+                    .setTimestamp()
+                    .addFields(
+                        { name: t('admin.ban.details'), value: '\u200B', inline: false },
+                        { name: `👤 ${t('admin.ban.user')}`, value: `${targetUser.tag} (${targetUser.id})`, inline: true },
+                        { name: `👮 ${t('admin.ban.moderator')}`, value: interaction.user.tag, inline: true },
+                        { name: `📝 ${t('admin.ban.reason')}`, value: reason, inline: false },
+                        { name: `🗑️ ${t('admin.ban.deleted_messages')}`, value: `${deleteMessageDays} ${t('admin.ban.days')}`, inline: true }
+                    );
 
-                const container = ModernComponents.createContainer()
-                    .addComponent(successEmbed)
-                    .addComponent(ModernComponents.createSeparator())
-                    .addComponent(ModernComponents.createTextDisplay(
-                        `**${t('admin.ban.details')}**\n` +
-                        `👤 **${t('admin.ban.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                        `👮 **${t('admin.ban.moderator')}:** ${interaction.user.tag}\n` +
-                        `📝 **${t('admin.ban.reason')}:** ${reason}\n` +
-                        `🗑️ **${t('admin.ban.deleted_messages')}:** ${deleteMessageDays} ${t('admin.ban.days')}`
-                    ));
-
-                await interaction.editReply(container.toMessage());
+                await interaction.editReply({ embeds: [successEmbed] });
 
                 // Log dans le canal de logs
                 if (guildConfig?.logChannelId) {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
-                        const logEmbed = ModernComponents.createInfoMessage({
-                            title: `🔨 ${t('admin.ban.log_title')}`,
-                            description: `**${t('admin.ban.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                            `**${t('admin.ban.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                            `**${t('admin.ban.reason')}:** ${reason}\n` +
-                            `**${t('admin.ban.deleted_messages')}:** ${deleteMessageDays} ${t('admin.ban.days')}\n` +
-                            `**${t('admin.ban.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
-                        });
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`🔨 ${t('admin.ban.log_title')}`)
+                            .setDescription(
+                                `**${t('admin.ban.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                `**${t('admin.ban.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${t('admin.ban.reason')}:** ${reason}\n` +
+                                `**${t('admin.ban.deleted_messages')}:** ${deleteMessageDays} ${t('admin.ban.days')}\n` +
+                                `**${t('admin.ban.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            )
+                            .setColor('#0099FF')
+                            .setTimestamp();
                         
                         await logChannel.send({ embeds: [logEmbed] });
                     }
@@ -153,19 +157,21 @@ module.exports = {
 
             } catch (error) {
                 console.error('Erreur lors du bannissement:', error);
-                const errorEmbed = ModernComponents.createErrorMessage({
-                    title: t('errors.command_failed'),
-                    description: t('admin.ban.error_desc', error.message)
-                });
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle(t('errors.command_failed'))
+                    .setDescription(t('admin.ban.error_desc', error.message))
+                    .setColor('#FF0000')
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
             }
 
         } catch (error) {
             console.error('Erreur dans la commande ban:', error);
-            const errorEmbed = ModernComponents.createErrorMessage({
-                title: t('errors.unexpected'),
-                description: t('errors.try_again')
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(t('errors.unexpected'))
+                .setDescription(t('errors.try_again'))
+                .setColor('#FF0000')
+                .setTimestamp();
             
             if (interaction.deferred) {
                 await interaction.editReply({ embeds: [errorEmbed] });

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
-const ModernComponents = require('../../utils/modernComponents.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -86,18 +85,17 @@ module.exports = {
         
         // Vérifier si les fonctionnalités IA sont activées
         if (!process.env.OPENAI_API_KEY) {
-            const errorMessage = ModernComponents.createErrorMessage({
-                title: '❌ Génération d\'images désactivée',
-                description: 'La génération d\'images par IA n\'est pas configurée sur ce bot.',
-                fields: [
-                    {
-                        name: '💡 Information',
-                        value: 'Contactez l\'administrateur du bot pour activer cette fonctionnalité.'
-                    }
-                ]
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle('❌ Génération d\'images désactivée')
+                .setDescription('La génération d\'images par IA n\'est pas configurée sur ce bot.')
+                .addFields({
+                    name: '💡 Information',
+                    value: 'Contactez l\'administrateur du bot pour activer cette fonctionnalité.'
+                })
+                .setColor('#ff6b6b')
+                .setTimestamp();
             
-            return await interaction.editReply(errorMessage);
+            return await interaction.editReply({ embeds: [errorEmbed] });
         }
         
         // Améliorer le prompt selon le style
@@ -115,10 +113,10 @@ module.exports = {
         const enhancedPrompt = `${prompt}, ${stylePrompts[style]}, high quality, detailed`;
         
         // Créer le message de chargement
-        const loadingMessage = ModernComponents.createInfoMessage({
-            title: '🎨 Génération d\'image en cours...',
-            description: `**Prompt:** ${prompt}\n**Style:** ${style}\n**Taille:** ${size}\n**Qualité:** ${quality}`,
-            fields: [
+        const loadingEmbed = new EmbedBuilder()
+            .setTitle('🎨 Génération d\'image en cours...')
+            .setDescription(`**Prompt:** ${prompt}\n**Style:** ${style}\n**Taille:** ${size}\n**Qualité:** ${quality}`)
+            .addFields(
                 {
                     name: '⏳ Statut',
                     value: '🔄 L\'IA crée votre image...\n⏱️ Cela peut prendre 10-30 secondes'
@@ -127,11 +125,11 @@ module.exports = {
                     name: '🎯 Prompt amélioré',
                     value: `\`\`\`${enhancedPrompt}\`\`\``
                 }
-            ],
-            color: '#ff6b6b'
-        });
+            )
+            .setColor('#ff6b6b')
+            .setTimestamp();
         
-        await interaction.editReply(loadingMessage);
+        await interaction.editReply({ embeds: [loadingEmbed] });
         
         try {
             const startTime = Date.now();
@@ -159,10 +157,10 @@ module.exports = {
             const revisedPrompt = response.data.data[0].revised_prompt || enhancedPrompt;
             
             // Créer le message de succès avec l'image
-            const successMessage = ModernComponents.createSuccessMessage({
-                title: '🎨 Image générée avec succès !',
-                description: `**Prompt original:** ${prompt}\n**Style:** ${style} • **Temps:** ${generationTime}s`,
-                fields: [
+            const successEmbed = new EmbedBuilder()
+                .setTitle('🎨 Image générée avec succès !')
+                .setDescription(`**Prompt original:** ${prompt}\n**Style:** ${style} • **Temps:** ${generationTime}s`)
+                .addFields(
                     {
                         name: '🤖 Prompt révisé par l\'IA',
                         value: `\`\`\`${revisedPrompt.substring(0, 1000)}${revisedPrompt.length > 1000 ? '...' : ''}\`\`\``
@@ -171,29 +169,12 @@ module.exports = {
                         name: '📊 Détails techniques',
                         value: `**Modèle:** DALL-E 3\n**Résolution:** ${size}\n**Qualité:** ${quality}\n**Format:** PNG`
                     }
-                ],
-                image: imageUrl,
-                buttons: [
-                    {
-                        customId: `image_regenerate_${Date.now()}`,
-                        label: '🔄 Régénérer',
-                        style: 2
-                    },
-                    {
-                        customId: `image_variation_${Date.now()}`,
-                        label: '🎲 Variation',
-                        style: 1
-                    },
-                    {
-                        customId: `image_download_${Date.now()}`,
-                        label: '💾 Télécharger',
-                        style: 2,
-                        url: imageUrl
-                    }
-                ]
-            });
+                )
+                .setImage(imageUrl)
+                .setColor('#51cf66')
+                .setTimestamp();
             
-            await interaction.editReply(successMessage);
+            await interaction.editReply({ embeds: [successEmbed], ephemeral: isPrivate });
             
         } catch (error) {
             console.error('Erreur lors de la génération d\'image:', error);
@@ -252,25 +233,14 @@ module.exports = {
                 });
             }
             
-            const errorMessage = ModernComponents.createErrorMessage({
-                title: errorTitle,
-                description: errorDescription,
-                fields: fields,
-                buttons: [
-                    {
-                        customId: `image_retry_${Date.now()}`,
-                        label: '🔄 Réessayer',
-                        style: 2
-                    },
-                    {
-                        customId: `image_modify_${Date.now()}`,
-                        label: '✏️ Modifier le prompt',
-                        style: 1
-                    }
-                ]
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle(errorTitle)
+                .setDescription(errorDescription)
+                .addFields(fields)
+                .setColor('#ff6b6b')
+                .setTimestamp();
             
-            await interaction.editReply(errorMessage);
+            await interaction.editReply({ embeds: [errorEmbed] });
         }
     }
 };
