@@ -11,6 +11,7 @@ module.exports = {
         }),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
         const startTime = Date.now();
         
         // Calculer la latence
