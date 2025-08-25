@@ -189,7 +189,15 @@ module.exports = {
                     errorDescription = 'Clé API invalide ou expirée.';
                 } else if (error.response.status === 429) {
                     errorTitle = '⏰ Limite de taux atteinte';
-                    errorDescription = 'Trop de requêtes. Veuillez réessayer dans quelques minutes.';
+                    errorDescription = 'Vous avez atteint la limite de requêtes de l\'API. Veuillez patienter avant de réessayer.';
+                    
+                    // Ajouter des informations sur le temps d'attente recommandé
+                    const retryAfter = error.response.headers['retry-after'];
+                    if (retryAfter) {
+                        errorDescription += ` Temps d'attente recommandé: ${retryAfter} secondes.`;
+                    } else {
+                        errorDescription += ' Temps d\'attente recommandé: 60 secondes.';
+                    }
                 } else if (error.response.status === 500) {
                     errorTitle = '🔧 Erreur du serveur IA';
                     errorDescription = 'Le service IA rencontre des difficultés techniques.';
@@ -209,7 +217,9 @@ module.exports = {
                     },
                     {
                         name: '💡 Solutions',
-                        value: '• Vérifiez votre question\n• Essayez un autre modèle\n• Réessayez dans quelques minutes'
+                        value: error.response?.status === 429 
+                            ? '• Attendez quelques minutes avant de réessayer\n• Utilisez un autre modèle d\'IA\n• Réduisez la fréquence de vos requêtes'
+                            : '• Vérifiez votre question\n• Essayez un autre modèle\n• Réessayez dans quelques minutes'
                     }
                 )
                 .setColor('#ff6b6b')

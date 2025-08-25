@@ -107,7 +107,7 @@ module.exports = {
                 // Bannissement
                 await interaction.guild.members.ban(targetUser, {
                     reason: `${reason} | Modérateur: ${interaction.user.tag}`,
-                    deleteMessageDays: deleteMessageDays
+                    deleteMessageSeconds: deleteMessageDays * 24 * 60 * 60 // Conversion jours en secondes
                 });
 
                 // Enregistrement dans la base de données
