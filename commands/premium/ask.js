@@ -22,16 +22,16 @@ module.exports = {
         )
         .addStringOption(option =>
             option.setName('model')
-                .setDescription('Modèle d\'IA à utiliser')
+                .setDescription('🧠 Modèle d\'IA à utiliser / AI model to use')
                 .setDescriptionLocalizations({
-                    'en-US': 'AI model to use',
-                    'es-ES': 'Modelo de IA a usar'
+                    'en-US': '🧠 AI model to use',
+                    'es-ES': '🧠 Modelo de IA a usar'
                 })
                 .addChoices(
-                    { name: 'GPT-3.5 Turbo (Recommandé)', value: 'gpt-3.5-turbo' },
-                    { name: 'GPT-4o Mini (Rapide)', value: 'gpt-4o-mini' },
-                    { name: 'Claude-3 Sonnet', value: 'claude-3-sonnet' },
-                    { name: 'Gemini Pro', value: 'gemini-pro' }
+                    { name: '🤗 Llama 3.1 8B (Recommandé)', value: 'meta-llama/Meta-Llama-3.1-8B-Instruct' },
+                    { name: '⚡ Mistral 7B (Rapide)', value: 'mistralai/Mistral-7B-Instruct-v0.3' },
+                    { name: '🧠 Qwen 2.5 7B', value: 'Qwen/Qwen2.5-7B-Instruct' },
+                    { name: '💎 Phi 3.5 Mini', value: 'microsoft/Phi-3.5-mini-instruct' }
                 )
                 .setRequired(false)
         )
@@ -87,57 +87,34 @@ module.exports = {
             // Préparer le contexte système
             const systemPrompt = `Tu es YAKO, un assistant IA amical, intelligent et serviable. Tu réponds TOUJOURS aux questions, même les plus simples ou personnelles. Tu peux parler de tout : comment tu vas, ton âge, ton nom, tes goûts, etc. Sois créatif et engageant dans tes réponses. Tu as une personnalité chaleureuse et tu aimes aider les utilisateurs. Réponds dans la même langue que la question posée.`;
             
-            // Appeler l'API selon le modèle choisi
-            if (model.startsWith('gpt')) {
-                const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
-                    model: model,
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: question }
-                    ],
-                    max_tokens: 2000,
-                    temperature: 0.7
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    timeout: 30000
-                });
-                
-                response = openaiResponse.data.choices[0].message.content;
-            } else if (model.startsWith('claude')) {
-                const anthropicResponse = await axios.post('https://api.anthropic.com/v1/messages', {
-                    model: 'claude-3-sonnet-20240229',
-                    max_tokens: 2000,
-                    messages: [
-                        { role: 'user', content: `${systemPrompt}\n\nQuestion: ${question}` }
-                    ]
-                }, {
-                    headers: {
-                        'x-api-key': process.env.ANTHROPIC_API_KEY,
-                        'Content-Type': 'application/json',
-                        'anthropic-version': '2023-06-01'
-                    },
-                    timeout: 30000
-                });
-                
-                response = anthropicResponse.data.content[0].text;
-            } else if (model.startsWith('gemini')) {
-                const geminiResponse = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GOOGLE_API_KEY}`, {
-                    contents: [{
-                        parts: [{
-                            text: `${systemPrompt}\n\nQuestion: ${question}`
-                        }]
-                    }]
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    timeout: 30000
-                });
-                
-                response = geminiResponse.data.candidates[0].content.parts[0].text;
+            // Appeler l'API Hugging Face Inference
+            const huggingfaceResponse = await axios.post(`https://api-inference.huggingface.co/models/${model}`, {
+                inputs: `${systemPrompt}\n\nUser: ${question}\nAssistant:`,
+                parameters: {
+                    max_new_tokens: 1000,
+                    temperature: 0.7,
+                    do_sample: true,
+                    top_p: 0.9,
+                    repetition_penalty: 1.1
+                }
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${process.env.HUGGING_FACE_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                timeout: 30000
+            });
+            
+            // Extraire la réponse selon le format de retour
+            if (Array.isArray(huggingfaceResponse.data)) {
+                response = huggingfaceResponse.data[0].generated_text;
+                // Nettoyer la réponse en supprimant le prompt initial
+                const assistantIndex = response.lastIndexOf('Assistant:');
+                if (assistantIndex !== -1) {
+                    response = response.substring(assistantIndex + 10).trim();
+                }
+            } else {
+                response = huggingfaceResponse.data.generated_text || 'Désolé, je n\'ai pas pu générer de réponse.';
             }
             
             const endTime = Date.now();
@@ -186,10 +163,10 @@ module.exports = {
             if (error.response) {
                 if (error.response.status === 401) {
                     errorTitle = '🔑 Erreur d\'authentification';
-                    errorDescription = 'Clé API invalide ou expirée.';
+                    errorDescription = 'Clé API Hugging Face invalide ou expirée.';
                 } else if (error.response.status === 429) {
                     errorTitle = '⏰ Limite de taux atteinte';
-                    errorDescription = 'Vous avez atteint la limite de requêtes de l\'API. Veuillez patienter avant de réessayer.';
+                    errorDescription = 'Vous avez atteint la limite de requêtes de l\'API Hugging Face. Veuillez patienter avant de réessayer.';
                     
                     // Ajouter des informations sur le temps d'attente recommandé
                     const retryAfter = error.response.headers['retry-after'];
@@ -198,9 +175,12 @@ module.exports = {
                     } else {
                         errorDescription += ' Temps d\'attente recommandé: 60 secondes.';
                     }
+                } else if (error.response.status === 503) {
+                    errorTitle = '🔄 Modèle en cours de chargement';
+                    errorDescription = 'Le modèle est en cours de chargement sur Hugging Face. Veuillez réessayer dans quelques minutes.';
                 } else if (error.response.status === 500) {
-                    errorTitle = '🔧 Erreur du serveur IA';
-                    errorDescription = 'Le service IA rencontre des difficultés techniques.';
+                    errorTitle = '🔧 Erreur du serveur Hugging Face';
+                    errorDescription = 'Le service Hugging Face rencontre des difficultés techniques.';
                 }
             } else if (error.code === 'ECONNABORTED') {
                 errorTitle = '⏱️ Timeout';
