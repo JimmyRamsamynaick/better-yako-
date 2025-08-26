@@ -20,6 +20,7 @@ module.exports = {
         ),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
         const specificCommand = interaction.options.getString('command');
         
         if (specificCommand) {

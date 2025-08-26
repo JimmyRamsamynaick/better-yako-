@@ -11,6 +11,7 @@ module.exports = {
         }),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
         const guild = interaction.guild;
         
         // Calculer les statistiques des membres

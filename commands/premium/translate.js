@@ -95,6 +95,8 @@ module.exports = {
         ),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
+        
         const text = interaction.options.getString('text');
         const targetLang = interaction.options.getString('to');
         const sourceLang = interaction.options.getString('from') || 'auto';

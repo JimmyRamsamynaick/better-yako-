@@ -12,6 +12,7 @@ module.exports = {
         }),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
         // Calculer les statistiques de base
         const totalGuilds = client.guilds.cache.size;
         const totalUsers = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);

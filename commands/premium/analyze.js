@@ -120,6 +120,8 @@ module.exports = {
         ),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
+        
         const subcommand = interaction.options.getSubcommand();
         
         // Vérifier si les fonctionnalités IA sont activées

@@ -20,6 +20,7 @@ module.exports = {
         ),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
         const targetUser = interaction.options.getUser('user') || interaction.user;
         const member = interaction.guild.members.cache.get(targetUser.id);
         

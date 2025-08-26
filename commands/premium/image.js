@@ -77,6 +77,8 @@ module.exports = {
         ),
     
     async execute(interaction, client, getTranslation) {
+        await interaction.deferReply();
+        
         const prompt = interaction.options.getString('prompt');
         const style = interaction.options.getString('style') || 'realistic';
         const size = interaction.options.getString('size') || '1024x1024';
