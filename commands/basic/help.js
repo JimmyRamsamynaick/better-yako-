@@ -19,7 +19,9 @@ module.exports = {
                 .setRequired(false)
         ),
     
-    async execute(interaction, client, getTranslation) {
+    async execute(interaction, client) {
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
         await interaction.deferReply();
         const specificCommand = interaction.options.getString('command');
         

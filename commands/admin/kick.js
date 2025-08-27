@@ -29,23 +29,23 @@ module.exports = {
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.kick.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+        .setDescription(await t('admin.kick.no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             const targetUser = interaction.options.getUser('utilisateur');
-            const reason = interaction.options.getString('raison') || t('admin.kick.no_reason');
+            const reason = interaction.options.getString('raison') || await t('admin.kick.no_reason');
 
             // Vérification si l'utilisateur est dans le serveur
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.user_not_found'))
-                    .setDescription(t('admin.kick.user_not_in_server'))
+                    .setTitle(await t('errors.user_not_found'))
+        .setDescription(await t('admin.kick.user_not_in_server'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -54,8 +54,8 @@ module.exports = {
             // Vérification si on peut modérer cet utilisateur
             if (!PermissionManager.canModerate(member, targetMember)) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.cannot_moderate'))
-                    .setDescription(t('admin.kick.cannot_moderate_desc'))
+                    .setTitle(await t('errors.cannot_moderate'))
+        .setDescription(await t('admin.kick.cannot_moderate_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -65,8 +65,8 @@ module.exports = {
             const botMember = interaction.guild.members.me;
             if (!PermissionManager.canBotModerate(botMember, targetMember, 'kick')) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.bot_cannot_moderate'))
-                    .setDescription(t('admin.kick.bot_cannot_moderate_desc'))
+                    .setTitle(await t('errors.bot_cannot_moderate'))
+        .setDescription(await t('admin.kick.bot_cannot_moderate_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -78,8 +78,8 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle(t('admin.kick.dm_title'))
-                        .setDescription(t('admin.kick.dm_description', interaction.guild.name, reason))
+                        .setTitle(await t('admin.kick.dm_title'))
+        .setDescription(await t('admin.kick.dm_description', interaction.guild.name, reason))
                         .setColor('#FFA500')
                         .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
@@ -101,15 +101,15 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.kick.success'))
-                    .setDescription(t('admin.kick.success_desc', targetUser.tag, reason))
+                    .setTitle(await t('admin.kick.success'))
+        .setDescription(await t('admin.kick.success_desc', targetUser.tag, reason))
                     .setColor('#00FF00')
                     .setTimestamp()
                     .addFields(
-                        { name: t('admin.kick.details'), value: '\u200B', inline: false },
-                        { name: `👤 ${t('admin.kick.user')}`, value: `${targetUser.tag} (${targetUser.id})`, inline: true },
-                        { name: `👮 ${t('admin.kick.moderator')}`, value: interaction.user.tag, inline: true },
-                        { name: `📝 ${t('admin.kick.reason')}`, value: reason, inline: false }
+                        { name: await t('admin.kick.details'), value: '\u200B', inline: false },
+        { name: `👤 ${await t('admin.kick.user')}`, value: `${targetUser.tag} (${targetUser.id})`, inline: true },
+        { name: `👮 ${await t('admin.kick.moderator')}`, value: interaction.user.tag, inline: true },
+        { name: `📝 ${await t('admin.kick.reason')}`, value: reason, inline: false }
                     );
 
                 await interaction.editReply({ embeds: [successEmbed] });
@@ -119,12 +119,12 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`👢 ${t('admin.kick.log_title')}`)
-                            .setDescription(
-                                `**${t('admin.kick.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                `**${t('admin.kick.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.kick.reason')}:** ${reason}\n` +
-                                `**${t('admin.kick.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            .setTitle(`👢 ${await t('admin.kick.log_title')}`)
+        .setDescription(
+            `**${await t('admin.kick.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+            `**${await t('admin.kick.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+            `**${await t('admin.kick.reason')}:** ${reason}\n` +
+            `**${await t('admin.kick.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor('#0099FF')
                             .setTimestamp();
@@ -136,8 +136,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors de l\'expulsion:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
-                    .setDescription(t('admin.kick.error_desc', error.message))
+                    .setTitle(await t('errors.command_failed'))
+        .setDescription(await t('admin.kick.error_desc', error.message))
                     .setColor('#FF0000')
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -146,8 +146,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande kick:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await t('errors.unexpected'))
+        .setDescription(await t('errors.try_again'))
                 .setColor('#FF0000')
                 .setTimestamp();
             

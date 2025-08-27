@@ -23,20 +23,19 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.clear.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+                    .setDescription(await t('admin.clear.no_permission_desc'))
                     .setColor(0xED4245)
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -45,8 +44,8 @@ module.exports = {
             // Vérification des permissions du bot
             if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.bot_no_permission'))
-                    .setDescription(t('admin.clear.bot_no_permission_desc'))
+                    .setTitle(await t('errors.bot_no_permission'))
+                    .setDescription(await t('admin.clear.bot_no_permission_desc'))
                     .setColor(0xED4245)
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -54,7 +53,7 @@ module.exports = {
 
             const amount = interaction.options.getInteger('nombre');
             const targetUser = interaction.options.getUser('utilisateur');
-            const reason = interaction.options.getString('raison') || t('admin.clear.default_reason');
+            const reason = interaction.options.getString('raison') || await t('admin.clear.default_reason');
 
             await interaction.deferReply({ ephemeral: true });
 
@@ -76,8 +75,8 @@ module.exports = {
                     
                     if (messagesToDelete.length === 0) {
                         const embed = new EmbedBuilder()
-                            .setTitle(t('admin.clear.no_messages'))
-                            .setDescription(t('admin.clear.no_user_messages_desc', targetUser.tag))
+                            .setTitle(await t('admin.clear.no_messages'))
+                            .setDescription(await t('admin.clear.no_user_messages_desc', targetUser.tag))
                             .setColor(0xFEE75C)
                             .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
@@ -99,8 +98,8 @@ module.exports = {
                     
                     if (recentMessages.size === 0) {
                         const embed = new EmbedBuilder()
-                            .setTitle(t('admin.clear.no_messages'))
-                            .setDescription(t('admin.clear.no_recent_messages_desc'))
+                            .setTitle(await t('admin.clear.no_messages'))
+                            .setDescription(await t('admin.clear.no_recent_messages_desc'))
                             .setColor(0xFEE75C)
                             .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
@@ -114,8 +113,8 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.clear.success'))
-                    .setDescription(t('admin.clear.success_desc', deletedCount, interaction.channel.name))
+                    .setTitle(await t('admin.clear.success'))
+                    .setDescription(await t('admin.clear.success_desc', deletedCount, interaction.channel.name))
                     .setColor(0x57F287)
                     .addFields(
                         { name: '📊 Demandé', value: amount.toString(), inline: true },
@@ -140,14 +139,14 @@ module.exports = {
                 if (skippedCount > 0 || oldMessagesCount > 0) {
                     let warningText = '';
                     if (oldMessagesCount > 0) {
-                        warningText += t('admin.clear.old_messages_warning', oldMessagesCount) + '\n';
+                        warningText += await t('admin.clear.old_messages_warning', oldMessagesCount) + '\n';
                     }
                     if (skippedCount > 0) {
-                        warningText += t('admin.clear.skipped_warning', skippedCount);
+                        warningText += await t('admin.clear.skipped_warning', skippedCount);
                     }
                     
                     successEmbed.addFields({
-                        name: `⚠️ ${t('admin.clear.limitations')}`,
+                        name: `⚠️ ${await t('admin.clear.limitations')}`,
                         value: warningText.trim(),
                         inline: false
                     });
@@ -171,14 +170,14 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`🗑️ ${t('admin.clear.log_title')}`)
+                            .setTitle(`🗑️ ${await t('admin.clear.log_title')}`)
                             .setDescription(
-                                `**${t('admin.clear.channel')}:** ${interaction.channel.name} (${interaction.channel.id})\n` +
-                                `**${t('admin.clear.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.clear.deleted')}:** ${deletedCount} ${t('admin.clear.messages')}\n` +
-                                (targetUser ? `**${t('admin.clear.target_user')}:** ${targetUser.tag} (${targetUser.id})\n` : '') +
-                                `**${t('admin.clear.reason')}:** ${reason}\n` +
-                                `**${t('admin.clear.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                `**${await t('admin.clear.channel')}:** ${interaction.channel.name} (${interaction.channel.id})\n` +
+                                `**${await t('admin.clear.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${await t('admin.clear.deleted')}:** ${deletedCount} ${await t('admin.clear.messages')}\n` +
+                                (targetUser ? `**${await t('admin.clear.target_user')}:** ${targetUser.tag} (${targetUser.id})\n` : '') +
+                                `**${await t('admin.clear.reason')}:** ${reason}\n` +
+                                `**${await t('admin.clear.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor(0x5865F2)
                             .setTimestamp();
@@ -189,8 +188,8 @@ module.exports = {
 
                 // Message temporaire dans le canal pour informer les utilisateurs
                 const publicNotification = new EmbedBuilder()
-                    .setTitle(`🗑️ ${t('admin.clear.public_notification')}`)
-                    .setDescription(t('admin.clear.public_notification_desc', deletedCount, interaction.user.tag, reason))
+                    .setTitle(`🗑️ ${await t('admin.clear.public_notification')}`)
+                    .setDescription(await t('admin.clear.public_notification_desc', deletedCount, interaction.user.tag, reason))
                     .setColor(0x5865F2)
                     .setTimestamp();
 
@@ -208,16 +207,16 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors de la suppression des messages:', error);
                 
-                let errorMessage = t('admin.clear.error_desc', error.message);
+                let errorMessage = await t('admin.clear.error_desc', error.message);
                 
                 if (error.code === 50013) {
-                    errorMessage = t('admin.clear.permission_error');
+                    errorMessage = await t('admin.clear.permission_error');
                 } else if (error.code === 50034) {
-                    errorMessage = t('admin.clear.bulk_delete_error');
+                    errorMessage = await t('admin.clear.bulk_delete_error');
                 }
                 
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
+                    .setTitle(await t('errors.command_failed'))
                     .setDescription(errorMessage)
                     .setColor(0xED4245)
                     .setTimestamp();

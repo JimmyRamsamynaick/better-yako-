@@ -17,20 +17,19 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.warn.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+                .setDescription(await t('admin.warn.no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -44,8 +43,8 @@ module.exports = {
             
             if (!targetMember) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.user_not_found'))
-                    .setDescription(t('admin.warn.user_not_in_server'))
+                    .setTitle(await t('errors.user_not_found'))
+                .setDescription(await t('admin.warn.user_not_in_server'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -54,8 +53,8 @@ module.exports = {
             // Vérification si on peut modérer cet utilisateur
             if (!PermissionManager.canModerate(member, targetMember)) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.cannot_moderate'))
-                    .setDescription(t('admin.warn.cannot_moderate_desc'))
+                    .setTitle(await t('errors.cannot_moderate'))
+                .setDescription(await t('admin.warn.cannot_moderate_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -74,8 +73,8 @@ module.exports = {
 
                 if (!warning) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('errors.database_error'))
-                        .setDescription(t('admin.warn.database_error_desc'))
+                        .setTitle(await t('errors.database_error'))
+                    .setDescription(await t('admin.warn.database_error_desc'))
                         .setColor('#FF0000')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -88,8 +87,8 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle(t('admin.warn.dm_title'))
-                        .setDescription(t('admin.warn.dm_description', interaction.guild.name, reason, warningCount))
+                        .setTitle(await t('admin.warn.dm_title'))
+                    .setDescription(await t('admin.warn.dm_description', interaction.guild.name, reason, warningCount))
                         .setColor('#FFA500')
                         .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
@@ -99,33 +98,33 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.warn.success'))
-                    .setDescription(t('admin.warn.success_desc', targetUser.tag, reason))
+                    .setTitle(await t('admin.warn.success'))
+                .setDescription(await t('admin.warn.success_desc', targetUser.tag, reason))
                     .setColor('#FFA500')
                     .setTimestamp();
 
                 // Déterminer la couleur selon le nombre d'avertissements
                 let warningLevel = 'info';
-                let warningLevelText = t('admin.warn.level_low');
+                let warningLevelText = await t('admin.warn.level_low');
                 
                 if (warningCount >= 5) {
                     warningLevel = 'error';
-                    warningLevelText = t('admin.warn.level_critical');
+                    warningLevelText = await t('admin.warn.level_critical');
                 } else if (warningCount >= 3) {
                     warningLevel = 'warning';
-                    warningLevelText = t('admin.warn.level_high');
+                    warningLevelText = await t('admin.warn.level_high');
                 } else if (warningCount >= 2) {
                     warningLevel = 'warning';
-                    warningLevelText = t('admin.warn.level_medium');
+                    warningLevelText = await t('admin.warn.level_medium');
                 }
 
                 successEmbed.addFields(
-                    { name: t('admin.warn.details'), value: 
-                        `👤 **${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                        `👮 **${t('admin.warn.moderator')}:** ${interaction.user.tag}\n` +
-                        `📝 **${t('admin.warn.reason')}:** ${reason}\n` +
-                        `⚠️ **${t('admin.warn.total_warnings')}:** ${warningCount}\n` +
-                        `📊 **${t('admin.warn.warning_level')}:** ${warningLevelText}`,
+                    { name: await t('admin.warn.details'), value: 
+                        `👤 **${await t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                        `👮 **${await t('admin.warn.moderator')}:** ${interaction.user.tag}\n` +
+                        `📝 **${await t('admin.warn.reason')}:** ${reason}\n` +
+                        `⚠️ **${await t('admin.warn.total_warnings')}:** ${warningCount}\n` +
+                        `📊 **${await t('admin.warn.warning_level')}:** ${warningLevelText}`,
                         inline: false
                     }
                 );
@@ -134,8 +133,8 @@ module.exports = {
                 const embeds = [successEmbed];
                 if (warningCount >= 3) {
                     const alertEmbed = new EmbedBuilder()
-                        .setTitle(`⚠️ ${t('admin.warn.alert_title')}`)
-                        .setDescription(t('admin.warn.alert_desc', targetUser.tag, warningCount))
+                        .setTitle(`⚠️ ${await t('admin.warn.alert_title')}`)
+                        .setDescription(await t('admin.warn.alert_desc', targetUser.tag, warningCount))
                         .setColor('#FF0000')
                         .setTimestamp();
                     embeds.push(alertEmbed);
@@ -148,14 +147,14 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`⚠️ ${t('admin.warn.log_title')}`)
-                            .setDescription(
-                                `**${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                `**${t('admin.warn.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.warn.reason')}:** ${reason}\n` +
-                                `**${t('admin.warn.warning_id')}:** ${warning._id}\n` +
-                                `**${t('admin.warn.total_warnings')}:** ${warningCount}\n` +
-                                `**${t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            .setTitle(`⚠️ ${await t('admin.warn.log_title')}`)
+                        .setDescription(
+                            `**${await t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                            `**${await t('admin.warn.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                            `**${await t('admin.warn.reason')}:** ${reason}\n` +
+                            `**${await t('admin.warn.warning_id')}:** ${warning._id}\n` +
+                            `**${await t('admin.warn.total_warnings')}:** ${warningCount}\n` +
+                            `**${await t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor('#0099FF')
                             .setTimestamp();
@@ -174,8 +173,8 @@ module.exports = {
                         });
 
                         const autoBanEmbed = new EmbedBuilder()
-                            .setTitle(`🔨 ${t('admin.warn.auto_ban_title')}`)
-                            .setDescription(t('admin.warn.auto_ban_desc', targetUser.tag, warningCount))
+                            .setTitle(`🔨 ${await t('admin.warn.auto_ban_title')}`)
+                            .setDescription(await t('admin.warn.auto_ban_desc', targetUser.tag, warningCount))
                             .setColor('#FF0000')
                             .setTimestamp();
                         
@@ -186,11 +185,11 @@ module.exports = {
                             const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                             if (logChannel) {
                                 const autoBanLogEmbed = new EmbedBuilder()
-                                    .setTitle(`🔨 ${t('admin.warn.auto_ban_log_title')}`)
+                                    .setTitle(`🔨 ${await t('admin.warn.auto_ban_log_title')}`)
                                     .setDescription(
-                                        `**${t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                        `**${t('admin.warn.reason')}:** ${t('admin.warn.auto_ban_reason', warningCount)}\n` +
-                                        `**${t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                        `**${await t('admin.warn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                        `**${await t('admin.warn.reason')}:** ${await t('admin.warn.auto_ban_reason', warningCount)}\n` +
+                                        `**${await t('admin.warn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                                     )
                                     .setColor('#FF0000')
                                     .setTimestamp();
@@ -209,8 +208,8 @@ module.exports = {
                             await targetMember.timeout(60 * 60 * 1000, `Auto-mute: ${warningCount} avertissements`); // 1 heure
 
                             const autoMuteEmbed = new EmbedBuilder()
-                                .setTitle(`🔇 ${t('admin.warn.auto_mute_title')}`)
-                                .setDescription(t('admin.warn.auto_mute_desc', targetUser.tag, warningCount))
+                                .setTitle(`🔇 ${await t('admin.warn.auto_mute_title')}`)
+                                .setDescription(await t('admin.warn.auto_mute_desc', targetUser.tag, warningCount))
                                 .setColor('#FFA500')
                                 .setTimestamp();
                             
@@ -224,8 +223,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors de l\'avertissement:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
-                    .setDescription(t('admin.warn.error_desc', error.message))
+                    .setTitle(await t('errors.command_failed'))
+                    .setDescription(await t('admin.warn.error_desc', error.message))
                     .setColor('#FF0000')
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -234,8 +233,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande warn:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await t('errors.unexpected'))
+                .setDescription(await t('errors.try_again'))
                 .setColor('#FF0000')
                 .setTimestamp();
             

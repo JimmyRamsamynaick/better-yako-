@@ -21,20 +21,19 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.unwarn.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+                    .setDescription(await t('admin.unwarn.no_permission_desc'))
                     .setColor(0xFF0000)
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -42,7 +41,7 @@ module.exports = {
 
             const targetUser = interaction.options.getUser('utilisateur');
             const warningId = interaction.options.getString('id_avertissement');
-            const reason = interaction.options.getString('raison') || t('admin.unwarn.default_reason');
+            const reason = interaction.options.getString('raison') || await t('admin.unwarn.default_reason');
 
             await interaction.deferReply();
 
@@ -52,8 +51,8 @@ module.exports = {
                 
                 if (userWarnings.length === 0) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.unwarn.no_warnings'))
-                        .setDescription(t('admin.unwarn.no_warnings_desc', targetUser.tag))
+                        .setTitle(await t('admin.unwarn.no_warnings'))
+                        .setDescription(await t('admin.unwarn.no_warnings_desc', targetUser.tag))
                         .setColor(0xFFA500)
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -67,8 +66,8 @@ module.exports = {
                     
                     if (!warningToRemove) {
                         const embed = new EmbedBuilder()
-                            .setTitle(t('admin.unwarn.warning_not_found'))
-                            .setDescription(t('admin.unwarn.warning_not_found_desc', warningId))
+                            .setTitle(await t('admin.unwarn.warning_not_found'))
+                            .setDescription(await t('admin.unwarn.warning_not_found_desc', warningId))
                             .setColor(0xFF0000)
                             .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
@@ -83,8 +82,8 @@ module.exports = {
                 
                 if (!removed) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('errors.database_error'))
-                        .setDescription(t('admin.unwarn.database_error_desc'))
+                        .setTitle(await t('errors.database_error'))
+                        .setDescription(await t('admin.unwarn.database_error_desc'))
                         .setColor(0xFF0000)
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -97,8 +96,8 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle(t('admin.unwarn.dm_title'))
-                        .setDescription(t('admin.unwarn.dm_description', interaction.guild.name, reason, remainingCount))
+                        .setTitle(await t('admin.unwarn.dm_title'))
+                        .setDescription(await t('admin.unwarn.dm_description', interaction.guild.name, reason, remainingCount))
                         .setColor(0x00FF00)
                         .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
@@ -108,17 +107,17 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.unwarn.success'))
-                    .setDescription(t('admin.unwarn.success_desc', targetUser.tag))
+                    .setTitle(await t('admin.unwarn.success'))
+                    .setDescription(await t('admin.unwarn.success_desc', targetUser.tag))
                     .setColor(0x00FF00)
                     .setTimestamp()
                     .addFields(
-                        { name: '👤 ' + t('admin.unwarn.user'), value: `${targetUser.tag} (${targetUser.id})`, inline: true },
-                        { name: '👮 ' + t('admin.unwarn.moderator'), value: interaction.user.tag, inline: true },
-                        { name: '📝 ' + t('admin.unwarn.reason'), value: reason, inline: false },
-                        { name: '🗑️ ' + t('admin.unwarn.removed_warning'), value: warningToRemove.reason, inline: false },
-                        { name: '📅 ' + t('admin.unwarn.warning_date'), value: `<t:${Math.floor(new Date(warningToRemove.createdAt).getTime() / 1000)}:F>`, inline: true },
-                        { name: '⚠️ ' + t('admin.unwarn.remaining_warnings'), value: remainingCount.toString(), inline: true }
+                        { name: '👤 ' + await t('admin.unwarn.user'), value: `${targetUser.tag} (${targetUser.id})`, inline: true },
+                        { name: '👮 ' + await t('admin.unwarn.moderator'), value: interaction.user.tag, inline: true },
+                        { name: '📝 ' + await t('admin.unwarn.reason'), value: reason, inline: false },
+                        { name: '🗑️ ' + await t('admin.unwarn.removed_warning'), value: warningToRemove.reason, inline: false },
+                        { name: '📅 ' + await t('admin.unwarn.warning_date'), value: `<t:${Math.floor(new Date(warningToRemove.createdAt).getTime() / 1000)}:F>`, inline: true },
+                        { name: '⚠️ ' + await t('admin.unwarn.remaining_warnings'), value: remainingCount.toString(), inline: true }
                     );
 
                 const embeds = [successEmbed];
@@ -135,16 +134,16 @@ module.exports = {
                         .join('\n');
 
                     const remainingEmbed = new EmbedBuilder()
-                        .setTitle(`📋 ${t('admin.unwarn.remaining_warnings_title')}`)
-                        .setDescription(warningsList + (remainingCount > 5 ? `\n\n*${t('admin.unwarn.and_more', remainingCount - 5)}*` : ''))
+                        .setTitle(`📋 ${await t('admin.unwarn.remaining_warnings_title')}`)
+                        .setDescription(warningsList + (remainingCount > 5 ? `\n\n*${await t('admin.unwarn.and_more', remainingCount - 5)}*` : ''))
                         .setColor(0x0099FF)
                         .setTimestamp();
                     
                     embeds.push(remainingEmbed);
                 } else {
                     const cleanSlateEmbed = new EmbedBuilder()
-                        .setTitle(`✨ ${t('admin.unwarn.clean_slate')}`)
-                        .setDescription(t('admin.unwarn.clean_slate_desc', targetUser.tag))
+                        .setTitle(`✨ ${await t('admin.unwarn.clean_slate')}`)
+                        .setDescription(await t('admin.unwarn.clean_slate_desc', targetUser.tag))
                         .setColor(0x00FF00)
                         .setTimestamp();
                     embeds.push(cleanSlateEmbed);
@@ -157,15 +156,15 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`🗑️ ${t('admin.unwarn.log_title')}`)
+                            .setTitle(`🗑️ ${await t('admin.unwarn.log_title')}`)
                             .setDescription(
-                                `**${t('admin.unwarn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                `**${t('admin.unwarn.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.unwarn.reason')}:** ${reason}\n` +
-                                `**${t('admin.unwarn.removed_warning')}:** ${warningToRemove.reason}\n` +
-                                `**${t('admin.unwarn.warning_id')}:** ${warningToRemove._id}\n` +
-                                `**${t('admin.unwarn.remaining_warnings')}:** ${remainingCount}\n` +
-                                `**${t('admin.unwarn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                `**${await t('admin.unwarn.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                `**${await t('admin.unwarn.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${await t('admin.unwarn.reason')}:** ${reason}\n` +
+                                `**${await t('admin.unwarn.removed_warning')}:** ${warningToRemove.reason}\n` +
+                                `**${await t('admin.unwarn.warning_id')}:** ${warningToRemove._id}\n` +
+                                `**${await t('admin.unwarn.remaining_warnings')}:** ${remainingCount}\n` +
+                                `**${await t('admin.unwarn.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor(0x0099FF)
                             .setTimestamp();
@@ -177,8 +176,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors du retrait de l\'avertissement:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
-                    .setDescription(t('admin.unwarn.error_desc', error.message))
+                    .setTitle(await t('errors.command_failed'))
+                    .setDescription(await t('admin.unwarn.error_desc', error.message))
                     .setColor(0xFF0000)
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -187,8 +186,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande unwarn:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await t('errors.unexpected'))
+                .setDescription(await t('errors.try_again'))
                 .setColor(0xFF0000)
                 .setTimestamp();
             

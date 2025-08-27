@@ -17,27 +17,26 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle('❌ Permissions insuffisantes')
-                    .setDescription('Vous n\'avez pas les permissions nécessaires pour utiliser cette commande.')
+                    .setTitle(await t('errors.no_permission'))
+                    .setDescription(await t('admin.unban.no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             const userInput = interaction.options.getString('utilisateur');
-            const reason = interaction.options.getString('raison') || 'Aucune raison spécifiée';
+            const reason = interaction.options.getString('raison') || await t('admin.unban.default_reason');
 
             await interaction.deferReply();
 
@@ -63,8 +62,8 @@ module.exports = {
 
                 if (!targetUser) {
                     const embed = new EmbedBuilder()
-                        .setTitle('❌ Utilisateur introuvable')
-                        .setDescription(`Impossible de trouver un utilisateur avec l'identifiant: \`${userInput}\``)
+                        .setTitle(await t('errors.user_not_found'))
+                        .setDescription(await t('admin.unban.user_not_found_desc', userInput))
                         .setColor('#FF0000')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -76,8 +75,8 @@ module.exports = {
                         banInfo = await interaction.guild.bans.fetch(targetUser.id);
                     } catch (error) {
                         const embed = new EmbedBuilder()
-                            .setTitle('⚠️ Utilisateur non banni')
-                            .setDescription(`L'utilisateur ${targetUser.tag} n'est pas banni de ce serveur.`)
+                            .setTitle(await t('admin.unban.not_banned'))
+                            .setDescription(await t('admin.unban.not_banned_desc', targetUser.tag))
                             .setColor('#FFA500')
                             .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
@@ -98,18 +97,18 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle('✅ Débannissement réussi')
-                    .setDescription(`**${targetUser.tag}** a été débanni avec succès du serveur.`)
+                    .setTitle(await t('admin.unban.success'))
+                    .setDescription(await t('admin.unban.success_desc', targetUser.tag))
                     .setColor('#00FF00')
                     .setTimestamp()
                     .addFields(
-                        { name: '📋 Détails du débannissement', value: '\u200B', inline: false },
-                        { name: '👤 Utilisateur', value: `${targetUser.tag} (${targetUser.id})`, inline: true },
-                        { name: '👮 Modérateur', value: interaction.user.tag, inline: true },
-                        { name: '📝 Raison', value: reason, inline: false },
-                        { name: '📅 Date', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
+                        { name: await t('admin.unban.details'), value: '\u200B', inline: false },
+                        { name: `👤 ${await t('admin.unban.user')}`, value: `${targetUser.tag} (${targetUser.id})`, inline: true },
+                        { name: `👮 ${await t('admin.unban.moderator')}`, value: interaction.user.tag, inline: true },
+                        { name: `📝 ${await t('admin.unban.reason')}`, value: reason, inline: false },
+                        { name: `📅 ${await t('admin.unban.date')}`, value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
                     )
-                    .setFooter({ text: `Débanni par ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
+                    .setFooter({ text: await t('admin.unban.footer', interaction.user.tag), iconURL: interaction.user.displayAvatarURL() });
 
                 await interaction.editReply({ embeds: [successEmbed] });
 
@@ -118,13 +117,13 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle('🔓 Débannissement')
+                            .setTitle(`🔓 ${await t('admin.unban.log_title')}`)
                             .setDescription(
-                                `**Utilisateur:** ${targetUser.tag} (${targetUser.id})\n` +
-                                `**Modérateur:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**Raison:** ${reason}\n` +
-                                `**Raison du ban original:** ${banInfo?.reason || 'Inconnue'}\n` +
-                                `**Horodatage:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                `**${await t('admin.unban.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                                `**${await t('admin.unban.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${await t('admin.unban.reason')}:** ${reason}\n` +
+                                `**${await t('admin.unban.original_ban_reason')}:** ${banInfo?.reason || await t('admin.unban.unknown')}\n` +
+                                `**${await t('admin.unban.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor('#0099FF')
                             .setTimestamp();
@@ -136,8 +135,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors du débannissement:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle('❌ Erreur lors du débannissement')
-                    .setDescription(`Une erreur s'est produite: ${error.message}`)
+                    .setTitle(await t('errors.command_failed'))
+                    .setDescription(await t('admin.unban.error_desc', error.message))
                     .setColor('#FF0000')
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -146,8 +145,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande unban:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle('❌ Erreur inattendue')
-                .setDescription('Une erreur inattendue s\'est produite. Veuillez réessayer.')
+                .setTitle(await t('errors.unexpected'))
+                .setDescription(await t('errors.try_again'))
                 .setColor('#FF0000')
                 .setTimestamp();
             

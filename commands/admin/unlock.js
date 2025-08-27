@@ -17,20 +17,19 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.unlock.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+                    .setDescription(await t('admin.unlock.no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -39,21 +38,21 @@ module.exports = {
             // Vérification des permissions du bot
             if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.bot_no_permission'))
-                    .setDescription(t('admin.unlock.bot_no_permission_desc'))
+                    .setTitle(await t('errors.bot_no_permission'))
+                    .setDescription(await t('admin.unlock.bot_no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             const targetChannel = interaction.options.getChannel('canal') || interaction.channel;
-            const reason = interaction.options.getString('raison') || t('admin.unlock.default_reason');
+            const reason = interaction.options.getString('raison') || await t('admin.unlock.default_reason');
 
             // Vérification que c'est un canal textuel
             if (!targetChannel.isTextBased()) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('admin.unlock.invalid_channel'))
-                    .setDescription(t('admin.unlock.invalid_channel_desc'))
+                    .setTitle(await t('admin.unlock.invalid_channel'))
+                    .setDescription(await t('admin.unlock.invalid_channel_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -62,8 +61,8 @@ module.exports = {
             // Vérification des permissions du bot sur le canal cible
             if (!targetChannel.permissionsFor(interaction.guild.members.me).has(PermissionFlagsBits.ManageChannels)) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.bot_no_permission'))
-                    .setDescription(t('admin.unlock.bot_no_channel_permission_desc', targetChannel.name))
+                    .setTitle(await t('errors.bot_no_permission'))
+                    .setDescription(await t('admin.unlock.bot_no_channel_permission_desc', targetChannel.name))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -78,8 +77,8 @@ module.exports = {
                 
                 if (!currentPermissions || !currentPermissions.deny.has(PermissionFlagsBits.SendMessages)) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.unlock.not_locked'))
-                        .setDescription(t('admin.unlock.not_locked_desc', targetChannel.name))
+                        .setTitle(await t('admin.unlock.not_locked'))
+                        .setDescription(await t('admin.unlock.not_locked_desc', targetChannel.name))
                         .setColor('#FFA500')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -120,8 +119,8 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(`🔓 ${t('admin.unlock.success')}`)
-                    .setDescription(`✅ ${t('admin.unlock.success_desc', targetChannel.name)}`)
+                    .setTitle(`🔓 ${await t('admin.unlock.success')}`)
+                    .setDescription(`✅ ${await t('admin.unlock.success_desc', targetChannel.name)}`)
                     .addFields(
                         { name: '🔓 Canal déverrouillé', value: `${targetChannel.toString()}\n\`#${targetChannel.name}\``, inline: true },
                         { name: '👮 Modérateur', value: `${interaction.user.toString()}\n\`${interaction.user.tag}\``, inline: true },
@@ -141,7 +140,7 @@ module.exports = {
                     }).join('\n');
 
                     const lockHistoryEmbed = new EmbedBuilder()
-                        .setTitle(`📋 ${t('admin.unlock.previous_locks')}`)
+                        .setTitle(`📋 ${await t('admin.unlock.previous_locks')}`)
                         .setDescription(lockInfo)
                         .setColor('#0099FF')
                         .setTimestamp();
@@ -171,7 +170,7 @@ module.exports = {
 
                 // Message dans le canal déverrouillé
                 const unlockNotification = new EmbedBuilder()
-                    .setTitle(`🔓 ${t('admin.unlock.channel_unlocked')}`)
+                    .setTitle(`🔓 ${await t('admin.unlock.channel_unlocked')}`)
                     .setDescription(`🎉 **Ce canal a été déverrouillé par ${interaction.user.tag}**\n\n📝 **Raison:** ${reason}\n\n✅ **Vous pouvez maintenant écrire à nouveau dans ce canal !**`)
                     .setColor('#57f287')
                     .setTimestamp()
@@ -184,13 +183,13 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`🔓 ${t('admin.unlock.log_title')}`)
+                            .setTitle(`🔓 ${await t('admin.unlock.log_title')}`)
                             .setDescription(
-                                `**${t('admin.unlock.channel')}:** ${targetChannel.name} (${targetChannel.id})\n` +
-                                `**${t('admin.unlock.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.unlock.reason')}:** ${reason}\n` +
-                                (activeLockSanctions.length > 0 ? `**${t('admin.unlock.expired_locks')}:** ${activeLockSanctions.length}\n` : '') +
-                                `**${t('admin.unlock.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                `**${await t('admin.unlock.channel')}:** ${targetChannel.name} (${targetChannel.id})\n` +
+                                `**${await t('admin.unlock.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${await t('admin.unlock.reason')}:** ${reason}\n` +
+                                (activeLockSanctions.length > 0 ? `**${await t('admin.unlock.expired_locks')}:** ${activeLockSanctions.length}\n` : '') +
+                                `**${await t('admin.unlock.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor('#00FF00')
                             .setTimestamp();
@@ -202,16 +201,16 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors du déverrouillage du canal:', error);
                 
-                let errorMessage = t('admin.unlock.error_desc', error.message);
+                let errorMessage = await t('admin.unlock.error_desc', error.message);
                 
                 if (error.code === 50013) {
-                    errorMessage = t('admin.unlock.permission_error');
+                    errorMessage = await t('admin.unlock.permission_error');
                 } else if (error.code === 50001) {
-                    errorMessage = t('admin.unlock.access_error');
+                    errorMessage = await t('admin.unlock.access_error');
                 }
                 
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
+                    .setTitle(await t('errors.command_failed'))
                     .setDescription(errorMessage)
                     .setColor('#FF0000')
                     .setTimestamp();
@@ -221,8 +220,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande unlock:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await t('errors.unexpected'))
+                .setDescription(await t('errors.try_again'))
                 .setColor('#FF0000')
                 .setTimestamp();
             

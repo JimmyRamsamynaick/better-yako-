@@ -18,7 +18,7 @@ const sanctionSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ['ban', 'kick', 'mute', 'unmute', 'warn', 'unwarn', 'clear', 'lock', 'unlock', 'setlang'],
+    enum: ['ban', 'unban', 'kick', 'mute', 'unmute', 'warn', 'unwarn', 'clear', 'lock', 'unlock', 'setlang'],
     index: true
   },
   reason: {

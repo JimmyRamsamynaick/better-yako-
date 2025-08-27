@@ -47,7 +47,8 @@ class DatabaseManager {
                 userId,
                 guildId,
                 moderatorId,
-                reason
+                reason,
+                warningId: Warning.generateWarningId()
             });
             await warning.save();
             return warning;

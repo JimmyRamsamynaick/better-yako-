@@ -28,10 +28,15 @@ class PermissionManager {
         }
 
         // Vérification des rôles par nom (fallback)
-        const adminRoleNames = ['admin', 'administrateur', 'administrator'];
+        const adminRoleNames = ['admin', 'administrateur', 'administrator', 'yako', 'bot'];
         const hasAdminRoleName = member.roles.cache.some(role => 
             adminRoleNames.includes(role.name.toLowerCase())
         );
+
+        // Vérification si c'est le bot lui-même
+        if (member.user.bot && member.user.username.toLowerCase().includes('yako')) {
+            return true;
+        }
 
         return hasAdminRoleName;
     }
@@ -78,7 +83,7 @@ class PermissionManager {
      * @param {GuildMember} target - La cible
      * @returns {boolean}
      */
-    static canModerate(moderator, target) {
+    static async canModerate(moderator, target) {
         // Ne peut pas se modérer soi-même
         if (moderator.id === target.id) {
             return false;
@@ -94,8 +99,15 @@ class PermissionManager {
             return false;
         }
 
-        // Ne peut pas modérer un bot (sauf si c'est un admin)
-        if (target.user.bot && !moderator.permissions.has(PermissionFlagsBits.Administrator)) {
+        // Vérifier si le modérateur est admin ou a le rôle yako/bot
+        const isModeratorAdmin = await this.isAdmin(moderator);
+        const hasYakoRole = moderator.roles.cache.some(role => 
+            ['yako', 'bot'].includes(role.name.toLowerCase())
+        );
+        const isYakoBot = moderator.user.bot && moderator.user.username.toLowerCase().includes('yako');
+
+        // Ne peut pas modérer un bot (sauf si c'est un admin, a le rôle yako/bot, ou est le bot yako)
+        if (target.user.bot && !isModeratorAdmin && !hasYakoRole && !isYakoBot) {
             return false;
         }
 

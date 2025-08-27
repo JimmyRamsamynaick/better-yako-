@@ -69,19 +69,89 @@ const loadEvents = () => {
 };
 
 // Fonction pour obtenir la traduction
-const getTranslation = (guildId, key, ...args) => {
-    // Par défaut français, puis anglais, puis espagnol
-    const guildLang = 'fr'; // TODO: Récupérer depuis la base de données
-    const lang = client.languages.get(guildLang) || client.languages.get('fr');
-    
-    let translation = lang[key] || key;
-    
-    // Remplacer les placeholders {0}, {1}, etc.
-    args.forEach((arg, index) => {
-        translation = translation.replace(`{${index}}`, arg);
-    });
-    
-    return translation;
+const getTranslation = async (guildId, key, ...args) => {
+    try {
+        // Récupérer la langue de la guilde depuis la base de données
+        let guildLang = 'fr'; // Défaut
+        
+        if (guildId) {
+            const guildConfig = await DatabaseManager.getGuildConfig(guildId);
+            guildLang = guildConfig?.language || 'fr';
+        }
+        
+        const lang = client.languages.get(guildLang) || client.languages.get('fr') || client.languages.get('en');
+        
+        // Naviguer dans l'objet de traduction pour les clés imbriquées (ex: "admin.ban.success")
+        let translation = lang;
+        const keyParts = key.split('.');
+        
+        for (const part of keyParts) {
+            if (translation && typeof translation === 'object' && translation[part] !== undefined) {
+                translation = translation[part];
+            } else {
+                // Si la clé n'est pas trouvée, retourner la clé originale
+                translation = key;
+                break;
+            }
+        }
+        
+        // Si ce n'est pas une chaîne, retourner la clé originale
+        if (typeof translation !== 'string') {
+            translation = key;
+        }
+        
+        // Remplacer les placeholders {0}, {1}, etc.
+        args.forEach((arg, index) => {
+            translation = translation.replace(`{${index}}`, arg);
+        });
+        
+        return translation;
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la traduction:', error);
+        return key; // Retourner la clé en cas d'erreur
+    }
+};
+
+// Version synchrone pour la compatibilité
+const getTranslationSync = async (guildId, key, ...args) => {
+    try {
+        // Récupérer la langue de la guilde depuis la base de données
+        let guildLang = 'fr'; // Défaut
+        
+        if (guildId) {
+            const guildConfig = await DatabaseManager.getGuildConfig(guildId);
+            guildLang = guildConfig?.language || 'fr';
+        }
+        
+        const lang = client.languages.get(guildLang) || client.languages.get('fr') || client.languages.get('en');
+        
+        // Naviguer dans l'objet de traduction pour les clés imbriquées
+        let translation = lang;
+        const keyParts = key.split('.');
+        
+        for (const part of keyParts) {
+            if (translation && typeof translation === 'object' && translation[part] !== undefined) {
+                translation = translation[part];
+            } else {
+                translation = key;
+                break;
+            }
+        }
+        
+        if (typeof translation !== 'string') {
+            translation = key;
+        }
+        
+        // Remplacer les placeholders
+        args.forEach((arg, index) => {
+            translation = translation.replace(`{${index}}`, arg);
+        });
+        
+        return translation;
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la traduction sync:', error);
+        return key;
+    }
 };
 
 // API Web
@@ -145,4 +215,4 @@ process.on('uncaughtException', error => {
 startBot();
 
 // Export pour les modules
-module.exports = { client, getTranslation };
+module.exports = { client, getTranslation, getTranslationSync, loadLanguages };

@@ -18,13 +18,13 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
 
     async execute(interaction) {
-        const { getTranslation, loadLanguages } = require('../../index');
+        const { getTranslationSync, loadLanguages } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
         
         try {
             // Récupération de la configuration actuelle
             const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const currentLang = guildConfig?.language || 'fr';
-            const t = (key, ...args) => getTranslation(currentLang, key, ...args);
 
             // Vérification des permissions
             const member = interaction.member;
@@ -32,8 +32,8 @@ module.exports = {
             
             if (!isAdmin) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.setlang.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+                    .setDescription(await t('admin.setlang.no_permission_desc'))
                     .setColor(0xFF0000)
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -44,8 +44,8 @@ module.exports = {
             // Vérification si la langue est déjà définie
             if (currentLang === newLang) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('admin.setlang.already_set'))
-                    .setDescription(t('admin.setlang.already_set_desc', newLang))
+                    .setTitle(await t('admin.setlang.already_set'))
+                    .setDescription(await t('admin.setlang.already_set_desc', newLang))
                     .setColor(0xFFA500)
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -62,8 +62,8 @@ module.exports = {
 
                 if (!updatedConfig) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('errors.database_error'))
-                        .setDescription(t('admin.setlang.database_error_desc'))
+                        .setTitle(await t('errors.database_error'))
+                        .setDescription(await t('admin.setlang.database_error_desc'))
                         .setColor(0xFF0000)
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -73,7 +73,8 @@ module.exports = {
                 await loadLanguages();
 
                 // Utilisation de la nouvelle langue pour les messages de confirmation
-                const newT = (key, ...args) => getTranslation(newLang, key, ...args);
+                const { getTranslationSync } = require('../../index');
+                const newT = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
                 // Mapping des langues pour l'affichage
                 const languageNames = {
@@ -87,36 +88,36 @@ module.exports = {
 
                 // Message de confirmation dans la nouvelle langue
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(newT('admin.setlang.success'))
-                    .setDescription(newT('admin.setlang.success_desc', newLanguageName))
+                    .setTitle(await newT('admin.setlang.success'))
+                    .setDescription(await newT('admin.setlang.success_desc', newLanguageName))
                     .setColor(0x00FF00)
                     .setTimestamp()
                     .addFields(
-                        { name: '🌐 ' + newT('admin.setlang.previous_language'), value: oldLanguageName, inline: true },
-                        { name: '🌐 ' + newT('admin.setlang.new_language'), value: newLanguageName, inline: true },
-                        { name: '👮 ' + newT('admin.setlang.changed_by'), value: interaction.user.tag, inline: true },
-                        { name: '🏠 ' + newT('admin.setlang.server'), value: interaction.guild.name, inline: false },
-                        { name: '📅 ' + newT('admin.setlang.timestamp'), value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+                        { name: '🌐 ' + await newT('admin.setlang.previous_language'), value: oldLanguageName, inline: true },
+                        { name: '🌐 ' + await newT('admin.setlang.new_language'), value: newLanguageName, inline: true },
+                        { name: '👮 ' + await newT('admin.setlang.changed_by'), value: interaction.user.tag, inline: true },
+                        { name: '🏠 ' + await newT('admin.setlang.server'), value: interaction.guild.name, inline: false },
+                        { name: '📅 ' + await newT('admin.setlang.timestamp'), value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
                     );
 
                 const embeds = [successEmbed];
 
                 // Informations sur les fonctionnalités multilingues
                 const infoEmbed = new EmbedBuilder()
-                    .setTitle(`ℹ️ ${newT('admin.setlang.info_title')}`)
-                    .setDescription(newT('admin.setlang.info_desc'))
+                    .setTitle(`ℹ️ ${await newT('admin.setlang.info_title')}`)
+                    .setDescription(await newT('admin.setlang.info_desc'))
                     .setColor(0x0099FF)
                     .setTimestamp();
                 embeds.push(infoEmbed);
 
                 // Exemples de commandes dans la nouvelle langue
                 const examplesEmbed = new EmbedBuilder()
-                    .setTitle(`📚 ${newT('admin.setlang.examples_title')}`)
+                    .setTitle(`📚 ${await newT('admin.setlang.examples_title')}`)
                     .setDescription(
-                        `• \`/help\` - ${newT('admin.setlang.help_example')}\n` +
-                        `• \`/ban\` - ${newT('admin.setlang.ban_example')}\n` +
-                        `• \`/warn\` - ${newT('admin.setlang.warn_example')}\n` +
-                        `• \`/setlang\` - ${newT('admin.setlang.setlang_example')}`
+                        `• \`/help\` - ${await newT('admin.setlang.help_example')}\n` +
+                        `• \`/ban\` - ${await newT('admin.setlang.ban_example')}\n` +
+                        `• \`/warn\` - ${await newT('admin.setlang.warn_example')}\n` +
+                        `• \`/setlang\` - ${await newT('admin.setlang.setlang_example')}`
                     )
                     .setColor(0x0099FF)
                     .setTimestamp();
@@ -129,13 +130,13 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`🌐 ${newT('admin.setlang.log_title')}`)
+                            .setTitle(`🌐 ${await newT('admin.setlang.log_title')}`)
                             .setDescription(
-                                `**${newT('admin.setlang.server')}:** ${interaction.guild.name} (${interaction.guild.id})\n` +
-                                `**${newT('admin.setlang.changed_by')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${newT('admin.setlang.previous_language')}:** ${oldLanguageName}\n` +
-                                `**${newT('admin.setlang.new_language')}:** ${newLanguageName}\n` +
-                                `**${newT('admin.setlang.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                `**${await newT('admin.setlang.server')}:** ${interaction.guild.name} (${interaction.guild.id})\n` +
+                                `**${await newT('admin.setlang.changed_by')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                                `**${await newT('admin.setlang.previous_language')}:** ${oldLanguageName}\n` +
+                                `**${await newT('admin.setlang.new_language')}:** ${newLanguageName}\n` +
+                                `**${await newT('admin.setlang.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor(0x0099FF)
                             .setTimestamp();
@@ -147,8 +148,8 @@ module.exports = {
                 // Message d'annonce publique (optionnel)
                 try {
                     const announcementEmbed = new EmbedBuilder()
-                        .setTitle(`🌐 ${newT('admin.setlang.announcement_title')}`)
-                        .setDescription(newT('admin.setlang.announcement_desc', newLanguageName, interaction.user.tag))
+                        .setTitle(`🌐 ${await newT('admin.setlang.announcement_title')}`)
+                        .setDescription(await newT('admin.setlang.announcement_desc', newLanguageName, interaction.user.tag))
                         .setColor(0x0099FF)
                         .setTimestamp();
 
@@ -174,8 +175,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors du changement de langue:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
-                    .setDescription(t('admin.setlang.error_desc', error.message))
+                    .setTitle(await t('errors.command_failed'))
+                    .setDescription(await t('admin.setlang.error_desc', error.message))
                     .setColor(0xFF0000)
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -185,10 +186,11 @@ module.exports = {
             console.error('Erreur dans la commande setlang:', error);
             
             // Utilisation de la langue par défaut en cas d'erreur
-            const t = (key, ...args) => getTranslation('fr', key, ...args);
+            const { getTranslationSync } = require('../../index');
+            const defaultT = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await defaultT('errors.unexpected'))
+                .setDescription(await defaultT('errors.try_again'))
                 .setColor(0xFF0000)
                 .setTimestamp();
             

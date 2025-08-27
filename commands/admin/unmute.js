@@ -17,35 +17,34 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.unmute.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+        .setDescription(await t('admin.unmute.no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
             const targetUser = interaction.options.getUser('utilisateur');
-            const reason = interaction.options.getString('raison') || t('admin.unmute.no_reason');
+            const reason = interaction.options.getString('raison') || await t('admin.unmute.no_reason');
 
             // Vérification si l'utilisateur est dans le serveur
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.user_not_found'))
-                    .setDescription(t('admin.unmute.user_not_in_server'))
+                    .setTitle(await t('errors.user_not_found'))
+        .setDescription(await t('admin.unmute.user_not_in_server'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -59,8 +58,8 @@ module.exports = {
                 
                 if (!muteRole) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.unmute.role_error'))
-                        .setDescription(t('admin.unmute.role_error_desc'))
+                        .setTitle(await t('admin.unmute.role_error'))
+        .setDescription(await t('admin.unmute.role_error_desc'))
                         .setColor('#FF0000')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -71,8 +70,8 @@ module.exports = {
                 
                 if (!isMuted) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.unmute.not_muted'))
-                        .setDescription(t('admin.unmute.not_muted_desc', targetUser.tag))
+                        .setTitle(await t('admin.unmute.not_muted'))
+        .setDescription(await t('admin.unmute.not_muted_desc', targetUser.tag))
                         .setColor('#FFA500')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -81,8 +80,8 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle(t('admin.unmute.dm_title'))
-                        .setDescription(t('admin.unmute.dm_description', interaction.guild.name, reason))
+                        .setTitle(await t('admin.unmute.dm_title'))
+        .setDescription(await t('admin.unmute.dm_description', interaction.guild.name, reason))
                         .setColor('#00FF00')
                         .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
@@ -119,8 +118,8 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.unmute.success'))
-                    .setDescription(t('admin.unmute.success_desc', targetUser.tag, reason))
+                    .setTitle(await t('admin.unmute.success'))
+        .setDescription(await t('admin.unmute.success_desc', targetUser.tag, reason))
                     .addFields(
                         { name: '👤 Utilisateur', value: `${targetUser.tag} (${targetUser.id})`, inline: true },
                         { name: '👮 Modérateur', value: interaction.user.tag, inline: true },
@@ -136,12 +135,12 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`🔊 ${t('admin.unmute.log_title')}`)
-                            .setDescription(
-                                `**${t('admin.unmute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                `**${t('admin.unmute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.unmute.reason')}:** ${reason}\n` +
-                                `**${t('admin.unmute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            .setTitle(`🔊 ${await t('admin.unmute.log_title')}`)
+        .setDescription(
+            `**${await t('admin.unmute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+            `**${await t('admin.unmute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+            `**${await t('admin.unmute.reason')}:** ${reason}\n` +
+            `**${await t('admin.unmute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor('#0099FF')
                             .setTimestamp();
@@ -153,8 +152,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors du démute:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
-                    .setDescription(t('admin.unmute.error_desc', error.message))
+                    .setTitle(await t('errors.command_failed'))
+        .setDescription(await t('admin.unmute.error_desc', error.message))
                     .setColor('#FF0000')
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -163,8 +162,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande unmute:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await t('errors.unexpected'))
+        .setDescription(await t('errors.try_again'))
                 .setColor('#FF0000')
                 .setTimestamp();
             

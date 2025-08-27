@@ -21,20 +21,19 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
     async execute(interaction) {
-        const { getTranslation } = require('../../index');
-        const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
-        const lang = guildConfig?.language || 'fr';
-        const t = (key, ...args) => getTranslation(lang, key, ...args);
+        const { getTranslationSync } = require('../../index');
+        const t = async (key, ...args) => await getTranslationSync(interaction.guild.id, key, ...args);
 
         try {
             // Vérification des permissions
             const member = interaction.member;
+            const guildConfig = await DatabaseManager.getGuildConfig(interaction.guild.id);
             const isModerator = await PermissionManager.isModerator(member, guildConfig);
             
             if (!isModerator) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.no_permission'))
-                    .setDescription(t('admin.mute.no_permission_desc'))
+                    .setTitle(await t('errors.no_permission'))
+        .setDescription(await t('admin.mute.no_permission_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -42,15 +41,15 @@ module.exports = {
 
             const targetUser = interaction.options.getUser('utilisateur');
             const durationStr = interaction.options.getString('duree');
-            const reason = interaction.options.getString('raison') || t('admin.mute.no_reason');
+            const reason = interaction.options.getString('raison') || await t('admin.mute.no_reason');
 
             // Vérification si l'utilisateur est dans le serveur
             const targetMember = interaction.guild.members.cache.get(targetUser.id);
             
             if (!targetMember) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.user_not_found'))
-                    .setDescription(t('admin.mute.user_not_in_server'))
+                    .setTitle(await t('errors.user_not_found'))
+        .setDescription(await t('admin.mute.user_not_in_server'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -59,8 +58,8 @@ module.exports = {
             // Vérification si on peut modérer cet utilisateur
             if (!PermissionManager.canModerate(member, targetMember)) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.cannot_moderate'))
-                    .setDescription(t('admin.mute.cannot_moderate_desc'))
+                    .setTitle(await t('errors.cannot_moderate'))
+        .setDescription(await t('admin.mute.cannot_moderate_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -70,8 +69,8 @@ module.exports = {
             const botMember = interaction.guild.members.me;
             if (!PermissionManager.canBotModerate(botMember, targetMember, 'mute')) {
                 const embed = new EmbedBuilder()
-                    .setTitle(t('errors.bot_cannot_moderate'))
-                    .setDescription(t('admin.mute.bot_cannot_moderate_desc'))
+                    .setTitle(await t('errors.bot_cannot_moderate'))
+        .setDescription(await t('admin.mute.bot_cannot_moderate_desc'))
                     .setColor('#FF0000')
                     .setTimestamp();
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -88,8 +87,8 @@ module.exports = {
                 
                 if (!match) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.mute.invalid_duration'))
-                        .setDescription(t('admin.mute.duration_format'))
+                        .setTitle(await t('admin.mute.invalid_duration'))
+            .setDescription(await t('admin.mute.duration_format'))
                         .setColor('#FF0000')
                         .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -101,19 +100,19 @@ module.exports = {
                 switch (unit) {
                     case 's':
                         durationMs = value * 1000;
-                        duration = `${value} ${t('admin.mute.seconds')}`;
+                        duration = `${value} ${await t('admin.mute.seconds')}`;
                         break;
                     case 'm':
                         durationMs = value * 60 * 1000;
-                        duration = `${value} ${t('admin.mute.minutes')}`;
+                        duration = `${value} ${await t('admin.mute.minutes')}`;
                         break;
                     case 'h':
                         durationMs = value * 60 * 60 * 1000;
-                        duration = `${value} ${t('admin.mute.hours')}`;
+                        duration = `${value} ${await t('admin.mute.hours')}`;
                         break;
                     case 'd':
                         durationMs = value * 24 * 60 * 60 * 1000;
-                        duration = `${value} ${t('admin.mute.days')}`;
+                        duration = `${value} ${await t('admin.mute.days')}`;
                         break;
                 }
                 
@@ -122,14 +121,14 @@ module.exports = {
                 // Vérification de la durée maximale (30 jours)
                 if (durationMs > 30 * 24 * 60 * 60 * 1000) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.mute.duration_too_long'))
-                        .setDescription(t('admin.mute.max_duration'))
+                        .setTitle(await t('admin.mute.duration_too_long'))
+            .setDescription(await t('admin.mute.max_duration'))
                         .setColor('#FF0000')
                         .setTimestamp();
                     return await interaction.reply({ embeds: [embed], ephemeral: true });
                 }
             } else {
-                duration = t('admin.mute.permanent');
+                duration = await t('admin.mute.permanent');
             }
 
             await interaction.deferReply();
@@ -140,8 +139,8 @@ module.exports = {
                 
                 if (!muteRole) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.mute.role_error'))
-                        .setDescription(t('admin.mute.role_error_desc'))
+                        .setTitle(await t('admin.mute.role_error'))
+            .setDescription(await t('admin.mute.role_error_desc'))
                         .setColor('#FF0000')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -150,8 +149,8 @@ module.exports = {
                 // Vérification si l'utilisateur est déjà muet
                 if (targetMember.roles.cache.has(muteRole.id)) {
                     const embed = new EmbedBuilder()
-                        .setTitle(t('admin.mute.already_muted'))
-                        .setDescription(t('admin.mute.already_muted_desc', targetUser.tag))
+                        .setTitle(await t('admin.mute.already_muted'))
+            .setDescription(await t('admin.mute.already_muted_desc', targetUser.tag))
                         .setColor('#FFA500')
                         .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
@@ -160,8 +159,8 @@ module.exports = {
                 // Tentative d'envoi d'un message privé à l'utilisateur
                 try {
                     const dmEmbed = new EmbedBuilder()
-                         .setTitle(t('admin.mute.dm_title'))
-                         .setDescription(t('admin.mute.dm_description', interaction.guild.name, duration, reason))
+                         .setTitle(await t('admin.mute.dm_title'))
+            .setDescription(await t('admin.mute.dm_description', interaction.guild.name, duration, reason))
                          .setColor('#FFA500')
                          .setTimestamp();
                     await targetUser.send({ embeds: [dmEmbed] });
@@ -189,15 +188,15 @@ module.exports = {
 
                 // Message de confirmation
                 const successEmbed = new EmbedBuilder()
-                    .setTitle(t('admin.mute.success'))
-                    .setDescription(t('admin.mute.success_desc', targetUser.tag, duration, reason))
+                    .setTitle(await t('admin.mute.success'))
+            .setDescription(await t('admin.mute.success_desc', targetUser.tag, duration, reason))
                     .addFields(
-                        { name: t('admin.mute.details'), value: 
-                            `👤 **${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                            `👮 **${t('admin.mute.moderator')}:** ${interaction.user.tag}\n` +
-                            `⏱️ **${t('admin.mute.duration')}:** ${duration}\n` +
-                            `📝 **${t('admin.mute.reason')}:** ${reason}` +
-                            (expiresAt ? `\n⏰ **${t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>` : ''),
+                        { name: await t('admin.mute.details'), value:
+                `👤 **${await t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                `👮 **${await t('admin.mute.moderator')}:** ${interaction.user.tag}\n` +
+                `⏱️ **${await t('admin.mute.duration')}:** ${duration}\n` +
+                `📝 **${await t('admin.mute.reason')}:** ${reason}` +
+                (expiresAt ? `\n⏰ **${await t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>` : ''),
                             inline: false
                         }
                     )
@@ -211,14 +210,14 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`🔇 ${t('admin.mute.log_title')}`)
-                            .setDescription(
-                                `**${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                `**${t('admin.mute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
-                                `**${t('admin.mute.duration')}:** ${duration}\n` +
-                                `**${t('admin.mute.reason')}:** ${reason}\n` +
-                                (expiresAt ? `**${t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
-                                `**${t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                            .setTitle(`🔇 ${await t('admin.mute.log_title')}`)
+            .setDescription(
+                `**${await t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                `**${await t('admin.mute.moderator')}:** ${interaction.user.tag} (${interaction.user.id})\n` +
+                `**${await t('admin.mute.duration')}:** ${duration}\n` +
+                `**${await t('admin.mute.reason')}:** ${reason}\n` +
+                (expiresAt ? `**${await t('admin.mute.expires')}:** <t:${Math.floor(expiresAt.getTime() / 1000)}:F>\n` : '') +
+                `**${await t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                             )
                             .setColor('#0099FF')
                             .setTimestamp();
@@ -244,11 +243,11 @@ module.exports = {
                                     const logChannel = interaction.guild.channels.cache.get(guildConfig.logChannelId);
                                     if (logChannel) {
                                         const unmuteEmbed = new EmbedBuilder()
-                                            .setTitle(`🔊 ${t('admin.mute.auto_unmute_title')}`)
-                                            .setDescription(
-                                                `**${t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
-                                                `**${t('admin.mute.reason')}:** ${t('admin.mute.auto_unmute_reason')}\n` +
-                                                `**${t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
+                                            .setTitle(`🔊 ${await t('admin.mute.auto_unmute_title')}`)
+                .setDescription(
+                    `**${await t('admin.mute.user')}:** ${targetUser.tag} (${targetUser.id})\n` +
+                    `**${await t('admin.mute.reason')}:** ${await t('admin.mute.auto_unmute_reason')}\n` +
+                    `**${await t('admin.mute.timestamp')}:** <t:${Math.floor(Date.now() / 1000)}:F>`
                                             )
                                             .setColor('#0099FF')
                                             .setTimestamp();
@@ -265,8 +264,8 @@ module.exports = {
             } catch (error) {
                 console.error('Erreur lors du mute:', error);
                 const errorEmbed = new EmbedBuilder()
-                    .setTitle(t('errors.command_failed'))
-                    .setDescription(t('admin.mute.error_desc', error.message))
+                    .setTitle(await t('errors.command_failed'))
+            .setDescription(await t('admin.mute.error_desc', error.message))
                     .setColor('#FF0000')
                     .setTimestamp();
                 await interaction.editReply({ embeds: [errorEmbed] });
@@ -275,8 +274,8 @@ module.exports = {
         } catch (error) {
             console.error('Erreur dans la commande mute:', error);
             const errorEmbed = new EmbedBuilder()
-                .setTitle(t('errors.unexpected'))
-                .setDescription(t('errors.try_again'))
+                .setTitle(await t('errors.unexpected'))
+            .setDescription(await t('errors.try_again'))
                 .setColor('#FF0000')
                 .setTimestamp();
             
