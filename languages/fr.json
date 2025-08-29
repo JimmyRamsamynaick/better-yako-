@@ -1,0 +1,201 @@
+{
+    "welcome": {
+        "title": "👋 Merci de m'avoir ajouté !",
+        "description": "Salut ! Je suis votre nouveau bot de modération.\n\n**Commandes principales:**\n• `/help` - Voir toutes les commandes\n• `/setupmute` - Configurer la modération\n• `/setlogs` - Configurer les logs\n\nPour commencer, utilisez `/help` !\n\n*Serveurs: {serverCount}*"
+    },
+    "commands": {
+        "ping": {
+            "description": "Affiche la latence du bot",
+            "response": "🏓 Pong! Latence: {latency}ms"
+        },
+
+        "serverinfo": {
+            "description": "Affiche les informations du serveur",
+            "title": "📊 Informations du serveur",
+            "owner": "Propriétaire",
+            "members": "Membres",
+            "channels": "Salons",
+            "roles": "Rôles",
+            "created": "Créé le",
+            "footer": "Informations mises à jour en temps réel"
+        },
+        "ban": {
+            "description": "Bannir un membre du serveur",
+            "success_title": "✅ Utilisateur banni",
+            "success": "{executor} a banni {user} pour {reason}",
+            "error_title": "❌ Erreur de bannissement",
+            "error": "Une erreur est survenue lors du bannissement",
+            "error_self": "Vous ne pouvez pas vous bannir vous-même",
+            "error_bot": "Je ne peux pas me bannir moi-même",
+            "error_hierarchy_title": "⚠️ Hiérarchie insuffisante",
+            "error_hierarchy": "Vous ne pouvez pas bannir {user} (rôle supérieur ou égal)",
+            "error_bot_permissions_title": "❌ Permissions du bot insuffisantes",
+            "error_bot_permissions": "Je n'ai pas les permissions nécessaires pour bannir ce membre",
+            "error_already_banned": "Cet utilisateur est déjà banni"
+        },
+        "kick": {
+            "description": "Expulser un membre du serveur",
+            "success_title": "✅ Utilisateur expulsé",
+            "success": "{executor} a expulsé {user} pour {reason}",
+            "error": "Une erreur est survenue lors de l'expulsion",
+            "error_self": "Vous ne pouvez pas vous expulser vous-même",
+            "error_bot": "Je ne peux pas m'expulser moi-même",
+            "error_hierarchy": "Vous ne pouvez pas expulser ce membre (rôle supérieur ou égal)",
+            "error_not_found_title": "❌ Utilisateur introuvable",
+            "error_not_found": "Cet utilisateur n'est pas membre de ce serveur.",
+            "error_not_kickable_title": "❌ Impossible d'expulser",
+            "error_not_kickable": "Je ne peux pas expulser {user}. Il a peut-être des permissions supérieures aux miennes."
+        },
+        "mute": {
+            "description": "Rendre muet un membre temporairement",
+            "success_title": "🔇 Utilisateur rendu muet",
+            "success": "{executor} a rendu muet {user} pour {reason} (Durée: {duration})",
+            "error": "Une erreur est survenue lors du mute",
+            "error_self": "Vous ne pouvez pas vous rendre muet vous-même",
+            "error_no_setup": "Le système de mute n'est pas configuré. Utilisez `/setupmute` d'abord",
+            "error_role_not_found": "Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`",
+            "error_already_muted": "Ce membre est déjà rendu muet",
+            "error_invalid_duration": "Durée invalide. Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours)"
+        },
+        "unmute": {
+            "description": "Rendre la parole à un membre",
+            "success_title": "🔊 Utilisateur démuté",
+            "success": "{executor} a rendu la parole à {user} pour {reason}",
+            "error": "Une erreur est survenue lors du unmute",
+            "error_no_setup": "Le système de mute n'est pas configuré",
+            "error_role_not_found": "Le rôle de mute est introuvable",
+            "error_not_muted": "Ce membre n'est pas rendu muet"
+        },
+        "clear": {
+            "description": "Supprimer des messages en masse",
+            "success_title": "✅ Messages supprimés",
+            "success": "**{count}** message(s) supprimé(s) avec succès.",
+            "success_user": "**{count}** message(s) de **{user}** supprimé(s) avec succès.",
+            "error": "Une erreur est survenue lors de la suppression des messages"
+        },
+        "setlang": {
+            "description": "Changer la langue du bot",
+            "success": "✅ Langue du bot changée en **{language}**.",
+            "success_title": "✅ Langue modifiée",
+            "error": "❌ Une erreur est survenue lors du changement de langue.",
+            "error_title": "❌ Erreur de changement de langue"
+        },
+        "setlogs": {
+            "description": "Configure les logs du serveur",
+            "no_permission": "❌ Vous n'avez pas la permission de gérer le serveur.",
+            "error": "❌ Une erreur est survenue lors de la configuration des logs.",
+            "enabled_success": "✅ Logs activés dans {channel}\n\n**Types de logs actifs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "disabled_success": "✅ Logs désactivés pour ce serveur.",
+            "config_success": "✅ Type de log **{type}** {status}.",
+            "status_title": "📊 Configuration des Logs",
+            "status_description": "**État:** {status}\n**Salon:** {channel}\n\n**Types de logs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}"
+        },
+        "lock": {
+            "description": "Verrouiller un salon",
+            "success_title": "🔒 Salon verrouillé",
+            "success": "{executor} a verrouillé {channel} pour {reason}",
+            "no_permission": "❌ Vous n'avez pas la permission de gérer les salons.",
+            "error": "❌ Une erreur est survenue lors du verrouillage."
+        },
+        "unlock": {
+            "description": "Déverrouiller un salon",
+            "success_title": "🔓 Salon déverrouillé",
+            "success": "{executor} a déverrouillé {channel} pour {reason}",
+            "no_permission": "❌ Vous n'avez pas la permission de gérer les salons.",
+            "error": "❌ Une erreur est survenue lors du déverrouillage."
+        },
+        "unban": {
+            "description": "Débannir un utilisateur du serveur",
+            "success_title": "✅ Utilisateur débanni",
+            "success": "{executor} a débanni {user} pour {reason}",
+            "error_title": "❌ Erreur de débannissement",
+            "error": "Une erreur est survenue lors du débannissement",
+            "error_not_banned": "Cet utilisateur n'est pas banni du serveur"
+        },
+        "setupmute": {
+            "description": "Configurer le système de mute",
+            "no_permission": "❌ Vous n'avez pas la permission de gérer les rôles.",
+            "success": "✅ Système de mute configuré avec succès!\n**Rôle:** {role}\n**Salons configurés:** {channels}",
+            "error": "❌ Une erreur est survenue lors de la configuration."
+        },
+        "ask": {
+            "description": "Pose une question à l'IA (Premium)",
+            "error": "❌ Cette commande nécessite un abonnement Premium.",
+            "thinking": "🤔 Réflexion en cours..."
+        },
+        "help": {
+            "main_title": "📚 Aide - Yako Bot",
+            "main_description": "Voici la liste de toutes les commandes disponibles. Sélectionnez une catégorie dans le menu déroulant ci-dessous pour voir les détails.\n\n**Catégories disponibles :**\n🛡️ **Modération** - Commandes de gestion du serveur\n🌍 **Public** - Commandes accessibles à tous\n⭐ **Premium** - Commandes premium exclusives",
+            "select_placeholder": "Choisissez une catégorie d'aide",
+            "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
+            "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !",
+            "moderation_option": "Modération",
+            "moderation_desc": "Commandes de modération du serveur",
+            "public_option": "Public",
+            "public_desc": "Commandes disponibles pour tous",
+            "premium_option": "Premium",
+            "premium_desc": "Commandes premium exclusives",
+            "footer": "Aide mise à jour automatiquement",
+            "moderation_title": "🛡️ Commandes de Modération",
+            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Rendre la parole à un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue",
+            "public_title": "👥 Commandes Publiques",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/avatar`** - Afficher l'avatar d'un utilisateur",
+            "premium_title": "⭐ Commandes Premium",
+        "premium_description": "**`/ask`** - Poser une question à l'IA intégrée\n\n*Les commandes premium nécessitent un serveur premium*"
+        }
+    },
+    "common": {
+        "error": "❌ Erreur",
+        "success": "✅ Succès",
+        "warning": "⚠️ Avertissement",
+        "no_reason": "Aucune raison fournie",
+        "no_description": "Aucune description",
+        "details": "Détails",
+        "moderator": "Un modérateur",
+        "permanent": "Permanent"
+    },
+    "ping": {
+        "title": "🏓 Pong!",
+        "description": "**Latence du bot:** {latency}ms\n**Latence de l'API:** {apiLatency}ms",
+        "footer": "Latence mesurée en temps réel"
+    },
+    "serverinfo": {
+        "title": "📊 Informations de {guildName}",
+        "description": "👑 **Propriétaire:** {owner}\n📅 **Créé le:** {createdAt}\n🏷️ **ID:** {guildId}\n👥 **Membres:** {memberCount}\n📝 **Canaux:** {channelCount}\n🎭 **Rôles:** {roleCount}\n😀 **Emojis:** {emojiCount}\n🚀 **Niveau de boost:** Niveau {boostLevel} ({boostCount} boosts)\n🔒 **Niveau de vérification:** {verificationLevel}{guildDescription}",
+        "footer": "Informations mises à jour en temps réel"
+    },
+    "ask": {
+        "title": "🤖 Assistant IA",
+        "response": "{response}",
+        "footer": "Question posée par {username}",
+        "premium_required": "Cette commande nécessite un serveur premium. ⭐\nContactez l'équipe de support pour plus d'informations.",
+        "error": "Désolé, je n'ai pas pu traiter votre question."
+    },
+    "errors": {
+        "no_permission": "❌ Vous n'avez pas la permission d'utiliser cette commande.",
+        "no_permission_title": "❌ Permissions insuffisantes",
+        "user_not_found": "❌ Utilisateur introuvable.",
+        "invalid_duration": "❌ Durée invalide.",
+        "bot_no_permission": "❌ Le bot n'a pas les permissions nécessaires.",
+        "bot_no_permission_title": "❌ Permissions du bot insuffisantes",
+        "premium_required": "❌ Cette fonctionnalité nécessite un abonnement Premium.",
+        "command_execution": "Une erreur est survenue lors de l'exécution de cette commande.",
+        "cooldown": {
+            "title": "⏰ Cooldown",
+            "message": "Vous devez attendre {timeLeft} secondes avant de réutiliser cette commande."
+        }
+    },
+    "logs": {
+        "voice_join": "🔊 {user} a rejoint le salon vocal {channel}",
+        "voice_leave": "🔇 {user} a quitté le salon vocal {channel}",
+        "message_delete": "🗑️ Message supprimé dans {channel} par {user}",
+        "message_edit": "✏️ Message modifié dans {channel} par {user}",
+        "channel_create": "➕ Salon {channel} créé",
+        "channel_delete": "➖ Salon {channel} supprimé",
+        "role_create": "➕ Rôle {role} créé",
+        "role_delete": "➖ Rôle {role} supprimé",
+        "role_add": "➕ Rôle {role} ajouté à {user}",
+        "role_remove": "➖ Rôle {role} retiré de {user}",
+        "server_update": "⚙️ Serveur mis à jour: {changes}"
+    }
+}

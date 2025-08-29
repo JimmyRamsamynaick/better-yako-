@@ -1,0 +1,45 @@
+{
+  "name": "discord-bot-v14",
+  "version": "1.0.0",
+  "description": "Bot Discord complet avec modération et IA",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "install-clean": "npm ci",
+    "update-deps": "npm update"
+  },
+  "dependencies": {
+    "discord.js": "^14.22.1",
+    "mongoose": "^8.18.0",
+    "openai": "^4.104.0",
+    "ms": "^2.1.3",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "moderation",
+    "ai",
+    "openai",
+    "mongodb",
+    "mongoose"
+  ],
+  "author": "Votre nom",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/votre-username/discord-bot-v14.git"
+  },
+  "bugs": {
+    "url": "https://github.com/votre-username/discord-bot-v14/issues"
+  },
+  "homepage": "https://github.com/votre-username/discord-bot-v14#readme"
+}
