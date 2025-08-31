@@ -66,13 +66,13 @@ module.exports = {
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
-                const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'commands.mute.error_role_not_found');
-                return interaction.reply({ ...errorResponse, ephemeral: true });
+                const errorEmbed = BotEmbeds.createGenericErrorEmbed('Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`', interaction.guild.id);
+                return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             }
 
             if (member.roles.cache.has(muteRole.id)) {
-                const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'commands.mute.error_already_muted');
-                return interaction.reply({ ...errorResponse, ephemeral: true });
+                const errorEmbed = BotEmbeds.createGenericErrorEmbed('Ce membre est déjà rendu muet', interaction.guild.id);
+                return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             }
 
             let muteUntil = null;
@@ -81,8 +81,8 @@ module.exports = {
             if (duration) {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
-                    const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'commands.mute.error_invalid_duration');
-                    return interaction.reply({ ...errorResponse, ephemeral: true });
+                    const errorEmbed = BotEmbeds.createGenericErrorEmbed('Durée invalide. Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours)', interaction.guild.id);
+                     return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
                 }
                 muteUntil = new Date(Date.now() + parsedDuration);
                 durationText = duration;
@@ -119,6 +119,7 @@ module.exports = {
                 reason,
                 durationText,
                 interaction.guild.id,
+                interaction.user,
                 lang
             );
             

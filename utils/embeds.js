@@ -15,15 +15,13 @@ class BotEmbeds {
      */
     static createGenericErrorEmbed(message, guildId = null) {
         // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
-        const content = message || 'Une erreur est survenue.';
+        const description = message || 'Une erreur est survenue.';
         
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ❌ Erreur\n\n${content}`
-            }],
-            flags: 64
+            title: '❌ Erreur',
+            description: description,
+            color: 0xff0000,
+            timestamp: new Date().toISOString()
         };
     }
 
@@ -286,25 +284,25 @@ class BotEmbeds {
      * Embed pour succès de mute
      */
     static createMuteSuccessEmbed(user, reason, duration, guildId = null, executor = null, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '✅ User muted';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
+        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '✅ Membre rendu muet';
+        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
         const userName = user.username || user.tag;
-        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
+        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
         const message = LanguageManager.get(lang, 'commands.mute.success', {
             executor: executorName,
             user: userName,
             reason: finalReason,
             duration: durationText
-        }) || `${executorName} muted ${userName} for ${finalReason} (Duration: ${durationText})`;
+        }) || `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
 
+        const description = message || 'Membre rendu muet avec succès';
+        
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 64
+            title: title,
+            description: description,
+            color: 0x00ff00,
+            timestamp: new Date().toISOString()
         };
     }
 
