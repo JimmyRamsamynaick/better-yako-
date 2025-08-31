@@ -276,14 +276,17 @@ class BotEmbeds {
      * Embed pour succès de mute
      */
     static createMuteSuccessEmbed(user, reason, duration, guildId = null, executor = null, lang = 'fr') {
-        console.log('=== createMuteSuccessEmbed called ===');
-        console.log('Parameters:', { user: user?.username, reason, duration, guildId, executor: executor?.username, lang });
+        console.log('=== DEBUG createMuteSuccessEmbed ===');
+        console.log('Params:', { user: user?.username, reason, duration, lang });
         
         const title = LanguageManager.get(lang, 'commands.mute.success_title') || '🔇 Utilisateur rendu muet';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
-        const userName = user.username || user.tag;
-        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
+        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
+        const userName = user.username || user.tag || 'Utilisateur inconnu';
+        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
+        
+        console.log('Variables:', { title, executorName, userName, finalReason, durationText });
+        
         let description = LanguageManager.get(lang, 'commands.mute.success', {
             executor: executorName,
             user: userName,
@@ -291,20 +294,31 @@ class BotEmbeds {
             duration: durationText
         });
         
-        console.log('Debug mute embed - lang:', lang, 'description:', description);
+        console.log('Description from LanguageManager:', description);
         
+        // S'assurer qu'on a toujours une description valide
         if (!description || description.trim() === '' || description.includes('[MISSING:') || description.includes('[LANG_ERROR:')) {
             description = `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
+            console.log('Using fallback description:', description);
         }
         
-        console.log('Final description:', description);
+        // S'assurer que la description n'est jamais vide
+        if (!description || description.trim() === '') {
+            description = 'Utilisateur rendu muet avec succès.';
+            console.log('Using emergency fallback description:', description);
+        }
 
-        return {
-            title: title,
+        const embed = {
+            title: title || '🔇 Utilisateur rendu muet',
             description: description,
             color: 0x00ff00,
             timestamp: new Date().toISOString()
         };
+        
+        console.log('Final embed:', JSON.stringify(embed, null, 2));
+        console.log('=== END DEBUG ===');
+        
+        return embed;
     }
 
     // ===== EMBEDS POUR LA COMMANDE UNMUTE =====
