@@ -154,6 +154,9 @@ module.exports = {
                 { upsert: true }
             );
 
+            console.log('=== About to create mute success embed ===');
+            console.log('Parameters:', { user: user?.username, reason, durationText, guildId: interaction.guild.id, executor: interaction.user?.username, lang });
+            
             const successEmbed = BotEmbeds.createMuteSuccessEmbed(
                 user,
                 reason,
@@ -162,6 +165,9 @@ module.exports = {
                 interaction.user,
                 lang
             );
+            
+            console.log('=== Success embed created ===');
+            console.log('Embed:', JSON.stringify(successEmbed, null, 2));
 
             await interaction.reply({ embeds: [successEmbed], ephemeral: true });
 

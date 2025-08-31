@@ -52,7 +52,7 @@ module.exports = {
             if (!interaction.replied && !interaction.deferred) {
                 const errorEmbed = BotEmbeds.createCommandErrorEmbed();
                 try {
-                    await interaction.reply({ components: [errorEmbed], flags: require('discord.js').MessageFlags.IsComponentsV2 });
+                    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'erreur:', replyError);
                 }

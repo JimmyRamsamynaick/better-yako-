@@ -276,7 +276,10 @@ class BotEmbeds {
      * Embed pour succès de mute
      */
     static createMuteSuccessEmbed(user, reason, duration, guildId = null, executor = null, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '✅ User muted';
+        console.log('=== createMuteSuccessEmbed called ===');
+        console.log('Parameters:', { user: user?.username, reason, duration, guildId, executor: executor?.username, lang });
+        
+        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '🔇 Utilisateur rendu muet';
         const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
@@ -288,9 +291,13 @@ class BotEmbeds {
             duration: durationText
         });
         
-        if (!description || description.trim() === '') {
+        console.log('Debug mute embed - lang:', lang, 'description:', description);
+        
+        if (!description || description.trim() === '' || description.includes('[MISSING:') || description.includes('[LANG_ERROR:')) {
             description = `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
         }
+        
+        console.log('Final description:', description);
 
         return {
             title: title,
@@ -751,16 +758,14 @@ class BotEmbeds {
      * Embed d'erreur générale pour les commandes
      */
     static createCommandErrorEmbed(lang = 'fr') {
-        const errorTitle = LanguageManager.get(lang, 'common.error');
+        const errorTitle = LanguageManager.get(lang, 'common.error') || '❌ Erreur';
         const errorMessage = LanguageManager.get(lang, 'errors.command_execution') || 'Une erreur est survenue lors de l\'exécution de cette commande.';
 
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ${errorTitle}\n\n${errorMessage}`
-            }],
-            flags: 64
+            title: errorTitle,
+            description: errorMessage,
+            color: 0xff0000,
+            timestamp: new Date().toISOString()
         };
     }
 }
