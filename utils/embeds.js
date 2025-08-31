@@ -92,18 +92,20 @@ class BotEmbeds {
     /**
      * Embed pour succès de clear
      */
-    static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr') {
+    static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr', executor = null) {
         const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages supprimés';
         let description;
         if (targetUser) {
             description = LanguageManager.get(lang, 'commands.clear.success_user', {
+                user: executor ? executor.toString() : 'Un utilisateur',
                 count: count,
-                user: targetUser.tag
-            }) || `${count} messages de ${targetUser.tag} ont été supprimés.`;
+                target: targetUser.toString()
+            }) || `${executor ? executor.toString() : 'Un utilisateur'} a supprimé ${count} messages de ${targetUser.toString()}.`;
         } else {
             description = LanguageManager.get(lang, 'commands.clear.success', {
+                user: executor ? executor.toString() : 'Un utilisateur',
                 count: count
-            }) || `${count} messages ont été supprimés.`;
+            }) || `${executor ? executor.toString() : 'Un utilisateur'} a supprimé ${count} messages.`;
         }
         
         // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]

@@ -87,7 +87,7 @@ module.exports = {
                 });
             }
 
-            const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang);
+            const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang, interaction.user);
             await interaction.reply({ components: [successEmbed], flags: MessageFlags.IsComponentsV2 });
 
         } catch (error) {
