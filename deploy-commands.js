@@ -49,6 +49,16 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
         );
         console.log('✅ Anciennes commandes globales supprimées.');
 
+        // Supprimer toutes les anciennes commandes du serveur spécifique
+        if (process.env.GUILD_ID) {
+            console.log('🗑️ Suppression des anciennes commandes du serveur...');
+            await rest.put(
+                Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+                { body: [] }
+            );
+            console.log('✅ Anciennes commandes du serveur supprimées.');
+        }
+
         // Déployer les nouvelles commandes globalement
         const data = await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),

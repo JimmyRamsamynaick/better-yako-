@@ -9,13 +9,7 @@
             "response": "🏓 Pong! Latency: {latency}ms"
         },
 
-        "help": {
-            "description": "Shows available commands list",
-            "title": "📋 Commands List",
-            "moderation": "🛡️ Moderation",
-            "public": "🌐 Public",
-            "premium": "⭐ Premium"
-        },
+
         "serverinfo": {
             "description": "Shows server information",
             "title": "📊 Server Information",
@@ -105,12 +99,14 @@
             }
         },
         "lock": {
+            "description": "Lock a channel",
             "success_title": "🔒 Channel locked",
             "success": "{executor} locked {channel} for {reason}",
             "no_permission": "❌ You don't have permission to manage channels.",
             "error": "❌ An error occurred while locking the channel."
         },
         "unlock": {
+            "description": "Unlock a channel",
             "success_title": "🔓 Channel unlocked",
             "success": "{executor} unlocked {channel} for {reason}",
             "no_permission": "❌ You don't have permission to manage channels.",
@@ -127,6 +123,7 @@
             "not_banned": "❌ This user is not banned."
         },
         "setupmute": {
+            "description": "Configure the mute system",
             "no_permission": "❌ You don't have permission to manage roles.",
             "success": "✅ Mute system configured successfully!\n**Role:** {role}\n**Channels configured:** {channels}",
             "error": "❌ An error occurred during configuration."
@@ -145,11 +142,11 @@
             "premium_desc": "Exclusive premium commands",
             "footer": "Help updated automatically",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**Available moderation commands:**\n\n`/ban` - Ban a member from the server\n`/kick` - Kick a member from the server\n`/mute` - Mute a member\n`/unmute` - Unmute a member\n`/warn` - Warn a member\n`/clear` - Delete messages\n`/setupmute` - Configure the mute system",
-            "public_title": "🌍 Public Commands",
-            "public_description": "**Available public commands:**\n\n`/help` - Display this help\n`/ping` - Check bot latency\n`/serverinfo` - Server information",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language",
+            "public_title": "👥 Public Commands",
+            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/avatar`** - Display user avatar",
             "premium_title": "⭐ Premium Commands",
-            "premium_description": "**Available premium commands:**\n\n`/ask` - Ask a question to the AI\n\n*These commands require a premium subscription.*"
+            "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
         "ask": {
             "description": "Ask a question to AI (Premium)",
@@ -159,27 +156,8 @@
     },
     "ping": {
         "title": "🏓 Pong!",
-        "description": "📡 **Bot Latency:** {latency}ms\n💓 **API Latency:** {apiLatency}ms",
+        "description": "**Bot Latency:** {latency}ms\n**API Latency:** {apiLatency}ms",
         "footer": "Latency measured in real time"
-    },
-    "commands": {
-        "ping": {
-            "title": "🏓 Pong!",
-            "description": "**Bot Latency:** {latency}ms\n**API Latency:** {apiLatency}ms",
-            "footer": "Bot performance"
-        },
-        "serverinfo": {
-            "title": "📊 Server Information",
-            "description": "**Server:** {guildName}\n**Owner:** {owner}\n**Created:** {createdAt}\n**ID:** {guildId}\n**Members:** {memberCount}\n**Channels:** {channelCount}\n**Roles:** {roleCount}\n**Emojis:** {emojiCount}\n**Boost Level:** Level {boostLevel} ({boostCount} boosts)\n**Verification Level:** {verificationLevel}\n**Description:** {guildDescription}",
-            "footer": "Server statistics"
-        },
-        "ask": {
-            "title": "🤖 AI Response",
-            "question": "Question",
-            "response": "Response",
-            "premium_required_title": "💎 Premium Required",
-            "premium_required": "This command requires a premium subscription."
-        }
     },
     "serverinfo": {
         "title": "📊 {guildName} Information",

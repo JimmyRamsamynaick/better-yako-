@@ -89,18 +89,20 @@ class BotEmbeds {
     /**
      * Embed pour succès de clear
      */
-    static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr') {
+    static createClearSuccessEmbed(count, targetUser = null, guildId = null, executor = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages deleted';
         let message;
         if (targetUser) {
             message = LanguageManager.get(lang, 'commands.clear.success_user', {
                 count: count,
-                user: targetUser.tag
-            }) || `${count} messages from ${targetUser.tag} have been deleted.`;
+                user: executor ? executor.tag : 'Unknown',
+                target: targetUser.tag
+            }) || `${executor ? executor.tag : 'Unknown'} deleted ${count} messages from ${targetUser.tag}.`;
         } else {
             message = LanguageManager.get(lang, 'commands.clear.success', {
-                count: count
-            }) || `${count} messages have been deleted.`;
+                count: count,
+                user: executor ? executor.tag : 'Unknown'
+            }) || `${executor ? executor.tag : 'Unknown'} deleted ${count} messages.`;
         }
 
         return {
