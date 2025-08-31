@@ -281,7 +281,7 @@ class BotEmbeds {
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
-        const message = LanguageManager.get(lang, 'commands.mute.success', {
+        const description = LanguageManager.get(lang, 'commands.mute.success', {
             executor: executorName,
             user: userName,
             reason: finalReason,
@@ -289,12 +289,10 @@ class BotEmbeds {
         }) || `${executorName} muted ${userName} for ${finalReason} (Duration: ${durationText})`;
 
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 64
+            title: title,
+            description: description,
+            color: 0x00ff00,
+            timestamp: new Date().toISOString()
         };
     }
 
