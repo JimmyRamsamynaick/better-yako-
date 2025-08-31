@@ -106,10 +106,12 @@ class BotEmbeds {
         }
 
         return {
-            title: title,
-            description: message,
-            color: 0x00ff00,
-            timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ${title}\n\n${message}`
+            }],
+            flags: 64
         };
     }
 

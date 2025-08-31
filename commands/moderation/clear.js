@@ -88,8 +88,8 @@ module.exports = {
             }
 
             await interaction.reply({
-                embeds: [BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, interaction.user, lang)],
-                ephemeral: true
+                components: [BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, interaction.user, lang)],
+                flags: MessageFlags.IsComponentsV2
             });
 
         } catch (error) {
