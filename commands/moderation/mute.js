@@ -67,12 +67,12 @@ module.exports = {
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed('Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`', interaction.guild.id);
-                return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                return interaction.reply({ ...errorEmbed, ephemeral: true });
             }
 
             if (member.roles.cache.has(muteRole.id)) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed('Ce membre est déjà rendu muet', interaction.guild.id);
-                return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                return interaction.reply({ ...errorEmbed, ephemeral: true });
             }
 
             let muteUntil = null;
@@ -82,7 +82,7 @@ module.exports = {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
                     const errorEmbed = BotEmbeds.createGenericErrorEmbed('Durée invalide. Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours)', interaction.guild.id);
-                     return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                     return interaction.reply({ ...errorEmbed, ephemeral: true });
                 }
                 muteUntil = new Date(Date.now() + parsedDuration);
                 durationText = duration;
@@ -123,7 +123,7 @@ module.exports = {
                 lang
             );
             
-            await interaction.reply({ embeds: [successEmbed] });
+            await interaction.reply({ ...successEmbed });
 
             // Auto-unmute si durée définie
             if (muteUntil) {
@@ -157,7 +157,7 @@ module.exports = {
                 interaction.guild.id,
                 lang
             );
-            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            await interaction.reply({ ...errorEmbed, ephemeral: true });
         }
     }
 };

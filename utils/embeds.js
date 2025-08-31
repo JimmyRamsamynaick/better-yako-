@@ -15,13 +15,15 @@ class BotEmbeds {
      */
     static createGenericErrorEmbed(message, guildId = null) {
         // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
-        const description = message || 'Une erreur est survenue.';
+        const content = message || 'Une erreur est survenue.';
         
         return {
-            title: '❌ Erreur',
-            description: description,
-            color: 0xff0000,
-            timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ❌ Erreur\n\n${content}`
+            }],
+            flags: 64
         };
     }
 
@@ -92,30 +94,20 @@ class BotEmbeds {
      */
     static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr', executor = null) {
         const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages supprimés';
-        let description;
-        if (targetUser) {
-            description = LanguageManager.get(lang, 'commands.clear.success_user', {
-                user: executor ? executor.toString() : 'Un utilisateur',
-                count: count,
-                target: targetUser.toString()
-            }) || `${executor ? executor.toString() : 'Un utilisateur'} a supprimé ${count} messages de ${targetUser.toString()}.`;
-        } else {
-            description = LanguageManager.get(lang, 'commands.clear.success', {
-                user: executor ? executor.toString() : 'Un utilisateur',
-                count: count
-            }) || `${executor ? executor.toString() : 'Un utilisateur'} a supprimé ${count} messages.`;
-        }
-        
-        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
-        if (!description || description.trim() === '') {
-            description = `${count} messages ont été supprimés avec succès.`;
-        }
+        const executorName = executor ? executor.toString() : LanguageManager.get(lang, 'common.moderator') || 'Un utilisateur';
+        const message = LanguageManager.get(lang, 'commands.clear.success', {
+            user: executorName,
+            count: count
+        }) || `${executorName} a supprimé ${count} message(s)`;
 
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
+        const content = message || `${count} message(s) supprimé(s) avec succès`;
+        
         return {
             type: 17,
             components: [{
                 type: 10,
-                content: `## ${title}\n\n${description}`
+                content: `## ${title}\n\n${content}`
             }],
             flags: 64
         };
@@ -296,13 +288,16 @@ class BotEmbeds {
             duration: durationText
         }) || `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
 
-        const description = message || 'Membre rendu muet avec succès';
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
+        const content = message || 'Membre rendu muet avec succès';
         
         return {
-            title: title,
-            description: description,
-            color: 0x00ff00,
-            timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ${title}\n\n${content}`
+            }],
+            flags: 64
         };
     }
 
@@ -312,21 +307,24 @@ class BotEmbeds {
      * Embed pour succès de unmute
      */
     static createUnmuteSuccessEmbed(user, reason, guildId = null, executor = null, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.unmute.success_title') || '✅ User unmuted';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
+        const title = LanguageManager.get(lang, 'commands.unmute.success_title') || '✅ Membre démute';
+        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
         const userName = user.username || user.tag;
-        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
+        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
         const message = LanguageManager.get(lang, 'commands.unmute.success', {
             executor: executorName,
             user: userName,
             reason: finalReason
-        }) || `${executorName} unmuted ${userName} for ${finalReason}`;
+        }) || `${executorName} a démute ${userName} pour ${finalReason}`;
 
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
+        const content = message || 'Membre démute avec succès';
+        
         return {
             type: 17,
             components: [{
                 type: 10,
-                content: `## ${title}\n\n${message}`
+                content: `## ${title}\n\n${content}`
             }],
             flags: 64
         };
