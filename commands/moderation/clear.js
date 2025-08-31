@@ -88,14 +88,14 @@ module.exports = {
             }
 
             const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang);
-            await interaction.reply({ embeds: [successEmbed], ephemeral: false });
+            await interaction.reply({ components: [successEmbed], flags: MessageFlags.IsComponentsV2 });
 
         } catch (error) {
             console.error('Erreur lors de la suppression des messages:', error);
             const errorMsg = LanguageManager.get(lang, 'clear.error');
             if (!interaction.replied && !interaction.deferred) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
-                await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                await interaction.reply({ components: [errorEmbed], flags: MessageFlags.IsComponentsV2 });
             }
         }
     }

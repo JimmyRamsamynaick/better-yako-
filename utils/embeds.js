@@ -14,11 +14,16 @@ class BotEmbeds {
      * Embed générique d'erreur
      */
     static createGenericErrorEmbed(message, guildId = null) {
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
+        const content = message || 'Une erreur est survenue.';
+        
         return {
-            title: '❌ Erreur',
-            description: message || 'Une erreur est survenue.',
-            color: 0xff0000,
-            timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ❌ Erreur\n\n${content}`
+            }],
+            flags: 64
         };
     }
 
@@ -101,16 +106,18 @@ class BotEmbeds {
             }) || `${count} messages ont été supprimés.`;
         }
         
-        // S'assurer que la description n'est jamais vide
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
         if (!description || description.trim() === '') {
             description = `${count} messages ont été supprimés avec succès.`;
         }
 
         return {
-            title: title || '✅ Messages supprimés',
-            description: description,
-            color: 0x00ff00,
-            timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ${title}\n\n${description}`
+            }],
+            flags: 64
         };
     }
 
