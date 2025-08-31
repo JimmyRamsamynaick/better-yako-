@@ -1,34 +1,45 @@
 {
-  "name": "better-yako-v2",
-  "version": "2.0.0",
-  "description": "Bot Discord moderne avec composants v2 et support multilingue",
+  "name": "discord-bot-v14",
+  "version": "1.0.0",
+  "description": "Bot Discord complet avec modération et IA",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "deploy": "node deploy-commands.js"
+    "install-clean": "npm ci",
+    "update-deps": "npm update"
   },
   "dependencies": {
-    "axios": "^1.6.2",
-    "cors": "^2.8.5",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "fs-extra": "^11.2.0",
-    "mathjs": "^14.6.0",
+    "discord.js": "^14.22.1",
     "mongoose": "^8.18.0",
-    "openai": "^4.20.1"
+    "openai": "^4.104.0",
+    "ms": "^2.1.3",
+    "dotenv": "^16.6.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "keywords": [
     "discord",
     "bot",
+    "moderation",
     "ai",
-    "multilingual",
-    "components-v2"
+    "openai",
+    "mongodb",
+    "mongoose"
   ],
-  "author": "Better Yako Team",
-  "license": "MIT"
+  "author": "Votre nom",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/votre-username/discord-bot-v14.git"
+  },
+  "bugs": {
+    "url": "https://github.com/votre-username/discord-bot-v14/issues"
+  },
+  "homepage": "https://github.com/votre-username/discord-bot-v14#readme"
 }

@@ -1,0 +1,233 @@
+{
+    "welcome": {
+        "title": "👋 Thanks for adding me!",
+        "description": "Hello! I'm your new moderation bot.\n\n**Main commands:**\n• `/help` - See all commands\n• `/setupmute` - Configure moderation\n• `/setlogs` - Configure logs\n\nTo get started, use `/help`!\n\n*Servers: {serverCount}*"
+    },
+    "commands": {
+        "ping": {
+            "description": "Shows bot latency",
+            "response": "🏓 Pong! Latency: {latency}ms"
+        },
+
+        "help": {
+            "description": "Shows available commands list",
+            "title": "📋 Commands List",
+            "moderation": "🛡️ Moderation",
+            "public": "🌐 Public",
+            "premium": "⭐ Premium"
+        },
+        "serverinfo": {
+            "description": "Shows server information",
+            "title": "📊 Server Information",
+            "owner": "Owner",
+            "members": "Members",
+            "channels": "Channels",
+            "roles": "Roles",
+            "created": "Created on"
+        },
+        "ban": {
+            "description": "Ban a member from the server",
+            "success_title": "✅ User banned",
+            "success": "{executor} banned {user} for {reason}",
+            "error_title": "❌ Ban error",
+            "error": "An error occurred while banning",
+            "error_self": "You cannot ban yourself",
+            "error_bot": "I cannot ban myself",
+            "error_hierarchy_title": "⚠️ Insufficient hierarchy",
+            "error_hierarchy": "You cannot ban {user} (higher or equal role)",
+            "error_bot_permissions_title": "❌ Insufficient bot permissions",
+            "error_bot_permissions": "I don't have the necessary permissions to ban this member",
+            "error_already_banned": "This user is already banned"
+        },
+        "kick": {
+            "description": "Kick a member from the server",
+            "success_title": "✅ User kicked",
+            "success": "{executor} kicked {user} for {reason}",
+            "error": "An error occurred while kicking",
+            "error_self": "You cannot kick yourself",
+            "error_bot": "I cannot kick myself",
+            "error_hierarchy": "You cannot kick this member (higher or equal role)",
+            "error_not_found_title": "❌ User not found",
+            "error_not_found": "This user is not a member of this server.",
+            "error_not_kickable_title": "❌ Cannot kick user",
+            "error_not_kickable": "I cannot kick {user}. They may have higher permissions than me."
+        },
+        "mute": {
+            "description": "Temporarily mute a member",
+            "success_title": "🔇 User muted",
+            "success": "{executor} muted {user} for {reason} (Duration: {duration})",
+            "error": "An error occurred while muting",
+            "error_self": "You cannot mute yourself",
+            "error_no_setup": "The mute system is not configured. Use `/setupmute` first",
+            "error_role_not_found": "The mute role cannot be found. Reconfigure with `/setupmute`",
+            "error_already_muted": "This member is already muted",
+            "error_invalid_duration": "Invalid duration. Use a format like `10m`, `1h`, `1d` (max 28 days)"
+        },
+        "unmute": {
+            "description": "Unmute a member",
+            "success_title": "🔊 User unmuted",
+            "success": "{executor} unmuted {user} for {reason}",
+            "error": "An error occurred while unmuting",
+            "error_no_setup": "The mute system is not configured",
+            "error_role_not_found": "The mute role cannot be found",
+            "error_not_muted": "This member is not muted"
+        },
+        "clear": {
+            "description": "Bulk delete messages",
+            "success_title": "✅ Messages deleted",
+            "success": "{user} cleared {count} message(s)",
+            "success_user": "{user} cleared {count} message(s) from {target}",
+            "error": "An error occurred while deleting messages",
+            "no_messages_found": "No messages found for {user} in the last 100 messages."
+        },
+        "setlang": {
+            "description": "Change bot language",
+            "success": "✅ Bot language changed to **{language}**.",
+            "success_title": "✅ Language changed",
+            "error": "❌ An error occurred while changing the language.",
+            "error_title": "❌ Language change error"
+        },
+        "setlogs": {
+            "description": "Configure server logs",
+            "no_permission": "❌ You don't have permission to manage the server.",
+            "error": "❌ An error occurred while configuring logs.",
+            "enabled_success": "✅ Logs enabled in {channel}\n\n**Active log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "disabled_success": "✅ Logs disabled for this server.",
+            "config_success": "✅ Log type **{type}** {status}.",
+            "status_title": "📊 Logs Configuration",
+            "status_description": "**Status:** {status}\n**Channel:** {channel}\n\n**Log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "types": {
+                "voice": "Voice logs",
+                "message": "Message logs",
+                "channel": "Channel logs",
+                "role": "Role logs",
+                "server": "Server logs"
+            }
+        },
+        "lock": {
+            "success_title": "🔒 Channel locked",
+            "success": "{executor} locked {channel} for {reason}",
+            "no_permission": "❌ You don't have permission to manage channels.",
+            "error": "❌ An error occurred while locking the channel."
+        },
+        "unlock": {
+            "success_title": "🔓 Channel unlocked",
+            "success": "{executor} unlocked {channel} for {reason}",
+            "no_permission": "❌ You don't have permission to manage channels.",
+            "error": "❌ An error occurred while unlocking the channel."
+        },
+        "unban": {
+            "description": "Unban a user from the server",
+            "success_title": "✅ User unbanned",
+            "success": "{executor} unbanned {user} for {reason}",
+            "error_title": "❌ Unban error",
+            "error": "An error occurred while unbanning",
+            "error_not_banned": "This user is not banned from the server",
+            "no_permission": "❌ You don't have permission to unban members.",
+            "not_banned": "❌ This user is not banned."
+        },
+        "setupmute": {
+            "no_permission": "❌ You don't have permission to manage roles.",
+            "success": "✅ Mute system configured successfully!\n**Role:** {role}\n**Channels configured:** {channels}",
+            "error": "❌ An error occurred during configuration."
+        },
+        "help": {
+            "main_title": "📚 Help - Yako Bot",
+            "main_description": "Here is the list of all available commands. Select a category from the dropdown menu below to see details.\n\n**Available categories:**\n🛡️ **Moderation** - Server management commands\n🌍 **Public** - Commands accessible to everyone\n⭐ **Premium** - Exclusive premium commands",
+            "select_placeholder": "Choose a help category",
+            "default_instructions": "**💡 Instructions:**\n• Use the dropdown menu below to choose a category\n• Each category contains specific commands\n• All commands are available according to your permissions",
+            "footer_text": "Need help? Contact the staff or use the appropriate commands!",
+            "moderation_option": "Moderation",
+            "moderation_desc": "Server management commands",
+            "public_option": "Public",
+            "public_desc": "Commands accessible to everyone",
+            "premium_option": "Premium",
+            "premium_desc": "Exclusive premium commands",
+            "footer": "Help updated automatically",
+            "moderation_title": "🛡️ Moderation Commands",
+            "moderation_description": "**Available moderation commands:**\n\n`/ban` - Ban a member from the server\n`/kick` - Kick a member from the server\n`/mute` - Mute a member\n`/unmute` - Unmute a member\n`/warn` - Warn a member\n`/clear` - Delete messages\n`/setupmute` - Configure the mute system",
+            "public_title": "🌍 Public Commands",
+            "public_description": "**Available public commands:**\n\n`/help` - Display this help\n`/ping` - Check bot latency\n`/serverinfo` - Server information",
+            "premium_title": "⭐ Premium Commands",
+            "premium_description": "**Available premium commands:**\n\n`/ask` - Ask a question to the AI\n\n*These commands require a premium subscription.*"
+        },
+        "ask": {
+            "description": "Ask a question to AI (Premium)",
+            "error": "❌ This command requires a Premium subscription.",
+            "thinking": "🤔 Thinking..."
+        }
+    },
+    "ping": {
+        "title": "🏓 Pong!",
+        "description": "📡 **Bot Latency:** {latency}ms\n💓 **API Latency:** {apiLatency}ms",
+        "footer": "Latency measured in real time"
+    },
+    "commands": {
+        "ping": {
+            "title": "🏓 Pong!",
+            "description": "**Bot Latency:** {latency}ms\n**API Latency:** {apiLatency}ms",
+            "footer": "Bot performance"
+        },
+        "serverinfo": {
+            "title": "📊 Server Information",
+            "description": "**Server:** {guildName}\n**Owner:** {owner}\n**Created:** {createdAt}\n**ID:** {guildId}\n**Members:** {memberCount}\n**Channels:** {channelCount}\n**Roles:** {roleCount}\n**Emojis:** {emojiCount}\n**Boost Level:** Level {boostLevel} ({boostCount} boosts)\n**Verification Level:** {verificationLevel}\n**Description:** {guildDescription}",
+            "footer": "Server statistics"
+        },
+        "ask": {
+            "title": "🤖 AI Response",
+            "question": "Question",
+            "response": "Response",
+            "premium_required_title": "💎 Premium Required",
+            "premium_required": "This command requires a premium subscription."
+        }
+    },
+    "serverinfo": {
+        "title": "📊 {guildName} Information",
+        "description": "👑 **Owner:** {owner}\n📅 **Created:** {createdAt}\n🏷️ **ID:** {guildId}\n👥 **Members:** {memberCount}\n📝 **Channels:** {channelCount}\n🎭 **Roles:** {roleCount}\n😀 **Emojis:** {emojiCount}\n🚀 **Boost Level:** Level {boostLevel} ({boostCount} boosts)\n🔒 **Verification Level:** {verificationLevel}{guildDescription}",
+        "footer": "Information updated in real time"
+    },
+    "ask": {
+        "title": "🤖 AI Assistant",
+        "response": "{response}",
+        "footer": "Question asked by {username}",
+        "premium_required": "This command requires a premium server. ⭐\nContact the support team for more information.",
+        "error": "Sorry, I couldn't process your question."
+    },
+    "common": {
+        "error": "❌ Error",
+        "success": "✅ Success",
+        "warning": "⚠️ Warning",
+        "no_reason": "No reason provided",
+        "no_description": "No description",
+        "details": "Details",
+        "moderator": "A moderator",
+        "permanent": "Permanent"
+    },
+    "errors": {
+        "no_permission": "❌ You don't have permission to use this command.",
+        "no_permission_title": "❌ Insufficient permissions",
+        "user_not_found": "❌ User not found.",
+        "invalid_duration": "❌ Invalid duration.",
+        "bot_no_permission": "❌ Bot doesn't have necessary permissions.",
+        "bot_no_permission_title": "❌ Bot permissions insufficient",
+        "premium_required": "❌ This feature requires a Premium subscription.",
+        "command_execution": "An error occurred while executing this command.",
+        "cooldown": {
+            "title": "⏰ Cooldown",
+            "message": "You must wait {timeLeft} seconds before using this command again."
+        }
+    },
+    "logs": {
+        "voice_join": "🔊 {user} joined voice channel {channel}",
+        "voice_leave": "🔇 {user} left voice channel {channel}",
+        "message_delete": "🗑️ Message deleted in {channel} by {user}",
+        "message_edit": "✏️ Message edited in {channel} by {user}",
+        "channel_create": "➕ Channel {channel} created",
+        "channel_delete": "➖ Channel {channel} deleted",
+        "role_create": "➕ Role {role} created",
+        "role_delete": "➖ Role {role} deleted",
+        "role_add": "➕ Role {role} added to {user}",
+        "role_remove": "➖ Role {role} removed from {user}",
+        "server_update": "⚙️ Server updated: {changes}"
+    }
+}
