@@ -86,7 +86,7 @@ module.exports = {
                 lang
             );
             
-            await interaction.reply({ embeds: [successEmbed] });
+            await interaction.reply({ ...successEmbed });
 
         } catch (error) {
             console.error(error);
@@ -95,7 +95,7 @@ module.exports = {
                 interaction.guild.id,
                 lang
             );
-            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            await interaction.reply({ ...errorEmbed, ephemeral: true });
         }
     }
 };

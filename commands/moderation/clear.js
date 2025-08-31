@@ -88,7 +88,7 @@ module.exports = {
             }
 
             const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang, interaction.user);
-            await interaction.reply({ components: [successEmbed], flags: MessageFlags.IsComponentsV2 });
+            await interaction.reply({ ...successEmbed, ephemeral: true });
 
         } catch (error) {
             console.error('Erreur lors de la suppression des messages:', error);
