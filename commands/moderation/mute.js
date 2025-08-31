@@ -64,12 +64,46 @@ module.exports = {
                 });
             }
 
-            const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
+            let muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
-                return interaction.reply({
-                    embeds: [BotEmbeds.createGenericErrorEmbed('Le rôle de mute configuré n\'existe plus. Utilisez `/setupmute` pour le reconfigurer', interaction.guild.id)],
-                    ephemeral: true
-                });
+                // Créer automatiquement le rôle de mute
+                try {
+                    muteRole = await interaction.guild.roles.create({
+                        name: 'Muted',
+                        color: '#818386',
+                        reason: 'Rôle de mute créé automatiquement'
+                    });
+
+                    // Mettre à jour la base de données avec le nouveau rôle
+                    await Guild.findOneAndUpdate(
+                        { guildId: interaction.guild.id },
+                        { muteRole: muteRole.id },
+                        { upsert: true }
+                    );
+
+                    // Configurer les permissions pour tous les salons
+                    const channels = interaction.guild.channels.cache.filter(channel => 
+                        channel.type === 0 || channel.type === 2 // Text and Voice channels
+                    );
+
+                    for (const [, channel] of channels) {
+                        try {
+                            await channel.permissionOverwrites.edit(muteRole, {
+                                SendMessages: false,
+                                Speak: false,
+                                AddReactions: false
+                            });
+                        } catch (error) {
+                            console.log(`Impossible de configurer les permissions pour ${channel.name}:`, error.message);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la création du rôle de mute:', error);
+                    return interaction.reply({
+                        embeds: [BotEmbeds.createGenericErrorEmbed('Impossible de créer le rôle de mute. Vérifiez mes permissions.', interaction.guild.id)],
+                        ephemeral: true
+                    });
+                }
             }
 
             if (member.roles.cache.has(muteRole.id)) {

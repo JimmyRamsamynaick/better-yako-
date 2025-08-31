@@ -281,12 +281,16 @@ class BotEmbeds {
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
-        const description = LanguageManager.get(lang, 'commands.mute.success', {
+        let description = LanguageManager.get(lang, 'commands.mute.success', {
             executor: executorName,
             user: userName,
             reason: finalReason,
             duration: durationText
-        }) || `${executorName} muted ${userName} for ${finalReason} (Duration: ${durationText})`;
+        });
+        
+        if (!description || description.trim() === '') {
+            description = `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
+        }
 
         return {
             title: title,
