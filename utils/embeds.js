@@ -91,27 +91,25 @@ class BotEmbeds {
      */
     static createClearSuccessEmbed(count, targetUser = null, guildId = null, executor = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages deleted';
-        let message;
+        let description;
         if (targetUser) {
-            message = LanguageManager.get(lang, 'commands.clear.success_user', {
+            description = LanguageManager.get(lang, 'commands.clear.success_user', {
                 count: count,
                 user: executor ? executor.tag : 'Unknown',
                 target: targetUser.tag
             }) || `${executor ? executor.tag : 'Unknown'} deleted ${count} messages from ${targetUser.tag}.`;
         } else {
-            message = LanguageManager.get(lang, 'commands.clear.success', {
+            description = LanguageManager.get(lang, 'commands.clear.success', {
                 count: count,
                 user: executor ? executor.tag : 'Unknown'
             }) || `${executor ? executor.tag : 'Unknown'} deleted ${count} messages.`;
         }
 
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 64
+            title: title,
+            description: description,
+            color: 0x00ff00,
+            timestamp: new Date().toISOString()
         };
     }
 
