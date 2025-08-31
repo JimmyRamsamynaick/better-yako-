@@ -87,19 +87,15 @@ module.exports = {
                 });
             }
 
-            await interaction.reply({
-                embeds: [BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, interaction.user, lang)],
-                ephemeral: true
-            });
+            const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang);
+            await interaction.reply({ embeds: [successEmbed], ephemeral: false });
 
         } catch (error) {
             console.error('Erreur lors de la suppression des messages:', error);
             const errorMsg = LanguageManager.get(lang, 'clear.error');
             if (!interaction.replied && !interaction.deferred) {
-                await interaction.reply({
-                    components: [BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id)],
-                    flags: MessageFlags.IsComponentsV2
-                });
+                const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
+                await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             }
         }
     }

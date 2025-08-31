@@ -15,12 +15,10 @@ class BotEmbeds {
      */
     static createGenericErrorEmbed(message, guildId = null) {
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ❌ Erreur\n\n${message}`
-            }],
-            flags: 64
+            title: '❌ Erreur',
+            description: message || 'Une erreur est survenue.',
+            color: 0xff0000,
+            timestamp: new Date().toISOString()
         };
     }
 
@@ -89,24 +87,27 @@ class BotEmbeds {
     /**
      * Embed pour succès de clear
      */
-    static createClearSuccessEmbed(count, targetUser = null, guildId = null, executor = null, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages deleted';
+    static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr') {
+        const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages supprimés';
         let description;
         if (targetUser) {
             description = LanguageManager.get(lang, 'commands.clear.success_user', {
                 count: count,
-                user: executor ? executor.tag : 'Unknown',
-                target: targetUser.tag
-            }) || `${executor ? executor.tag : 'Unknown'} deleted ${count} messages from ${targetUser.tag}.`;
+                user: targetUser.tag
+            }) || `${count} messages de ${targetUser.tag} ont été supprimés.`;
         } else {
             description = LanguageManager.get(lang, 'commands.clear.success', {
-                count: count,
-                user: executor ? executor.tag : 'Unknown'
-            }) || `${executor ? executor.tag : 'Unknown'} deleted ${count} messages.`;
+                count: count
+            }) || `${count} messages ont été supprimés.`;
+        }
+        
+        // S'assurer que la description n'est jamais vide
+        if (!description || description.trim() === '') {
+            description = `${count} messages ont été supprimés avec succès.`;
         }
 
         return {
-            title: title,
+            title: title || '✅ Messages supprimés',
             description: description,
             color: 0x00ff00,
             timestamp: new Date().toISOString()
@@ -276,49 +277,26 @@ class BotEmbeds {
      * Embed pour succès de mute
      */
     static createMuteSuccessEmbed(user, reason, duration, guildId = null, executor = null, lang = 'fr') {
-        console.log('=== DEBUG createMuteSuccessEmbed ===');
-        console.log('Params:', { user: user?.username, reason, duration, lang });
-        
-        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '🔇 Utilisateur rendu muet';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
-        const userName = user.username || user.tag || 'Utilisateur inconnu';
-        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
+        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '✅ User muted';
+        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
+        const userName = user.username || user.tag;
+        const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
-        
-        console.log('Variables:', { title, executorName, userName, finalReason, durationText });
-        
-        let description = LanguageManager.get(lang, 'commands.mute.success', {
+        const message = LanguageManager.get(lang, 'commands.mute.success', {
             executor: executorName,
             user: userName,
             reason: finalReason,
             duration: durationText
-        });
-        
-        console.log('Description from LanguageManager:', description);
-        
-        // S'assurer qu'on a toujours une description valide
-        if (!description || description.trim() === '' || description.includes('[MISSING:') || description.includes('[LANG_ERROR:')) {
-            description = `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
-            console.log('Using fallback description:', description);
-        }
-        
-        // S'assurer que la description n'est jamais vide
-        if (!description || description.trim() === '') {
-            description = 'Utilisateur rendu muet avec succès.';
-            console.log('Using emergency fallback description:', description);
-        }
+        }) || `${executorName} muted ${userName} for ${finalReason} (Duration: ${durationText})`;
 
-        const embed = {
-            title: title || '🔇 Utilisateur rendu muet',
-            description: description,
-            color: 0x00ff00,
-            timestamp: new Date().toISOString()
+        return {
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ${title}\n\n${message}`
+            }],
+            flags: 64
         };
-        
-        console.log('Final embed:', JSON.stringify(embed, null, 2));
-        console.log('=== END DEBUG ===');
-        
-        return embed;
     }
 
     // ===== EMBEDS POUR LA COMMANDE UNMUTE =====
@@ -772,14 +750,16 @@ class BotEmbeds {
      * Embed d'erreur générale pour les commandes
      */
     static createCommandErrorEmbed(lang = 'fr') {
-        const errorTitle = LanguageManager.get(lang, 'common.error') || '❌ Erreur';
+        const errorTitle = LanguageManager.get(lang, 'common.error');
         const errorMessage = LanguageManager.get(lang, 'errors.command_execution') || 'Une erreur est survenue lors de l\'exécution de cette commande.';
 
         return {
-            title: errorTitle,
-            description: errorMessage,
-            color: 0xff0000,
-            timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ${errorTitle}\n\n${errorMessage}`
+            }],
+            flags: 64
         };
     }
 }
