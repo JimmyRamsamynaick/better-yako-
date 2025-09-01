@@ -301,16 +301,16 @@ class BotEmbeds {
      */
     static createMuteSuccessEmbed(user, reason, duration, guildId = null, executor = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.mute.success_title') || '✅ Membre rendu muet';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
+        const executorMention = executor ? `<@${executor.id}>` : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
         const message = LanguageManager.get(lang, 'commands.mute.success', {
-            executor: executorName,
+            executor: executorMention,
             user: userName,
             reason: finalReason,
             duration: durationText
-        }) || `${executorName} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
+        }) || `${executorMention} a rendu muet ${userName} pour ${finalReason} (Durée: ${durationText})`;
 
         // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
         const content = message || 'Membre rendu muet avec succès';
@@ -334,14 +334,14 @@ class BotEmbeds {
      */
     static createUnmuteSuccessEmbed(user, reason, guildId = null, executor = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.unmute.success_title') || '✅ Membre démute';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
+        const executorMention = executor ? `<@${executor.id}>` : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
         const message = LanguageManager.get(lang, 'commands.unmute.success', {
-            executor: executorName,
+            executor: executorMention,
             user: userName,
             reason: finalReason
-        }) || `${executorName} a démute ${userName} pour ${finalReason}`;
+        }) || `${executorMention} a démute ${userName} pour ${finalReason}`;
 
         // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
         const content = message || 'Membre démute avec succès';
