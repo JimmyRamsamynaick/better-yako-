@@ -39,33 +39,37 @@ module.exports = {
 
         if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
             console.log('❌ [BAN] Permissions insuffisantes pour:', interaction.user.tag);
+            const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
-                flags: MessageFlags.IsComponentsV2
+                ...noPermEmbed,
+                ephemeral: true
             });
         }
 
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
             console.log('❌ [BAN] Le bot n\'a pas les permissions de bannissement');
+            const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
-                flags: MessageFlags.IsComponentsV2
+                ...botNoPermEmbed,
+                ephemeral: true
             });
         }
 
         if (user.id === interaction.user.id) {
             console.log('❌ [BAN] Tentative d\'auto-ban par:', interaction.user.tag);
+            const notBannableEmbed = BotEmbeds.createUserNotBannableEmbed(user, interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createUserNotBannableEmbed(user, interaction.guild.id, lang)],
-                flags: MessageFlags.IsComponentsV2
+                ...notBannableEmbed,
+                ephemeral: true
             });
         }
 
         if (user.id === interaction.client.user.id) {
             console.log('❌ [BAN] Tentative de ban du bot par:', interaction.user.tag);
+            const banBotPermEmbed = BotEmbeds.createBanBotPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createBanBotPermissionEmbed(interaction.guild.id, lang)],
-                flags: MessageFlags.IsComponentsV2
+                ...banBotPermEmbed,
+                ephemeral: true
             });
         }
 
@@ -77,18 +81,20 @@ module.exports = {
             console.log('🔍 [BAN] Vérification hiérarchie - Membre:', member.roles.highest.position, '| Exécuteur:', interaction.member.roles.highest.position);
             if (member.roles.highest.position >= interaction.member.roles.highest.position) {
                 console.log('❌ [BAN] Hiérarchie insuffisante');
+                const notBannableEmbed = BotEmbeds.createUserNotBannableEmbed(user, interaction.guild.id, lang);
                 return interaction.reply({
-                    components: [BotEmbeds.createUserNotBannableEmbed(user, interaction.guild.id, lang)],
-                    flags: MessageFlags.IsComponentsV2
+                    ...notBannableEmbed,
+                    ephemeral: true
                 });
             }
 
             console.log('🔍 [BAN] Vérification bannable:', member.bannable);
             if (!member.bannable) {
                 console.log('❌ [BAN] Membre non bannable (permissions bot insuffisantes)');
+                const banBotPermEmbed = BotEmbeds.createBanBotPermissionEmbed(interaction.guild.id, lang);
                 return interaction.reply({
-                    components: [BotEmbeds.createBanBotPermissionEmbed(interaction.guild.id, lang)],
-                    flags: MessageFlags.IsComponentsV2
+                    ...banBotPermEmbed,
+                    ephemeral: true
                 });
             }
 
@@ -97,9 +103,10 @@ module.exports = {
             console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
 
             console.log('🔍 [BAN] Envoi de la réponse de succès...');
+            const successEmbed = BotEmbeds.createBanSuccessEmbed(user, reason, interaction.guild.id, interaction.user, lang);
             await interaction.reply({
-                components: [BotEmbeds.createBanSuccessEmbed(user, reason, interaction.guild.id, interaction.user, lang)],
-                flags: MessageFlags.IsComponentsV2
+                ...successEmbed,
+                ephemeral: true
             });
             console.log('✅ [BAN] Réponse envoyée avec succès');
 
@@ -123,9 +130,10 @@ module.exports = {
                             const bannedUser = await interaction.guild.bans.fetch(user.id);
                             if (bannedUser) {
                                 console.log('❌ [BAN] Utilisateur déjà banni:', user.tag);
+                                const alreadyBannedEmbed = BotEmbeds.createUserAlreadyBannedEmbed(user, interaction.guild.id, lang);
                                 return await interaction.reply({
-                                    components: [BotEmbeds.createUserAlreadyBannedEmbed(user, interaction.guild.id, lang)],
-                                    flags: MessageFlags.IsComponentsV2
+                                    ...alreadyBannedEmbed,
+                                    ephemeral: true
                                 });
                             }
                         } catch (banCheckError) {
@@ -133,9 +141,10 @@ module.exports = {
                         }
                     }
                     
+                    const errorEmbed = BotEmbeds.createBanErrorEmbed(error, interaction.guild.id, lang);
                     await interaction.reply({
-                        components: [BotEmbeds.createBanErrorEmbed(error, interaction.guild.id, lang)],
-                        flags: MessageFlags.IsComponentsV2
+                        ...errorEmbed,
+                        ephemeral: true
                     });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'erreur:', replyError);

@@ -32,17 +32,19 @@ module.exports = {
 
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-            return interaction.reply({ 
-                components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
-                flags: MessageFlags.IsComponentsV2
+            const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
+            return interaction.reply({
+                ...noPermEmbed,
+                ephemeral: true
             });
         }
 
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
+            const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
-                flags: MessageFlags.IsComponentsV2
+                ...botNoPermEmbed,
+                ephemeral: true
             });
         }
 
@@ -59,9 +61,10 @@ module.exports = {
                     const errorMsg = LanguageManager.get(lang, 'clear.no_messages_found', {
                         user: targetUser.username
                     });
+                    const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
                     return interaction.reply({
-                        components: [BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id)],
-                        flags: MessageFlags.IsComponentsV2
+                        ...errorEmbed,
+                        ephemeral: true
                     });
                 }
             } else {
@@ -95,7 +98,7 @@ module.exports = {
             const errorMsg = LanguageManager.get(lang, 'clear.error');
             if (!interaction.replied && !interaction.deferred) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
-                await interaction.reply({ components: [errorEmbed], flags: MessageFlags.IsComponentsV2 });
+                await interaction.reply({ ...errorEmbed, ephemeral: true });
             }
         }
     }

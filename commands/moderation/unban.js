@@ -37,9 +37,10 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
             if (!interaction.replied && !interaction.deferred) {
                 try {
+                    const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
                     return await interaction.reply({
-                        components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
-                        flags: MessageFlags.IsComponentsV2
+                        ...noPermEmbed,
+                        ephemeral: true
                     });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (no permission):', replyError);
@@ -52,9 +53,10 @@ module.exports = {
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
             if (!interaction.replied && !interaction.deferred) {
                 try {
+                    const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
                     return await interaction.reply({
-                        components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
-                        flags: MessageFlags.IsComponentsV2
+                        ...botNoPermEmbed,
+                        ephemeral: true
                     });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (bot no permission):', replyError);
@@ -70,9 +72,10 @@ module.exports = {
             if (!bannedUser) {
                 if (!interaction.replied && !interaction.deferred) {
                      try {
+                         const notBannedEmbed = BotEmbeds.createUserNotBannedEmbed({ id: userId }, interaction.guild.id, lang);
                          return await interaction.reply({
-                             components: [BotEmbeds.createUserNotBannedEmbed({ id: userId }, interaction.guild.id, lang)],
-                             flags: MessageFlags.IsComponentsV2
+                             ...notBannedEmbed,
+                             ephemeral: true
                          });
                      } catch (replyError) {
                          console.error('Erreur lors de la réponse d\'interaction (not banned):', replyError);
@@ -86,9 +89,10 @@ module.exports = {
 
             if (!interaction.replied && !interaction.deferred) {
                 try {
+                    const successEmbed = BotEmbeds.createUnbanSuccessEmbed(bannedUser.user, interaction.guild.id, interaction.user, reason, lang);
                     await interaction.reply({
-                        components: [BotEmbeds.createUnbanSuccessEmbed(bannedUser.user, interaction.guild.id, interaction.user, reason, lang)],
-                        flags: MessageFlags.IsComponentsV2
+                        ...successEmbed,
+                        ephemeral: true
                     });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
@@ -100,9 +104,10 @@ module.exports = {
             
             if (!interaction.replied && !interaction.deferred) {
                 try {
+                    const errorEmbed = BotEmbeds.createUnbanErrorEmbed(error, interaction.guild.id, lang);
                     await interaction.reply({
-                        components: [BotEmbeds.createUnbanErrorEmbed(error, interaction.guild.id, lang)],
-                        flags: MessageFlags.IsComponentsV2
+                        ...errorEmbed,
+                        ephemeral: true
                     });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (unban error):', replyError);

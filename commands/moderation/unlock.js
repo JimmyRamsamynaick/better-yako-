@@ -28,16 +28,18 @@ module.exports = {
 
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+            const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
+                ...noPermEmbed,
                 ephemeral: true
             });
         }
 
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
+            const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
-                components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
+                ...botNoPermEmbed,
                 ephemeral: true
             });
         }
