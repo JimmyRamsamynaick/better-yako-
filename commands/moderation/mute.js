@@ -34,7 +34,11 @@ module.exports = {
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                embeds: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
+                embeds: [{
+                    title: '❌ Permissions insuffisantes',
+                    description: 'Vous n\'avez pas les permissions nécessaires pour utiliser cette commande.',
+                    color: 0xFF0000
+                }],
                 ephemeral: true
             });
         }
@@ -42,14 +46,22 @@ module.exports = {
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                embeds: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
+                embeds: [{
+                    title: '❌ Permissions du bot insuffisantes',
+                    description: 'Je n\'ai pas les permissions nécessaires pour modérer les membres.',
+                    color: 0xFF0000
+                }],
                 ephemeral: true
             });
         }
 
         if (user.id === interaction.user.id) {
             return interaction.reply({
-                embeds: [BotEmbeds.createGenericErrorEmbed('Vous ne pouvez pas vous mute vous-même', interaction.guild.id, lang)],
+                embeds: [{
+                    title: '❌ Erreur',
+                    description: 'Vous ne pouvez pas vous mute vous-même.',
+                    color: 0xFF0000
+                }],
                 ephemeral: true
             });
         }
@@ -59,20 +71,36 @@ module.exports = {
 
             if (!guildData?.muteRole) {
                 return interaction.reply({
-                    embeds: [BotEmbeds.createGenericErrorEmbed('Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord', interaction.guild.id, lang)],
+                    embeds: [{
+                        title: '❌ Configuration manquante',
+                        description: 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.',
+                        color: 0xFF0000
+                    }],
                     ephemeral: true
                 });
             }
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
-                const errorEmbed = BotEmbeds.createGenericErrorEmbed('Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`', interaction.guild.id);
-                return interaction.reply({ ...errorEmbed, ephemeral: true });
+                return interaction.reply({
+                    embeds: [{
+                        title: '❌ Rôle introuvable',
+                        description: 'Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.',
+                        color: 0xFF0000
+                    }],
+                    ephemeral: true
+                });
             }
 
             if (member.roles.cache.has(muteRole.id)) {
-                const errorEmbed = BotEmbeds.createGenericErrorEmbed('Ce membre est déjà rendu muet', interaction.guild.id);
-                return interaction.reply({ ...errorEmbed, ephemeral: true });
+                return interaction.reply({
+                    embeds: [{
+                        title: '❌ Déjà muet',
+                        description: 'Ce membre est déjà rendu muet.',
+                        color: 0xFF0000
+                    }],
+                    ephemeral: true
+                });
             }
 
             let muteUntil = null;
@@ -81,8 +109,14 @@ module.exports = {
             if (duration) {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
-                    const errorEmbed = BotEmbeds.createGenericErrorEmbed('Durée invalide. Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours)', interaction.guild.id);
-                     return interaction.reply({ ...errorEmbed, ephemeral: true });
+                    return interaction.reply({
+                        embeds: [{
+                            title: '❌ Durée invalide',
+                            description: 'Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).',
+                            color: 0xFF0000
+                        }],
+                        ephemeral: true
+                    });
                 }
                 muteUntil = new Date(Date.now() + parsedDuration);
                 durationText = duration;
@@ -114,16 +148,14 @@ module.exports = {
                 { upsert: true }
             );
 
-            const successEmbed = BotEmbeds.createMuteSuccessEmbed(
-                user,
-                reason,
-                durationText,
-                interaction.guild.id,
-                interaction.user,
-                lang
-            );
+            const successEmbed = {
+                title: '🔇 Membre rendu muet',
+                description: `**${user.username}** a été rendu muet avec succès.\n\n**Raison:** ${reason}\n**Durée:** ${durationText}\n**Modérateur:** ${interaction.user.username}`,
+                color: 0x00FF00,
+                timestamp: new Date().toISOString()
+            };
             
-            await interaction.reply({ ...successEmbed });
+            await interaction.reply({ embeds: [successEmbed] });
 
             // Auto-unmute si durée définie
             if (muteUntil) {
@@ -152,12 +184,14 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            const errorEmbed = BotEmbeds.createGenericErrorEmbed(
-                'Une erreur est survenue lors du mute',
-                interaction.guild.id,
-                lang
-            );
-            await interaction.reply({ ...errorEmbed, ephemeral: true });
+            await interaction.reply({
+                embeds: [{
+                    title: '❌ Erreur',
+                    description: 'Une erreur est survenue lors du mute.',
+                    color: 0xFF0000
+                }],
+                ephemeral: true
+            });
         }
     }
 };
