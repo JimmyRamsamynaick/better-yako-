@@ -67,12 +67,12 @@ module.exports = {
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed('Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`', interaction.guild.id);
-                return interaction.reply({ ...errorEmbed, ephemeral: true });
+                return interaction.reply(errorEmbed);
             }
 
             if (member.roles.cache.has(muteRole.id)) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed('Ce membre est déjà rendu muet', interaction.guild.id);
-                return interaction.reply({ ...errorEmbed, ephemeral: true });
+                return interaction.reply(errorEmbed);
             }
 
             let muteUntil = null;
@@ -123,7 +123,7 @@ module.exports = {
                 lang
             );
             
-            await interaction.reply({ ...successEmbed });
+            await interaction.reply(successEmbed);
 
             // Auto-unmute si durée définie
             if (muteUntil) {
@@ -157,7 +157,7 @@ module.exports = {
                 interaction.guild.id,
                 lang
             );
-            await interaction.reply({ ...errorEmbed, ephemeral: true });
+            await interaction.reply(errorEmbed);
         }
     }
 };
