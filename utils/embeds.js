@@ -206,12 +206,14 @@ class BotEmbeds {
         const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Bot performance';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}\n\n*${footer}*`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}\n\n*${footer}*`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -239,12 +241,14 @@ class BotEmbeds {
         const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Server statistics';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}\n\n*${footer}*`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}\n\n*${footer}*`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -260,12 +264,14 @@ class BotEmbeds {
         const message = `**${questionLabel}:** ${question}\n\n**${responseLabel}:** ${response}`;
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -277,12 +283,14 @@ class BotEmbeds {
         const message = LanguageManager.get(lang, 'commands.ask.premium_required') || 'This command requires a premium subscription.';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -367,12 +375,14 @@ class BotEmbeds {
         }) || `${executorName} locked ${channelName} for ${finalReason}`;
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -393,12 +403,14 @@ class BotEmbeds {
         }) || `${executorName} unlocked ${channelName} for ${finalReason}`;
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -419,12 +431,14 @@ class BotEmbeds {
         }) || `${executorName} banned ${userName} for ${finalReason}`;
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -436,12 +450,14 @@ class BotEmbeds {
         const message = LanguageManager.get(lang, 'commands.ban.error_bot_permissions') || 'I do not have sufficient permissions to ban this user.';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `### ${message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `### ${message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -471,12 +487,14 @@ class BotEmbeds {
         const detailsLabel = LanguageManager.get(lang, 'common.details') || 'Details';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}\n\n**${detailsLabel}:** ${error.message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}\n\n**${detailsLabel}:** ${error.message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -549,12 +567,14 @@ class BotEmbeds {
         const detailsLabel = LanguageManager.get(lang, 'common.details') || 'Details';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}\n\n**${detailsLabel}:** ${error.message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}\n\n**${detailsLabel}:** ${error.message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -595,12 +615,14 @@ class BotEmbeds {
         const detailsLabel = LanguageManager.get(lang, 'common.details') || 'Details';
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}\n\n**${detailsLabel}:** ${error.message}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}\n\n**${detailsLabel}:** ${error.message}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -743,12 +765,14 @@ class BotEmbeds {
         });
 
         return {
-            type: 17,
             components: [{
-                type: 10,
-                content: `## ${welcomeTitle}\n\n${welcomeDescription}`
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${welcomeTitle}\n\n${welcomeDescription}`
+                }]
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
