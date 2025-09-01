@@ -34,11 +34,7 @@ module.exports = {
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                embeds: [{
-                    title: '❌ Permissions insuffisantes',
-                    description: 'Vous n\'avez pas les permissions nécessaires pour utiliser cette commande.',
-                    color: 0xFF0000
-                }],
+                components: [BotEmbeds.createNoPermissionEmbed(lang)],
                 ephemeral: true
             });
         }
@@ -46,22 +42,14 @@ module.exports = {
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                embeds: [{
-                    title: '❌ Permissions du bot insuffisantes',
-                    description: 'Je n\'ai pas les permissions nécessaires pour modérer les membres.',
-                    color: 0xFF0000
-                }],
+                components: [BotEmbeds.createBotNoPermissionEmbed(lang)],
                 ephemeral: true
             });
         }
 
         if (user.id === interaction.user.id) {
             return interaction.reply({
-                embeds: [{
-                    title: '❌ Erreur',
-                    description: 'Vous ne pouvez pas vous mute vous-même.',
-                    color: 0xFF0000
-                }],
+                components: [BotEmbeds.createErrorEmbed(lang, 'Vous ne pouvez pas vous mute vous-même.')],
                 ephemeral: true
             });
         }
@@ -71,11 +59,7 @@ module.exports = {
 
             if (!guildData?.muteRole) {
                 return interaction.reply({
-                    embeds: [{
-                        title: '❌ Configuration manquante',
-                        description: 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.',
-                        color: 0xFF0000
-                    }],
+                    components: [BotEmbeds.createErrorEmbed(lang, 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.')],
                     ephemeral: true
                 });
             }
@@ -83,22 +67,14 @@ module.exports = {
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
                 return interaction.reply({
-                    embeds: [{
-                        title: '❌ Rôle introuvable',
-                        description: 'Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.',
-                        color: 0xFF0000
-                    }],
+                    components: [BotEmbeds.createErrorEmbed(lang, 'Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.')],
                     ephemeral: true
                 });
             }
 
             if (member.roles.cache.has(muteRole.id)) {
                 return interaction.reply({
-                    embeds: [{
-                        title: '❌ Déjà muet',
-                        description: 'Ce membre est déjà rendu muet.',
-                        color: 0xFF0000
-                    }],
+                    components: [BotEmbeds.createErrorEmbed(lang, 'Ce membre est déjà rendu muet.')],
                     ephemeral: true
                 });
             }
@@ -110,11 +86,7 @@ module.exports = {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
                     return interaction.reply({
-                        embeds: [{
-                            title: '❌ Durée invalide',
-                            description: 'Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).',
-                            color: 0xFF0000
-                        }],
+                        components: [BotEmbeds.createErrorEmbed(lang, 'Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).')],
                         ephemeral: true
                     });
                 }
@@ -148,14 +120,7 @@ module.exports = {
                 { upsert: true }
             );
 
-            const successEmbed = {
-                title: '🔇 Membre rendu muet',
-                description: `**${user.username}** a été rendu muet avec succès.\n\n**Raison:** ${reason}\n**Durée:** ${durationText}\n**Modérateur:** ${interaction.user.username}`,
-                color: 0x00FF00,
-                timestamp: new Date().toISOString()
-            };
-            
-            await interaction.reply({ embeds: [successEmbed] });
+            await interaction.reply({ components: [BotEmbeds.createMuteSuccessEmbed(user, reason, durationText, interaction.guild.id, interaction.user, lang)] });
 
             // Auto-unmute si durée définie
             if (muteUntil) {
@@ -185,11 +150,7 @@ module.exports = {
         } catch (error) {
             console.error(error);
             await interaction.reply({
-                embeds: [{
-                    title: '❌ Erreur',
-                    description: 'Une erreur est survenue lors du mute.',
-                    color: 0xFF0000
-                }],
+                components: [BotEmbeds.createErrorEmbed(lang, 'Une erreur est survenue lors du mute.')],
                 ephemeral: true
             });
         }
