@@ -20,14 +20,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 4,
-                    label: `❌ Erreur: ${content}`,
-                    custom_id: 'error_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `## ❌ Erreur\n\n${content}`
             }],
             flags: 64
         };
@@ -40,14 +34,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 3,
-                    label: `✅ Succès: ${message}`,
-                    custom_id: 'success_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `## ✅ Succès\n\n${message}`
             }],
             flags: 64
         };
@@ -60,14 +48,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 4,
-                    label: `❌ Utilisateur ${userId} introuvable`,
-                    custom_id: 'user_not_found_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `## ❌ Utilisateur introuvable\n\nAucun utilisateur trouvé avec l'ID: \`${userId}\``
             }],
             flags: 64
         };
@@ -83,14 +65,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 4,
-                    label: `❌ ${message}`.substring(0, 80),
-                    custom_id: 'no_permission_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `### ${message}`
             }],
             flags: 64
         };
@@ -103,14 +79,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 4,
-                    label: `❌ ${message}`.substring(0, 80),
-                    custom_id: 'bot_no_permission_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `### ${message}`
             }],
             flags: 64
         };
@@ -136,14 +106,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 3,
-                    label: `🧹 ${count} message(s) supprimé(s)`,
-                    custom_id: 'clear_success_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `## 🧹 Messages supprimés\n\n${count} message(s) supprimé(s) avec succès.`
             }],
             flags: 64
         };
@@ -330,14 +294,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 3,
-                    label: `${title}: ${content}`.substring(0, 80),
-                    custom_id: 'mute_success_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `## ${title}\n\n${content}`
             }],
             flags: 64
         };
@@ -365,14 +323,8 @@ class BotEmbeds {
         return {
             type: 17,
             components: [{
-                type: 1,
-                components: [{
-                    type: 2,
-                    style: 3,
-                    label: `${title}: ${content}`.substring(0, 80),
-                    custom_id: 'unmute_success_dismiss',
-                    disabled: true
-                }]
+                type: 10,
+                content: `## ${title}\n\n${content}`
             }],
             flags: 64
         };
