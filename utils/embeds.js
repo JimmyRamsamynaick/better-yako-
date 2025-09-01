@@ -119,7 +119,7 @@ class BotEmbeds {
                 type: 10,
                 content: `## 🧹 Messages supprimés\n\n${count} message(s) supprimé(s) avec succès.`
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -474,7 +474,7 @@ class BotEmbeds {
                 type: 10,
                 content: `## ${title}\n\n${message}`
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -511,7 +511,7 @@ class BotEmbeds {
                 type: 10,
                 content: `## ${title}\n\n${message}`
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -537,7 +537,7 @@ class BotEmbeds {
                 type: 10,
                 content: `## ${title}\n\n${message}`
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -554,7 +554,7 @@ class BotEmbeds {
                 type: 10,
                 content: `## ${title}\n\n${message}`
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
@@ -600,7 +600,7 @@ class BotEmbeds {
                 type: 10,
                 content: `## ${title}\n\n${message}`
             }],
-            flags: 64
+            flags: 32768
         };
     }
 
