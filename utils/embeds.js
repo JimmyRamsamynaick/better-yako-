@@ -18,12 +18,14 @@ class BotEmbeds {
         const content = message || 'Une erreur est survenue.';
         
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ❌ Erreur\n\n${content}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ❌ Erreur\n\n${content}`
+                }]
+            }]
         };
     }
 
@@ -32,12 +34,14 @@ class BotEmbeds {
      */
     static createGenericSuccessEmbed(message, guildId = null) {
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ✅ Succès\n\n${message}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ✅ Succès\n\n${message}`
+                }]
+            }]
         };
     }
 
@@ -46,12 +50,14 @@ class BotEmbeds {
      */
     static createUserNotFoundEmbed(userId, guildId = null) {
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ❌ Utilisateur introuvable\n\nAucun utilisateur trouvé avec l'ID: \`${userId}\``
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ❌ Utilisateur introuvable\n\nAucun utilisateur trouvé avec l'ID: \`${userId}\``
+                }]
+            }]
         };
     }
 
@@ -63,12 +69,14 @@ class BotEmbeds {
         const message = LanguageManager.get(lang, 'errors.no_permission') || 'You do not have the necessary permissions to use this command.';
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `### ${message}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `### ${message}`
+                }]
+            }]
         };
     }
 
@@ -77,12 +85,14 @@ class BotEmbeds {
         const message = LanguageManager.get(lang, 'errors.bot_no_permission') || 'I do not have the necessary permissions to execute this command. Please check my permissions.';
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `### ${message}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `### ${message}`
+                }]
+            }]
         };
     }
 
@@ -130,12 +140,14 @@ class BotEmbeds {
         }) || `${executorName} kicked ${userName} for ${finalReason}`;
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
+            }]
         };
     }
 
@@ -147,12 +159,14 @@ class BotEmbeds {
         const message = LanguageManager.get(lang, 'commands.kick.error_not_found') || 'This user is not a member of this server.';
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
+            }]
         };
     }
 
@@ -167,12 +181,14 @@ class BotEmbeds {
         }) || `I cannot kick ${userName}. They may have higher permissions than me.`;
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
+            }]
         };
     }
 
@@ -292,12 +308,14 @@ class BotEmbeds {
         const content = message || 'Membre rendu muet avec succès';
         
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${content}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${content}`
+                }]
+            }]
         };
     }
 
@@ -321,12 +339,14 @@ class BotEmbeds {
         const content = message || 'Membre démute avec succès';
         
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${title}\n\n${content}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${content}`
+                }]
+            }]
         };
     }
 
@@ -742,12 +762,14 @@ class BotEmbeds {
         }) || `Vous devez attendre ${timeLeft.toFixed(1)} secondes avant de réutiliser cette commande.`;
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${cooldownTitle}\n\n${cooldownMessage}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${cooldownTitle}\n\n${cooldownMessage}`
+                }]
+            }]
         };
     }
 
@@ -759,12 +781,14 @@ class BotEmbeds {
         const errorMessage = LanguageManager.get(lang, 'errors.command_execution') || 'Une erreur est survenue lors de l\'exécution de cette commande.';
 
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## ${errorTitle}\n\n${errorMessage}`
-            }],
-            flags: 64
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${errorTitle}\n\n${errorMessage}`
+                }]
+            }]
         };
     }
 }

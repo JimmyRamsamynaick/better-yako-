@@ -83,6 +83,7 @@ module.exports = {
                 user,
                 reason,
                 interaction.guild.id,
+                interaction.user,
                 lang
             );
             
