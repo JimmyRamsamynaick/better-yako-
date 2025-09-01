@@ -18,9 +18,9 @@ class BotEmbeds {
         const content = message || 'Une erreur est survenue.';
         
         return {
-            type: 17,
+            type: 1,
             components: [{
-                type: 10,
+                type: 1,
                 content: `## ❌ Erreur\n\n${content}`
             }],
             flags: 64
@@ -104,9 +104,9 @@ class BotEmbeds {
         const content = message || `${count} message(s) supprimé(s) avec succès`;
         
         return {
-            type: 17,
+            type: 1,
             components: [{
-                type: 10,
+                type: 1,
                 content: `## ${title}\n\n${content}`
             }],
             flags: 64
@@ -292,9 +292,9 @@ class BotEmbeds {
         const content = message || 'Membre rendu muet avec succès';
         
         return {
-            type: 17,
+            type: 1,
             components: [{
-                type: 10,
+                type: 1,
                 content: `## ${title}\n\n${content}`
             }],
             flags: 64
@@ -321,9 +321,9 @@ class BotEmbeds {
         const content = message || 'Membre démute avec succès';
         
         return {
-            type: 17,
+            type: 1,
             components: [{
-                type: 10,
+                type: 1,
                 content: `## ${title}\n\n${content}`
             }],
             flags: 64
