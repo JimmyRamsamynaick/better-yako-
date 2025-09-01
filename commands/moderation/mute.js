@@ -34,7 +34,7 @@ module.exports = {
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                components: [BotEmbeds.createNoPermissionEmbed(lang)],
+                components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }
@@ -42,14 +42,14 @@ module.exports = {
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                components: [BotEmbeds.createBotNoPermissionEmbed(lang)],
+                components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }
 
         if (user.id === interaction.user.id) {
             return interaction.reply({
-                components: [BotEmbeds.createErrorEmbed(lang, 'Vous ne pouvez pas vous mute vous-même.')],
+                components: [BotEmbeds.createGenericErrorEmbed('Vous ne pouvez pas vous mute vous-même.')],
                 ephemeral: true
             });
         }
@@ -59,7 +59,7 @@ module.exports = {
 
             if (!guildData?.muteRole) {
                 return interaction.reply({
-                    components: [BotEmbeds.createErrorEmbed(lang, 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.')],
+                    components: [BotEmbeds.createGenericErrorEmbed('Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.')],
                     ephemeral: true
                 });
             }
@@ -67,14 +67,14 @@ module.exports = {
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
                 return interaction.reply({
-                    components: [BotEmbeds.createErrorEmbed(lang, 'Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.')],
+                    components: [BotEmbeds.createGenericErrorEmbed('Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.')],
                     ephemeral: true
                 });
             }
 
             if (member.roles.cache.has(muteRole.id)) {
                 return interaction.reply({
-                    components: [BotEmbeds.createErrorEmbed(lang, 'Ce membre est déjà rendu muet.')],
+                    components: [BotEmbeds.createGenericErrorEmbed('Ce membre est déjà rendu muet.')],
                     ephemeral: true
                 });
             }
@@ -86,7 +86,7 @@ module.exports = {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
                     return interaction.reply({
-                        components: [BotEmbeds.createErrorEmbed(lang, 'Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).')],
+                        components: [BotEmbeds.createGenericErrorEmbed('Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).')],
                         ephemeral: true
                     });
                 }
@@ -150,7 +150,7 @@ module.exports = {
         } catch (error) {
             console.error(error);
             await interaction.reply({
-                components: [BotEmbeds.createErrorEmbed(lang, 'Une erreur est survenue lors du mute.')],
+                components: [BotEmbeds.createGenericErrorEmbed('Une erreur est survenue lors du mute.')],
                 ephemeral: true
             });
         }
