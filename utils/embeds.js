@@ -18,13 +18,12 @@ class BotEmbeds {
         const content = message || 'Une erreur est survenue.';
         
         return {
-            embeds: [{
-                title: "❌ Erreur",
-                description: content,
-                color: 0xff0000,
-                timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ❌ Erreur\n\n${content}`
             }],
-            ephemeral: true
+            flags: 64
         };
     }
 
@@ -105,13 +104,12 @@ class BotEmbeds {
         const content = message || `${count} message(s) supprimé(s) avec succès`;
         
         return {
-            embeds: [{
-                title: "🧹 Messages supprimés",
-                description: `${count} message(s) supprimé(s) avec succès.`,
-                color: 0x00ff00,
-                timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## 🧹 Messages supprimés\n\n${count} message(s) supprimé(s) avec succès.`
             }],
-            ephemeral: true
+            flags: 64
         };
     }
 
@@ -323,13 +321,12 @@ class BotEmbeds {
         const content = message || 'Membre démute avec succès';
         
         return {
-            embeds: [{
-                title: "🔊 Unmute",
-                description: content,
-                color: 0x00ff00,
-                timestamp: new Date().toISOString()
+            type: 17,
+            components: [{
+                type: 10,
+                content: `## ${title}\n\n${content}`
             }],
-            ephemeral: true
+            flags: 64
         };
     }
 
