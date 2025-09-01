@@ -105,8 +105,7 @@ module.exports = {
             console.log('🔍 [BAN] Envoi de la réponse de succès...');
             const successEmbed = BotEmbeds.createBanSuccessEmbed(user, reason, interaction.guild.id, interaction.user, lang);
             await interaction.reply({
-                ...successEmbed,
-                ephemeral: true
+                ...successEmbed
             });
             console.log('✅ [BAN] Réponse envoyée avec succès');
 

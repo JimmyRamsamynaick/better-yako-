@@ -421,24 +421,22 @@ class BotEmbeds {
      */
     static createBanSuccessEmbed(user, reason, guildId = null, executor = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.ban.success_title') || '✅ User banned';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
+        const executorName = executor ? `<@${executor.id}>` : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
-        const message = LanguageManager.get(lang, 'commands.ban.success', {
+        const description = LanguageManager.get(lang, 'commands.ban.success', {
             executor: executorName,
             user: userName,
             reason: finalReason
         }) || `${executorName} banned ${userName} for ${finalReason}`;
 
         return {
-            components: [{
-                type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${title}\n\n${message}`
-                }]
-            }],
-            flags: 32768
+            embeds: [{
+                title: title,
+                description: description,
+                color: 0x00ff00,
+                timestamp: new Date().toISOString()
+            }]
         };
     }
 
@@ -522,22 +520,22 @@ class BotEmbeds {
      */
     static createUnbanSuccessEmbed(user, guildId = null, executor = null, reason = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.unban.success_title') || '✅ User unbanned';
-        const executorName = executor ? executor.username : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
+        const executorName = executor ? `<@${executor.id}>` : LanguageManager.get(lang, 'common.moderator') || 'A moderator';
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'No reason provided';
-        const message = LanguageManager.get(lang, 'commands.unban.success', {
+        const description = LanguageManager.get(lang, 'commands.unban.success', {
             executor: executorName,
             user: userName,
             reason: finalReason
         }) || `${executorName} unbanned ${userName} for ${finalReason}`;
 
         return {
-            type: 17,
-            components: [{
-                type: 10,
-                content: `## ${title}\n\n${message}`
-            }],
-            flags: 32768
+            embeds: [{
+                title: title,
+                description: description,
+                color: 0x00ff00,
+                timestamp: new Date().toISOString()
+            }]
         };
     }
 

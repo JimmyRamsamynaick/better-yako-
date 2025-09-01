@@ -91,8 +91,7 @@ module.exports = {
                 try {
                     const successEmbed = BotEmbeds.createUnbanSuccessEmbed(bannedUser.user, interaction.guild.id, interaction.user, reason, lang);
                     await interaction.reply({
-                        ...successEmbed,
-                        ephemeral: true
+                        ...successEmbed
                     });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
