@@ -29,7 +29,7 @@ module.exports = {
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
             return interaction.reply({
-                embeds: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
+                components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }
@@ -37,7 +37,7 @@ module.exports = {
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
             return interaction.reply({
-                embeds: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
+                components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }

@@ -26,7 +26,7 @@ module.exports = {
         // Vérifier si le serveur a le premium
         if (!guildData.isPremium) {
             return interaction.reply({
-                embeds: [BotEmbeds.createAskPremiumErrorEmbed(interaction.guild.id, lang)],
+                components: [BotEmbeds.createPremiumRequiredEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }

@@ -52,7 +52,7 @@ module.exports = {
             if (!interaction.replied && !interaction.deferred) {
                 const errorEmbed = BotEmbeds.createCommandErrorEmbed();
                 try {
-                    await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                    await interaction.reply({ components: [errorEmbed], ephemeral: true });
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'erreur:', replyError);
                 }

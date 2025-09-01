@@ -28,7 +28,7 @@ module.exports = {
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                embeds: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
+                components: [BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }
@@ -36,7 +36,7 @@ module.exports = {
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             return interaction.reply({
-                embeds: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
+                components: [BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang)],
                 ephemeral: true
             });
         }
@@ -46,7 +46,7 @@ module.exports = {
 
             if (!guildData?.muteRole) {
                 return interaction.reply({
-                    embeds: [BotEmbeds.createGenericErrorEmbed('Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord', interaction.guild.id, lang)],
+                    components: [BotEmbeds.createGenericErrorEmbed('Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord', interaction.guild.id, lang)],
                     ephemeral: true
                 });
             }
@@ -54,14 +54,14 @@ module.exports = {
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
                 return interaction.reply({
-                    embeds: [BotEmbeds.createGenericErrorEmbed('Le rôle de mute n\'a pas été trouvé', interaction.guild.id, lang)],
+                    components: [BotEmbeds.createGenericErrorEmbed('Le rôle de mute n\'a pas été trouvé', interaction.guild.id, lang)],
                     ephemeral: true
                 });
             }
 
             if (!member.roles.cache.has(muteRole.id)) {
                 return interaction.reply({
-                    embeds: [BotEmbeds.createGenericErrorEmbed('Cet utilisateur n\'est pas mute', interaction.guild.id, lang)],
+                    components: [BotEmbeds.createGenericErrorEmbed('Cet utilisateur n\'est pas mute', interaction.guild.id, lang)],
                     ephemeral: true
                 });
             }
