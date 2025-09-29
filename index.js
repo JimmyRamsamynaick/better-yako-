@@ -41,13 +41,12 @@ for (const file of eventFiles) {
 }
 
 // Connexion à MongoDB
-connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('✅ Connecté à MongoDB');
-}).catch(err => {
-    console.error('❌ Erreur de connexion à MongoDB:', err);
-});
+connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log('✅ Connecté à MongoDB');
+    })
+    .catch(err => {
+        console.error('❌ Erreur de connexion à MongoDB:', err);
+    });
 
 client.login(process.env.DISCORD_TOKEN);
