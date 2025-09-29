@@ -248,7 +248,14 @@ class BotEmbeds {
         const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Server statistics';
 
         return {
-            content: `## ${title}\n\n${message}\n\n*${footer}*`
+            components: [{
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}\n\n*${footer}*`
+                }]
+            }],
+            flags: 32768
         };
     }
 
