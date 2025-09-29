@@ -248,16 +248,7 @@ class BotEmbeds {
         const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Server statistics';
 
         return {
-            embeds: [{
-                title: title,
-                description: message,
-                color: 0x3498db,
-                footer: {
-                    text: footer
-                },
-                timestamp: new Date()
-            }],
-            ephemeral: false
+            content: `## ${title}\n\n${message}\n\n*${footer}*`
         };
     }
 
