@@ -206,14 +206,15 @@ class BotEmbeds {
         const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Bot performance';
 
         return {
-            components: [{
-                type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${title}\n\n${message}\n\n*${footer}*`
-                }]
-            }],
-            flags: 32768
+            embeds: [{
+                title: title,
+                description: message,
+                color: 0x3498db,
+                footer: {
+                    text: footer
+                },
+                timestamp: new Date()
+            }]
         };
     }
 
@@ -222,12 +223,13 @@ class BotEmbeds {
     /**
      * Embed pour la commande serverinfo
      */
-    static createServerInfoEmbed(guild, owner, guildId = null, lang = 'fr') {
+    static createServerInfoEmbed(guild, lang = 'fr', guildId = null) {
         const title = LanguageManager.get(lang, 'commands.serverinfo.title') || '📊 Server Information';
-        const message = LanguageManager.get(lang, 'commands.serverinfo.description', {
+        
+        // Préparation des données pour l'embed
+        const placeholders = {
             guildName: guild.name,
-            owner: owner.user.tag,
-            createdAt: `<t:${Math.floor(guild.createdAt / 1000)}:D>`,
+            createdAt: `<t:${Math.floor(guild.createdTimestamp / 1000)}:D>`,
             guildId: guild.id,
             memberCount: guild.memberCount,
             channelCount: guild.channels.cache.size,
@@ -236,8 +238,13 @@ class BotEmbeds {
             boostLevel: guild.premiumTier,
             boostCount: guild.premiumSubscriptionCount,
             verificationLevel: guild.verificationLevel,
-            guildDescription: guild.description || LanguageManager.get(lang, 'common.no_description') || 'No description'
-        }) || `**Server:** ${guild.name}\n**Owner:** ${owner.user.tag}\n**Created:** <t:${Math.floor(guild.createdAt / 1000)}:D>\n**Members:** ${guild.memberCount}\n**Channels:** ${guild.channels.cache.size}\n**Roles:** ${guild.roles.cache.size}`;
+            guildDescription: guild.description || LanguageManager.get(lang, 'common.no_description') || 'No description',
+            owner: 'N/A' // Valeur par défaut
+        };
+        
+        // Message formaté avec les données du serveur
+        const message = LanguageManager.get(lang, 'commands.serverinfo.description', placeholders) || 
+            `**Server:** ${guild.name}\n**Created:** <t:${Math.floor(guild.createdTimestamp / 1000)}:D>\n**Members:** ${guild.memberCount}\n**Channels:** ${guild.channels.cache.size}\n**Roles:** ${guild.roles.cache.size}`;
         const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Server statistics';
 
         return {
