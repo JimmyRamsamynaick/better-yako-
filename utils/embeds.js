@@ -202,9 +202,8 @@ class BotEmbeds {
         
         const title = LanguageManager.get(lang, 'commands.ping.title') || '🏓 Pong!';
         const message = LanguageManager.get(lang, 'commands.ping.description', {
-            latency: latency,
-            apiLatency: apiLatency
-        }) || `**Bot Latency:** ${latency}ms\n**API Latency:** ${apiLatency}ms`;
+            latency: latency
+        }) || `**Bot Latency:** ${latency}ms`;
         const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Bot performance';
         
         return {

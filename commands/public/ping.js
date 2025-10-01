@@ -13,9 +13,7 @@ module.exports = {
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
         const lang = guildData?.language || 'fr';
 
-        // Récupérer la latence de l'API avant de faire la réponse
-        // S'assurer que la valeur de ping est valide (supérieure à 0)
-        const apiLatency = Math.max(1, Math.round(interaction.client.ws.ping));
+        // On n'utilise plus la latence de l'API
         
         const sent = await interaction.reply({ 
             content: '⏳ Calculating ping...', 
@@ -26,7 +24,7 @@ module.exports = {
         
         const pingEmbed = BotEmbeds.createPingEmbed(
             latency,
-            apiLatency,
+            null, // On n'utilise plus la latence de l'API
             interaction.guild.id,
             lang
         );

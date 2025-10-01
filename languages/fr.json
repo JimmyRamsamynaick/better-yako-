@@ -9,7 +9,7 @@
             "response": "🏓 Pong! Latence: {latency}ms",
             "title": "🏓 Pong!",
             "footer": "Performance du bot",
-            "description": "**Latence du bot:** {latency}ms\n**Latence de l'API:** {apiLatency}ms"
+            "description": "**Latence du bot:** {latency}ms"
         },
 
         "serverinfo": {
