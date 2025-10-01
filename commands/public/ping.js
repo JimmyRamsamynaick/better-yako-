@@ -28,6 +28,9 @@ module.exports = {
             lang
         );
         
-        await interaction.editReply(pingEmbed);
+        await interaction.editReply({ 
+            content: null, // Supprimer le contenu précédent
+            ...pingEmbed 
+        });
     }
 };
