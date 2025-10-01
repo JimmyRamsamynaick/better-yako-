@@ -437,9 +437,17 @@ class BotEmbeds {
             }
         }
 
-        // Avatar
+        // Avatar et bannière
         const avatarUrl = user.displayAvatarURL({ dynamic: true, size: 1024 });
-        const avatarInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.avatar') || '🖼️ Avatar'}:** [${LanguageManager.get(lang, 'commands.userinfo.fields.avatar') || 'Avatar'}](${avatarUrl})`;
+        const bannerUrl = user.bannerURL({ dynamic: true, size: 1024 });
+        
+        let mediaInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.avatar') || '🖼️ Avatar'}:** [${LanguageManager.get(lang, 'commands.userinfo.view_avatar') || 'Voir l\'avatar'}](${avatarUrl})`;
+        
+        if (bannerUrl) {
+            mediaInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.banner') || '🎨 Bannière'}:** [${LanguageManager.get(lang, 'commands.userinfo.view_banner') || 'Voir la bannière'}](${bannerUrl})`;
+        } else {
+            mediaInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.banner') || '🎨 Bannière'}:** ${LanguageManager.get(lang, 'commands.userinfo.no_banner') || 'Aucune bannière'}`;
+        }
 
         // Utiliser le format ComponentsV3
         const components = [
@@ -472,6 +480,7 @@ class BotEmbeds {
             );
         }
 
+        // Ajouter l'avatar comme image principale
         components.push(
             {
                 type: 14,
@@ -480,9 +489,39 @@ class BotEmbeds {
             },
             {
                 type: 10,
-                content: avatarInfo
+                content: mediaInfo
+            },
+            {
+                type: 14,
+                divider: true,
+                spacing: 2
+            },
+            {
+                type: 11,
+                url: avatarUrl,
+                alt: `Avatar de ${user.tag}`,
+                width: 256,
+                height: 256
             }
         );
+
+        // Ajouter la bannière si elle existe
+        if (bannerUrl) {
+            components.push(
+                {
+                    type: 14,
+                    divider: true,
+                    spacing: 2
+                },
+                {
+                    type: 11,
+                    url: bannerUrl,
+                    alt: `Bannière de ${user.tag}`,
+                    width: 600,
+                    height: 200
+                }
+            );
+        }
 
         return {
             components: [{
@@ -872,8 +911,8 @@ class BotEmbeds {
      */
     static createSetlangSuccessEmbed(language, guildId = null, lang = 'fr') {
         const languageNames = {
-            'fr': 'Français 🇫🇷',
-            'en': 'English 🇺🇸'
+            'French': 'Français 🇫🇷',
+            'EnglishUS': 'English 🇺🇸'
         };
         
         const title = LanguageManager.get(lang, 'commands.setlang.success_title') || '✅ Language changed';

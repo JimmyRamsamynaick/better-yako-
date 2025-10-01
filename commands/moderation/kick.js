@@ -9,20 +9,20 @@ module.exports = {
         .setName('kick')
         .setDescription(LanguageManager.get('fr', 'commands.kick.description') || 'Expulser un membre du serveur')
         .setDescriptionLocalizations({
-            'en': LanguageManager.get('en', 'commands.kick.description') || 'Kick a member from the server'
+            'EnglishUS': LanguageManager.get('en', 'commands.kick.description') || 'Kick a member from the server'
         })
         .addUserOption(option =>
             option.setName('user')
                 .setDescription(LanguageManager.get('fr', 'commands.kick.user_option') || 'Le membre à expulser')
                 .setDescriptionLocalizations({
-                    'en': LanguageManager.get('en', 'commands.kick.user_option') || 'The member to kick'
+                    'EnglishUS': LanguageManager.get('en', 'commands.kick.user_option') || 'The member to kick'
                 })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.kick.reason_option') || 'Raison de l\'expulsion')
                 .setDescriptionLocalizations({
-                    'en': LanguageManager.get('en', 'commands.kick.reason_option') || 'Reason for the kick'
+                    'EnglishUS': LanguageManager.get('en', 'commands.kick.reason_option') || 'Reason for the kick'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers),

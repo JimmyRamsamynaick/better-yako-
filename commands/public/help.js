@@ -9,13 +9,13 @@ module.exports = {
         .setName('help')
         .setDescription(LanguageManager.get('fr', 'commands.help.description') || 'Afficher la liste des commandes')
         .setDescriptionLocalizations({
-            'en': LanguageManager.get('en', 'commands.help.description') || 'Show commands list'
+            'EnglishUS': LanguageManager.get('en', 'commands.help.description') || 'Show commands list'
         })
         .addStringOption(option =>
             option.setName('category')
                 .setDescription(LanguageManager.get('fr', 'commands.help.category_option') || 'Catégorie de commandes')
                 .setDescriptionLocalizations({
-                    'en': LanguageManager.get('en', 'commands.help.category_option') || 'Commands category'
+                    'EnglishUS': LanguageManager.get('en', 'commands.help.category_option') || 'Commands category'
                 })
                 .addChoices(
                     { name: 'Modération', value: 'moderation' },

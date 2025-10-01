@@ -8,7 +8,7 @@ function detectServerLanguage(guild) {
     
     // Mapping des locales Discord vers nos langues supportées
     const localeMap = {
-        'fr': 'fr',
+        'French': 'fr',
         'en-US': 'en',
         'en-GB': 'en',
         'es-ES': 'en', // Pas de support espagnol pour l'instant

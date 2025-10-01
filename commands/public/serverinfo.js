@@ -9,7 +9,7 @@ module.exports = {
         .setName('serverinfo')
         .setDescription(LanguageManager.get('fr', 'commands.serverinfo.description') || 'Afficher les informations du serveur')
         .setDescriptionLocalizations({
-            'en': LanguageManager.get('en', 'commands.serverinfo.description') || 'Show server information'
+            'EnglishUS': LanguageManager.get('en', 'commands.serverinfo.description') || 'Show server information'
         }),
     
     async execute(interaction) {

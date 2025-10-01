@@ -96,7 +96,7 @@
             "disabled_success": "✅ Logs disabled for this server.",
             "config_success": "✅ Log type **{type}** {status}.",
             "status_title": "📊 Logs Configuration",
-            "status_description": "**Status:** {status}\n**Channel:** {channel}\n\n**Log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "status_description": "Show current logs configuration",
             "invalid_types": "❌ Invalid log types. Available types: {validTypes}",
             "channel_set_success": "✅ Channel {channel} configured for types: {types}",
             "channel_removed_success": "✅ Channel {channel} removed from logs",
@@ -179,19 +179,22 @@
         },
         "userinfo": {
             "description": "Display user information",
-            "title": "👤 {user} Information",
+            "user_option": "The user whose information you want to see",
+            "title": "👤 Information for {user}",
             "user_not_in_server": "❌ This user is not in this server.",
             "fields": {
-                "id": "🆔 ID",
-                "created_at": "📅 Account created",
-                "joined_at": "📥 Joined server",
+                "user_id": "🆔 User ID",
+                "account_created": "📅 Account created",
+                "joined_server": "📥 Joined server",
                 "nickname": "📝 Nickname",
                 "roles": "🎭 Roles ({count})",
                 "highest_role": "👑 Highest role",
                 "permissions": "🔐 Key permissions",
                 "status": "🟢 Status",
                 "activity": "🎮 Activity",
-                "boost_since": "💎 Boosting since"
+                "boost_since": "💎 Boosting since",
+                "avatar": "🖼️ Avatar",
+                "banner": "🎨 Banner"
             },
             "status": {
                 "online": "🟢 Online",
@@ -202,10 +205,13 @@
             "no_nickname": "None",
             "no_roles": "No roles",
             "no_activity": "No activity",
-            "not_boosting": "Not boosting",
+            "not_boosting": "Not boosting the server",
             "permissions_admin": "Administrator",
             "permissions_mod": "Moderator",
-            "permissions_member": "Member"
+            "permissions_member": "Member",
+            "view_avatar": "View avatar",
+            "view_banner": "View banner",
+            "no_banner": "No banner"
         }
     },
     "ping": {

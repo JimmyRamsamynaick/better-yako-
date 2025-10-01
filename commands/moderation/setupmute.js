@@ -9,7 +9,7 @@ module.exports = {
         .setName('setupmute')
         .setDescription(LanguageManager.get('fr', 'commands.setupmute.description') || 'Configurer le système de mute')
         .setDescriptionLocalizations({
-            'en': LanguageManager.get('en', 'commands.setupmute.description') || 'Configure the mute system'
+            'EnglishUS': LanguageManager.get('en', 'commands.setupmute.description') || 'Configure the mute system'
         })
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     

@@ -9,7 +9,7 @@ module.exports = {
         .setName('ping')
         .setDescription(LanguageManager.get('fr', 'commands.ping.description') || 'Vérifier la latence du bot')
         .setDescriptionLocalizations({
-            'en': LanguageManager.get('en', 'commands.ping.description') || 'Check bot latency'
+            'EnglishUS': LanguageManager.get('en', 'commands.ping.description') || 'Check bot latency'
         }),
     
     async execute(interaction) {

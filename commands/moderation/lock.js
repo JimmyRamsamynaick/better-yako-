@@ -9,13 +9,13 @@ module.exports = {
         .setName('lock')
         .setDescription(LanguageManager.get('fr', 'commands.lock.description') || 'Verrouiller un salon')
         .setDescriptionLocalizations({
-            'en': LanguageManager.get('en', 'commands.lock.description') || 'Lock a channel'
+            'EnglishUS': LanguageManager.get('en', 'commands.lock.description') || 'Lock a channel'
         })
         .addChannelOption(option =>
             option.setName('channel')
                 .setDescription(LanguageManager.get('fr', 'commands.lock.channel_option') || 'Le salon à verrouiller')
                 .setDescriptionLocalizations({
-                    'en': LanguageManager.get('en', 'commands.lock.channel_option') || 'The channel to lock'
+                    'EnglishUS': LanguageManager.get('en', 'commands.lock.channel_option') || 'The channel to lock'
                 })
                 .addChannelTypes(ChannelType.GuildText, ChannelType.GuildVoice)
                 .setRequired(false))
@@ -23,7 +23,7 @@ module.exports = {
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.lock.reason_option') || 'Raison du verrouillage')
                 .setDescriptionLocalizations({
-                    'en': LanguageManager.get('en', 'commands.lock.reason_option') || 'Reason for the lock'
+                    'EnglishUS': LanguageManager.get('en', 'commands.lock.reason_option') || 'Reason for the lock'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),

@@ -11,7 +11,6 @@
             "footer": "Performance du bot",
             "description": "**Latence du bot:** {latency}ms"
         },
-
         "serverinfo": {
             "description": "Affiche les informations du serveur",
             "title": "📊 Informations du serveur",
@@ -29,7 +28,6 @@
             "error_title": "❌ Erreur de bannissement",
             "error": "Une erreur est survenue lors du bannissement",
             "error_self": "Vous ne pouvez pas vous bannir vous-même",
-            "error_bot": "Je ne peux pas me bannir moi-même",
             "error_hierarchy_title": "⚠️ Hiérarchie insuffisante",
             "error_hierarchy": "Vous ne pouvez pas bannir {user} (rôle supérieur ou égal)",
             "error_bot_permissions_title": "❌ Permissions du bot insuffisantes",
@@ -51,7 +49,6 @@
         },
         "mute": {
             "description": "Rendre muet un membre temporairement",
-            "success_title": "🔇 Utilisateur rendu muet",
             "success": "{executor} a rendu muet {user} pour {reason} (Durée: {duration})",
             "auto_unmute_title": "🔓 Mute expiré",
             "auto_unmute": "{user} n'est plus rendu muet (durée expirée)",
@@ -70,8 +67,7 @@
             "success": "{executor} a rendu la parole à {user} pour {reason}",
             "error": "Une erreur est survenue lors du unmute",
             "error_no_setup": "Le système de mute n'est pas configuré",
-            "error_role_not_found": "Le rôle de mute est introuvable",
-            "error_not_muted": "Ce membre n'est pas rendu muet"
+            "error_role_not_found": "Le rôle de mute est introuvable"
         },
         "clear": {
             "description": "Supprimer des messages en masse",
@@ -90,7 +86,38 @@
         },
         "userinfo": {
             "description": "Afficher les informations d'un utilisateur",
-            "user_option": "L'utilisateur dont vous voulez voir les informations"
+            "user_option": "L'utilisateur dont vous voulez voir les informations",
+            "title": "👤 Informations de {user}",
+            "fields": {
+                "user_id": "🆔 ID Utilisateur",
+                "account_created": "📅 Compte créé",
+                "joined_server": "📥 A rejoint le serveur",
+                "nickname": "📝 Surnom",
+                "roles": "🎭 Rôles ({count})",
+                "highest_role": "👑 Rôle le plus élevé",
+                "permissions": "🔐 Permissions clés",
+                "status": "🟢 Statut",
+                "activity": "🎮 Activité",
+                "boost_since": "💎 Boost depuis",
+                "avatar": "🖼️ Avatar",
+                "banner": "🎨 Bannière"
+            },
+            "status": {
+                "online": "🟢 En ligne",
+                "idle": "🟡 Absent",
+                "dnd": "🔴 Ne pas déranger",
+                "offline": "⚫ Hors ligne"
+            },
+            "no_nickname": "Aucun",
+            "no_roles": "Aucun rôle",
+            "no_activity": "Aucune activité",
+            "not_boosting": "N'améliore pas le serveur",
+            "permissions_admin": "Administrateur",
+            "permissions_mod": "Modérateur",
+            "permissions_member": "Membre",
+            "view_avatar": "Voir l'avatar",
+            "view_banner": "Voir la bannière",
+            "no_banner": "Aucune bannière"
         },
         "ask": {
             "description": "Poser une question à l'IA",
@@ -127,11 +154,10 @@
             "removechannel_channel_option": "Canal à supprimer des logs",
             "no_permission": "❌ Vous n'avez pas la permission de gérer le serveur.",
             "error": "❌ Une erreur est survenue lors de la configuration des logs.",
-            "enabled_success": "✅ Logs activés dans {channel}\n\n**Types de logs actifs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
             "disabled_success": "✅ Logs désactivés pour ce serveur.",
             "config_success": "✅ Type de log **{type}** {status}.",
             "status_title": "📊 Configuration des Logs",
-            "status_description": "**État:** {status}\n**Salon:** {channel}\n\n**Types de logs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "status_description": "Affiche la configuration actuelle des logs",
             "invalid_types": "❌ Types de logs invalides. Types disponibles: {validTypes}",
             "channel_set_success": "✅ Canal {channel} configuré pour les types: {types}",
             "channel_removed_success": "✅ Canal {channel} supprimé des logs",
@@ -145,101 +171,6 @@
             "success_title": "✅ Langue modifiée",
             "error": "❌ Une erreur est survenue lors du changement de langue.",
             "error_title": "❌ Erreur de changement de langue"
-        },
-            "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
-            "channel_removed": "✅ Canal {channel} retiré de la configuration des logs.",
-            "types": {
-                "voice": "🔊 Logs vocaux",
-                "message": "💬 Logs de messages",
-                "channels": "📁 Logs de canaux",
-                "roles": "🎭 Logs de rôles",
-                "server": "⚙️ Logs du serveur"
-            }
-        },
-        "lock": {
-            "description": "Verrouiller un salon",
-            "success_title": "🔒 Salon verrouillé",
-            "success": "{executor} a verrouillé {channel} pour {reason}",
-            "no_permission": "❌ Vous n'avez pas la permission de gérer les salons.",
-            "error": "❌ Une erreur est survenue lors du verrouillage."
-        },
-        "unlock": {
-            "description": "Déverrouiller un salon",
-            "success_title": "🔓 Salon déverrouillé",
-            "success": "{executor} a déverrouillé {channel} pour {reason}",
-            "no_permission": "❌ Vous n'avez pas la permission de gérer les salons.",
-            "error": "❌ Une erreur est survenue lors du déverrouillage."
-        },
-        "unban": {
-            "description": "Débannir un utilisateur du serveur",
-            "success_title": "✅ Utilisateur débanni",
-            "success": "{executor} a débanni {user} pour {reason}",
-            "error_title": "❌ Erreur de débannissement",
-            "error": "Une erreur est survenue lors du débannissement",
-            "error_not_banned": "Cet utilisateur n'est pas banni du serveur"
-        },
-        "setupmute": {
-            "description": "Configurer le système de mute",
-            "no_permission": "❌ Vous n'avez pas la permission de gérer les rôles.",
-            "success": "✅ Système de mute configuré avec succès!\n**Rôle:** {role}\n**Salons configurés:** {channels}",
-            "error": "❌ Une erreur est survenue lors de la configuration."
-        },
-        "ask": {
-            "description": "Poser une question à l'IA",
-            "premium_required": "❌ Cette commande nécessite un abonnement Premium.",
-            "premium_required_title": "💎 Premium Requis",
-            "error": "❌ Une erreur est survenue lors du traitement de votre question.",
-            "error_title": "❌ Erreur IA"
-        },
-        "userinfo": {
-            "description": "Afficher les informations d'un utilisateur",
-            "title": "👤 Informations de {user}",
-            "user_not_in_server": "❌ Cet utilisateur n'est pas dans ce serveur.",
-            "fields": {
-                "id": "🆔 ID",
-                "created_at": "📅 Compte créé",
-                "joined_at": "📥 A rejoint le serveur",
-                "nickname": "📝 Surnom",
-                "roles": "🎭 Rôles ({count})",
-                "highest_role": "👑 Rôle le plus élevé",
-                "permissions": "🔐 Permissions clés",
-                "status": "🟢 Statut",
-                "activity": "🎮 Activité",
-                "boost_since": "💎 Boost depuis"
-            },
-            "status": {
-                "online": "🟢 En ligne",
-                "idle": "🟡 Absent",
-                "dnd": "🔴 Ne pas déranger",
-                "offline": "⚫ Hors ligne"
-            },
-            "no_nickname": "Aucun",
-            "no_roles": "Aucun rôle",
-            "no_activity": "Aucune activité",
-            "not_boosting": "N'améliore pas le serveur",
-            "permissions_admin": "Administrateur",
-            "permissions_mod": "Modérateur",
-            "permissions_member": "Membre"
-        },
-        "help": {
-            "main_title": "📚 Aide - Yako Bot",
-            "main_description": "Voici la liste de toutes les commandes disponibles. Sélectionnez une catégorie dans le menu déroulant ci-dessous pour voir les détails.\n\n**Catégories disponibles :**\n🛡️ **Modération** - Commandes de gestion du serveur\n🌍 **Public** - Commandes accessibles à tous\n⭐ **Premium** - Commandes premium exclusives",
-            "select_placeholder": "Choisissez une catégorie d'aide",
-            "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
-            "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !",
-            "moderation_option": "Modération",
-            "moderation_desc": "Commandes de modération du serveur",
-            "public_option": "Public",
-            "public_desc": "Commandes disponibles pour tous",
-            "premium_option": "Premium",
-            "premium_desc": "Commandes premium exclusives",
-            "footer": "Aide mise à jour automatiquement",
-            "moderation_title": "🛡️ Commandes de Modération",
-            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Rendre la parole à un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue",
-            "public_title": "👥 Commandes Publiques",
-            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
-            "premium_title": "⭐ Commandes Premium",
-        "premium_description": "**`/ask`** - Poser une question à l'IA intégrée\n\n*Les commandes premium nécessitent un serveur premium*"
         }
     },
     "common": {
