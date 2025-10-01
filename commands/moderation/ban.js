@@ -97,7 +97,7 @@ module.exports = {
                     // L'utilisateur n'est plus sur le serveur, on peut quand même le bannir
                     console.log('⚠️ [BAN] Utilisateur non présent sur le serveur, bannissement direct');
                     console.log('🔍 [BAN] Tentative de bannissement avec deleteMessageSeconds:', days * 24 * 60 * 60);
-                    await interaction.guild.members.ban(user.id, { reason, deleteMessageSeconds: days * 24 * 60 * 60 });
+                    await interaction.guild.bans.create(user.id, { reason, deleteMessageSeconds: days * 24 * 60 * 60 });
                     console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
 
                     console.log('🔍 [BAN] Envoi de la réponse de succès...');
@@ -135,7 +135,7 @@ module.exports = {
             }
 
             console.log('🔍 [BAN] Tentative de bannissement avec deleteMessageSeconds:', days * 24 * 60 * 60);
-            await interaction.guild.members.ban(user.id, { reason, deleteMessageSeconds: days * 24 * 60 * 60 });
+            await interaction.guild.bans.create(user.id, { reason, deleteMessageSeconds: days * 24 * 60 * 60 });
             console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
 
             console.log('🔍 [BAN] Envoi de la réponse de succès...');
