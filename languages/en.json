@@ -250,6 +250,20 @@
         "role_delete": "➖ Role {role} deleted",
         "role_add": "➕ Role {role} added to {user}",
         "role_remove": "➖ Role {role} removed from {user}",
-        "server_update": "⚙️ Server updated: {changes}"
+        "server_update": "⚙️ Server updated: {changes}",
+        "member_join": "👋 {user} joined the server",
+        "member_join_details": "**User:** {user}\n**ID:** {userId}\n**Account created:** {accountCreated}\n**Total members:** {memberCount}",
+        "member_leave": "👋 {user} left the server",
+        "member_leave_details": "**User:** {user}\n**ID:** {userId}\n**Joined:** {joinedAt}\n**Remaining members:** {memberCount}",
+        "member_kick": "👢 {user} was kicked from the server",
+        "member_kick_details": "**User:** {user}\n**ID:** {userId}\n**Moderator:** {moderator}\n**Reason:** {reason}\n**Remaining members:** {memberCount}",
+        "member_ban": "🔨 {user} was banned from the server",
+        "member_ban_details": "**User:** {user}\n**ID:** {userId}\n**Moderator:** {moderator}\n**Reason:** {reason}",
+        "member_unban": "🔓 {user} was unbanned from the server",
+        "member_unban_details": "**User:** {user}\n**ID:** {userId}\n**Moderator:** {moderator}\n**Reason:** {reason}",
+        "channel_lock": "🔒 Channel {channel} locked",
+        "channel_lock_details": "**Channel:** {channel}\n**Moderator:** {moderator}\n**Reason:** {reason}",
+        "channel_unlock": "🔓 Channel {channel} unlocked",
+        "channel_unlock_details": "**Channel:** {channel}\n**Moderator:** {moderator}\n**Reason:** {reason}"
     }
 }

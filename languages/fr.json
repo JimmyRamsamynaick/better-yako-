@@ -248,6 +248,20 @@
         "role_delete": "➖ Rôle {role} supprimé",
         "role_add": "➕ Rôle {role} ajouté à {user}",
         "role_remove": "➖ Rôle {role} retiré de {user}",
-        "server_update": "⚙️ Serveur mis à jour: {changes}"
+        "server_update": "⚙️ Serveur mis à jour: {changes}",
+        "member_join": "👋 {user} a rejoint le serveur",
+        "member_join_details": "**Utilisateur:** {user}\n**ID:** {userId}\n**Compte créé:** {accountCreated}\n**Membres totaux:** {memberCount}",
+        "member_leave": "👋 {user} a quitté le serveur",
+        "member_leave_details": "**Utilisateur:** {user}\n**ID:** {userId}\n**A rejoint:** {joinedAt}\n**Membres restants:** {memberCount}",
+        "member_kick": "👢 {user} a été expulsé du serveur",
+        "member_kick_details": "**Utilisateur:** {user}\n**ID:** {userId}\n**Modérateur:** {moderator}\n**Raison:** {reason}\n**Membres restants:** {memberCount}",
+        "member_ban": "🔨 {user} a été banni du serveur",
+        "member_ban_details": "**Utilisateur:** {user}\n**ID:** {userId}\n**Modérateur:** {moderator}\n**Raison:** {reason}",
+        "member_unban": "🔓 {user} a été débanni du serveur",
+        "member_unban_details": "**Utilisateur:** {user}\n**ID:** {userId}\n**Modérateur:** {moderator}\n**Raison:** {reason}",
+        "channel_lock": "🔒 Salon {channel} verrouillé",
+        "channel_lock_details": "**Salon:** {channel}\n**Modérateur:** {moderator}\n**Raison:** {reason}",
+        "channel_unlock": "🔓 Salon {channel} déverrouillé",
+        "channel_unlock_details": "**Salon:** {channel}\n**Modérateur:** {moderator}\n**Raison:** {reason}"
     }
 }
