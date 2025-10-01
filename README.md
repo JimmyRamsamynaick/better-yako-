@@ -86,7 +86,6 @@ npm start
 # Discord Configuration
 DISCORD_TOKEN=votre_token_discord
 CLIENT_ID=votre_client_id
-GUILD_ID=votre_guild_id_test
 
 # MongoDB Configuration
 MONGODB_URI=mongodb://localhost:27017/yakobot
