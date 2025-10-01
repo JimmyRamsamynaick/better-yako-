@@ -72,11 +72,28 @@ module.exports = {
         }
 
         try {
-            // Essayer directement de débannir sans vérifier d'abord
-            await interaction.guild.bans.remove(userId, reason);
-
+            // Vérifier d'abord si l'utilisateur est banni
+            let isBanned = false;
             try {
-                // Récupérer l'utilisateur pour l'affichage (après le débannissement réussi)
+                await interaction.guild.bans.fetch(userId);
+                isBanned = true;
+            } catch (fetchError) {
+                if (fetchError.code === 10026) {
+                    // L'utilisateur n'est pas banni
+                    const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
+                    return await interaction.editReply({
+                        ...notBannedMessage
+                    });
+                }
+                // Autre erreur lors de la vérification
+                throw fetchError;
+            }
+
+            // Si l'utilisateur est banni, procéder au débannissement
+            if (isBanned) {
+                await interaction.guild.bans.remove(userId, reason);
+
+                // Récupérer l'utilisateur pour l'affichage
                 let userForDisplay;
                 try {
                     const user = await interaction.client.users.fetch(userId);
@@ -85,7 +102,6 @@ module.exports = {
                     userForDisplay = `<@${userId}>`;
                 }
 
-                // Récupérer le message traduit avec les placeholders remplacés
                 const translatedMessage = LanguageManager.get(lang, 'commands.unban.success', {
                     executor: interaction.user.toString(),
                     user: userForDisplay,
@@ -94,25 +110,10 @@ module.exports = {
                 
                 const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success_title', translatedMessage);
                 await interaction.editReply(successMessage);
-            } catch (replyError) {
-                console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
             }
 
         } catch (error) {
             console.error(error);
-            
-            // Gérer spécifiquement l'erreur "Unknown Ban"
-            if (error.code === 10026) {
-                try {
-                    const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
-                    return await interaction.editReply({
-                        ...notBannedMessage
-                    });
-                } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'interaction (not banned):', replyError);
-                    return;
-                }
-            }
             
             try {
                 const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error');
