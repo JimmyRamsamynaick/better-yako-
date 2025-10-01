@@ -71,6 +71,39 @@ module.exports = {
             
             await interaction.reply(successEmbed);
 
+            // Envoyer dans les logs si configuré
+            if (guildData && guildData.logs.enabled && guildData.logs.types.channels) {
+                let logChannel = null;
+                if (guildData.logs.channels && guildData.logs.channels.length > 0) {
+                    const channelLogChannel = guildData.logs.channels.find(ch => ch.types.channels);
+                    if (channelLogChannel) {
+                        logChannel = interaction.guild.channels.cache.get(channelLogChannel.channelId);
+                    }
+                } else if (guildData.logs.channelId) {
+                    logChannel = interaction.guild.channels.cache.get(guildData.logs.channelId);
+                }
+
+                if (logChannel) {
+                    const { EmbedBuilder } = require('discord.js');
+                    const logEmbed = new EmbedBuilder()
+                        .setTitle('🔒 Salon verrouillé')
+                        .setColor(0xFF6B00)
+                        .addFields(
+                            { name: '📁 Salon', value: `${channel} (${channel.name})`, inline: true },
+                            { name: '👮 Modérateur', value: `${interaction.user} (${interaction.user.tag})`, inline: true },
+                            { name: '📝 Raison', value: reason, inline: false }
+                        )
+                        .setTimestamp()
+                        .setFooter({ text: `ID du salon: ${channel.id}` });
+
+                    try {
+                        await logChannel.send({ embeds: [logEmbed] });
+                    } catch (logError) {
+                        console.error('Erreur lors de l\'envoi du log de verrouillage:', logError);
+                    }
+                }
+            }
+
         } catch (error) {
             console.error(error);
             const errorEmbed = BotEmbeds.createGenericErrorEmbed(
