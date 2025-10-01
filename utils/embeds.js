@@ -198,13 +198,15 @@ class BotEmbeds {
      * Embed pour la commande ping
      */
     static createPingEmbed(latency, apiLatency, guildId = null, lang = 'fr') {
+        const ComponentsV3 = require('./ComponentsV3');
+        
         const title = LanguageManager.get(lang, 'commands.ping.title') || '🏓 Pong!';
         const message = LanguageManager.get(lang, 'commands.ping.description', {
             latency: latency,
             apiLatency: apiLatency
         }) || `**Bot Latency:** ${latency}ms\n**API Latency:** ${apiLatency}ms`;
         const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Bot performance';
-
+        
         return {
             components: [{
                 type: 17,
@@ -224,29 +226,124 @@ class BotEmbeds {
      */
     static createServerInfoEmbed(guild, owner, guildId = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.serverinfo.title') || '📊 Server Information';
-        const message = LanguageManager.get(lang, 'commands.serverinfo.description', {
-            guildName: guild.name,
-            owner: owner.user.tag,
-            createdAt: `<t:${Math.floor(guild.createdAt / 1000)}:D>`,
-            guildId: guild.id,
-            memberCount: guild.memberCount,
-            channelCount: guild.channels.cache.size,
-            roleCount: guild.roles.cache.size,
-            emojiCount: guild.emojis.cache.size,
-            boostLevel: guild.premiumTier,
-            boostCount: guild.premiumSubscriptionCount,
-            verificationLevel: guild.verificationLevel,
-            guildDescription: guild.description || LanguageManager.get(lang, 'common.no_description') || 'No description'
-        }) || `**Server:** ${guild.name}\n**Owner:** ${owner.user.tag}\n**Created:** <t:${Math.floor(guild.createdAt / 1000)}:D>\n**Members:** ${guild.memberCount}\n**Channels:** ${guild.channels.cache.size}\n**Roles:** ${guild.roles.cache.size}`;
-        const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Server statistics';
+        
+        // Obtenir les statistiques des canaux
+        const textChannels = guild.channels.cache.filter(c => c.type === 0).size;
+        const voiceChannels = guild.channels.cache.filter(c => c.type === 2).size;
+        const categoryChannels = guild.channels.cache.filter(c => c.type === 4).size;
+        const threadChannels = guild.channels.cache.filter(c => [10, 11, 12].includes(c.type)).size;
+        const forumChannels = guild.channels.cache.filter(c => c.type === 15).size;
+        
+        // Obtenir les statistiques des membres
+        const onlineMembers = guild.members.cache.filter(m => m.presence?.status === 'online').size;
+        const botCount = guild.members.cache.filter(m => m.user.bot).size;
+        const humanCount = guild.memberCount - botCount;
+        
+        // Obtenir les informations de boost
+        const boostTierNames = {
+            0: lang === 'en' ? 'None' : 'Aucun',
+            1: lang === 'en' ? 'Level 1' : 'Niveau 1',
+            2: lang === 'en' ? 'Level 2' : 'Niveau 2',
+            3: lang === 'en' ? 'Level 3' : 'Niveau 3'
+        };
+        const boostTierName = boostTierNames[guild.premiumTier] || (lang === 'en' ? 'Unknown' : 'Inconnu');
+        
+        // Obtenir les informations de vérification
+        const verificationLevels = {
+            0: lang === 'en' ? 'None' : 'Aucun',
+            1: lang === 'en' ? 'Low' : 'Faible',
+            2: lang === 'en' ? 'Medium' : 'Moyen',
+            3: lang === 'en' ? 'High' : 'Élevé',
+            4: lang === 'en' ? 'Very High' : 'Très élevé'
+        };
+        const verificationLevelName = verificationLevels[guild.verificationLevel] || (lang === 'en' ? 'Unknown' : 'Inconnu');
+        
+        // Préparer le contenu pour les composants
+        const generalInfo = `**📌 ${lang === 'en' ? 'General Information' : 'Informations générales'}**
+**${lang === 'en' ? 'Name' : 'Nom'}:** ${guild.name}
+**ID:** ${guild.id}
+**${lang === 'en' ? 'Owner' : 'Propriétaire'}:** ${owner.user.tag}
+**${lang === 'en' ? 'Created on' : 'Créé le'}:** <t:${Math.floor(guild.createdTimestamp / 1000)}:D> (<t:${Math.floor(guild.createdTimestamp / 1000)}:R>)
+**${lang === 'en' ? 'Description' : 'Description'}:** ${guild.description || (lang === 'en' ? 'No description' : 'Aucune description')}`;
 
+        const memberInfo = `**👥 ${lang === 'en' ? 'Members' : 'Membres'}**
+**${lang === 'en' ? 'Total' : 'Total'}:** ${guild.memberCount}
+**${lang === 'en' ? 'Humans' : 'Humains'}:** ${humanCount}
+**${lang === 'en' ? 'Bots' : 'Bots'}:** ${botCount}`;
+
+        const channelInfo = `**💬 ${lang === 'en' ? 'Channels' : 'Canaux'}**
+**${lang === 'en' ? 'Total' : 'Total'}:** ${guild.channels.cache.size}
+**${lang === 'en' ? 'Text' : 'Textuels'}:** ${textChannels}
+**${lang === 'en' ? 'Voice' : 'Vocaux'}:** ${voiceChannels}
+**${lang === 'en' ? 'Categories' : 'Catégories'}:** ${categoryChannels}
+**${lang === 'en' ? 'Threads' : 'Fils de discussion'}:** ${threadChannels}
+**${lang === 'en' ? 'Forums' : 'Forums'}:** ${forumChannels}`;
+
+        const serverInfo = `**🏆 ${lang === 'en' ? 'Server' : 'Serveur'}**
+**${lang === 'en' ? 'Roles' : 'Rôles'}:** ${guild.roles.cache.size}
+**${lang === 'en' ? 'Emojis' : 'Emojis'}:** ${guild.emojis.cache.size}
+**${lang === 'en' ? 'Stickers' : 'Autocollants'}:** ${guild.stickers?.cache.size || 0}
+**${lang === 'en' ? 'Boost level' : 'Niveau de boost'}:** ${boostTierName} (${guild.premiumSubscriptionCount} boosts)
+**${lang === 'en' ? 'Verification level' : 'Niveau de vérification'}:** ${verificationLevelName}
+**${lang === 'en' ? 'Features' : 'Fonctionnalités'}:** ${guild.features.join(', ') || (lang === 'en' ? 'None' : 'Aucune')}`;
+
+        const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Statistiques du serveur';
+
+        // Utiliser le format ComponentsV3
         return {
             components: [{
                 type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${title}\n\n${message}\n\n*${footer}*`
-                }]
+                components: [
+                    {
+                        type: 10,
+                        content: `## ${title}`
+                    },
+                    {
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    },
+                    {
+                        type: 10,
+                        content: generalInfo
+                    },
+                    {
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    },
+                    {
+                        type: 10,
+                        content: memberInfo
+                    },
+                    {
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    },
+                    {
+                        type: 10,
+                        content: channelInfo
+                    },
+                    {
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    },
+                    {
+                        type: 10,
+                        content: serverInfo
+                    },
+                    {
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    },
+                    {
+                        type: 10,
+                        content: `*${footer} - ${new Date().toLocaleString()}*`
+                    }
+                ]
             }],
             flags: 32768
         };
