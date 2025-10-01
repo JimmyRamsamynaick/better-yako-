@@ -73,34 +73,52 @@ module.exports = {
 
         try {
             console.log('🔍 [UNBAN] ID utilisateur à débannir:', userId);
-            console.log('🔍 [UNBAN] Tentative de débannissement directe...');
+            console.log('🔍 [UNBAN] Type de userId:', typeof userId);
+            console.log('🔍 [UNBAN] Longueur de userId:', userId.length);
             
-            // Approche directe : tenter le unban directement
-            await interaction.guild.bans.remove(userId, reason);
-            console.log('✅ [UNBAN] Débannissement réussi pour:', userId);
-
-            // Si on arrive ici, le débannissement a réussi
-            const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success', {
-                user: `<@${userId}>`,
-                reason: reason
-            });
-
-            await interaction.editReply({
-                ...successMessage
-            });
-
-        } catch (error) {
-            console.error('❌ [UNBAN] Erreur lors du débannissement:', error);
+            // Vérifier d'abord la liste des bans pour diagnostiquer
+            console.log('🔍 [UNBAN] Récupération de la liste des bans...');
+            const bans = await interaction.guild.bans.fetch();
+            console.log('🔍 [UNBAN] Nombre total de bans:', bans.size);
             
-            if (error.code === 10026) {
+            // Chercher l'utilisateur dans les bans
+            const bannedUser = bans.find(ban => ban.user.id === userId);
+            if (bannedUser) {
+                console.log('✅ [UNBAN] Utilisateur trouvé dans les bans:', bannedUser.user.tag, '| ID:', bannedUser.user.id);
+                
+                // Procéder au débannissement
+                console.log('🔍 [UNBAN] Tentative de débannissement...');
+                await interaction.guild.bans.remove(userId, reason);
+                console.log('✅ [UNBAN] Débannissement réussi pour:', userId);
+
+                // Message de succès
+                 console.log('🔍 [UNBAN] Envoi de la réponse de succès...');
+                 const translatedMessage = LanguageManager.get(lang, 'commands.unban.success', {
+                     executor: interaction.user.toString(),
+                     user: bannedUser.user.toString(),
+                     reason: reason
+                 });
+                 
+                 const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success_title', translatedMessage);
+                 await interaction.editReply(successMessage);
+                 console.log('✅ [UNBAN] Réponse envoyée avec succès');
+            } else {
+                console.log('❌ [UNBAN] Utilisateur non trouvé dans les bans');
+                console.log('🔍 [UNBAN] Liste des IDs bannis:');
+                bans.forEach(ban => {
+                    console.log(`   - ${ban.user.tag}: ${ban.user.id}`);
+                });
+                
                 // L'utilisateur n'est pas banni
-                console.log('❌ [UNBAN] Utilisateur non banni (code 10026)');
                 const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
                 return await interaction.editReply({
                     ...notBannedMessage
                 });
             }
 
+        } catch (error) {
+            console.error('❌ [UNBAN] Erreur lors du débannissement:', error);
+            
             // Autres erreurs
             console.error('❌ [UNBAN] Erreur générique:', error.code, error.message);
             const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_generic');
