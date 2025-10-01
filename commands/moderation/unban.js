@@ -72,17 +72,23 @@ module.exports = {
         }
 
         try {
-            // Vérifier d'abord si l'utilisateur est banni
-            const bannedUser = await interaction.guild.bans.fetch(userId);
-            
-            // Utiliser la même méthode que pour le ban
+            // Essayer directement de débannir sans vérifier d'abord
             await interaction.guild.bans.remove(userId, reason);
 
             try {
+                // Récupérer l'utilisateur pour l'affichage (après le débannissement réussi)
+                let userForDisplay;
+                try {
+                    const user = await interaction.client.users.fetch(userId);
+                    userForDisplay = user.toString();
+                } catch {
+                    userForDisplay = `<@${userId}>`;
+                }
+
                 // Récupérer le message traduit avec les placeholders remplacés
                 const translatedMessage = LanguageManager.get(lang, 'commands.unban.success', {
                     executor: interaction.user.toString(),
-                    user: bannedUser.user.toString(),
+                    user: userForDisplay,
                     reason: reason
                 });
                 
