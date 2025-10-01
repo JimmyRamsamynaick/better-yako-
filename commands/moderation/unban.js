@@ -72,9 +72,11 @@ module.exports = {
         }
 
         try {
+            // Vérifier d'abord si l'utilisateur est banni
             const bannedUser = await interaction.guild.bans.fetch(userId);
             
-            await interaction.guild.members.unban(userId, reason);
+            // Utiliser la même méthode que pour le ban
+            await interaction.guild.bans.remove(userId, reason);
 
             try {
                 // Récupérer le message traduit avec les placeholders remplacés
