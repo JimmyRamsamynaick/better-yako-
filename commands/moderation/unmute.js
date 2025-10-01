@@ -40,7 +40,7 @@ module.exports = {
             const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
             return await interaction.reply({
                 ...noPermEmbed,
-                ephemeral: true
+                flags: 64 // MessageFlags.Ephemeral
             });
         }
 
@@ -49,7 +49,7 @@ module.exports = {
             const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
             return await interaction.reply({
                 ...botNoPermEmbed,
-                ephemeral: true
+                flags: 64 // MessageFlags.Ephemeral
             });
         }
 
@@ -57,28 +57,31 @@ module.exports = {
             const member = await interaction.guild.members.fetch(user.id);
 
             if (!guildData?.muteRole) {
-                const noSetupEmbed = BotEmbeds.createGenericErrorEmbed('Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord', interaction.guild.id, lang);
-            return await interaction.reply({
-                ...noSetupEmbed,
-                ephemeral: true
-            });
+                const noSetupMessage = LanguageManager.get(lang, 'commands.unmute.error_no_setup') || 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord';
+                const noSetupEmbed = BotEmbeds.createGenericErrorEmbed(noSetupMessage, interaction.guild.id, lang);
+                return await interaction.reply({
+                    ...noSetupEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
             }
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
-                const noRoleEmbed = BotEmbeds.createGenericErrorEmbed('Le rôle de mute n\'a pas été trouvé', interaction.guild.id, lang);
-            return await interaction.reply({
-                ...noRoleEmbed,
-                ephemeral: true
-            });
+                const noRoleMessage = LanguageManager.get(lang, 'commands.unmute.error_role_not_found') || 'Le rôle de mute n\'a pas été trouvé';
+                const noRoleEmbed = BotEmbeds.createGenericErrorEmbed(noRoleMessage, interaction.guild.id, lang);
+                return await interaction.reply({
+                    ...noRoleEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
             }
 
             if (!member.roles.cache.has(muteRole.id)) {
-                const notMutedEmbed = BotEmbeds.createGenericErrorEmbed('Cet utilisateur n\'est pas mute', interaction.guild.id, lang);
-            return await interaction.reply({
-                ...notMutedEmbed,
-                ephemeral: true
-            });
+                const notMutedMessage = LanguageManager.get(lang, 'commands.unmute.error_not_muted') || 'Cet utilisateur n\'est pas mute';
+                const notMutedEmbed = BotEmbeds.createGenericErrorEmbed(notMutedMessage, interaction.guild.id, lang);
+                return await interaction.reply({
+                    ...notMutedEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
             }
 
             await member.roles.remove(muteRole, reason);
@@ -106,12 +109,15 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            const errorEmbed = BotEmbeds.createGenericErrorEmbed(
-                'Une erreur est survenue lors du unmute',
-                interaction.guild.id,
-                lang
-            );
-            await interaction.reply({ ...errorEmbed, ephemeral: true });
+            if (!interaction.replied && !interaction.deferred) {
+                const errorMessage = LanguageManager.get(lang, 'commands.unmute.error') || 'Une erreur est survenue lors du unmute';
+                const errorEmbed = BotEmbeds.createGenericErrorEmbed(
+                    errorMessage,
+                    interaction.guild.id,
+                    lang
+                );
+                await interaction.reply({ ...errorEmbed, flags: 64 }); // MessageFlags.Ephemeral
+            }
         }
     }
 };
