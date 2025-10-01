@@ -92,7 +92,19 @@
             "disabled_success": "✅ Logs désactivés pour ce serveur.",
             "config_success": "✅ Type de log **{type}** {status}.",
             "status_title": "📊 Configuration des Logs",
-            "status_description": "**État:** {status}\n**Salon:** {channel}\n\n**Types de logs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}"
+            "status_description": "**État:** {status}\n**Salon:** {channel}\n\n**Types de logs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "invalid_types": "❌ Types de logs invalides. Types disponibles: Voice, Message, Channels, Roles, Server",
+            "channel_configured": "✅ Canal {channel} configuré pour les types de logs: {types}",
+            "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs.",
+            "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
+            "channel_removed": "✅ Canal {channel} retiré de la configuration des logs.",
+            "types": {
+                "voice": "Logs vocaux",
+                "message": "Logs de messages",
+                "channels": "Logs de canaux",
+                "roles": "Logs de rôles",
+                "server": "Logs du serveur"
+            }
         },
         "lock": {
             "description": "Verrouiller un salon",

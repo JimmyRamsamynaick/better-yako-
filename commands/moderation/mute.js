@@ -29,7 +29,7 @@ module.exports = {
 
         const user = interaction.options.getUser('user');
         const duration = interaction.options.getString('duration');
-        const reason = interaction.options.getString('reason') || 'Aucune raison fournie';
+        const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
 
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {

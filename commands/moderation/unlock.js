@@ -24,7 +24,7 @@ module.exports = {
         const lang = guildData?.language || 'fr';
 
         const channel = interaction.options.getChannel('channel') || interaction.channel;
-        const reason = interaction.options.getString('reason') || 'Aucune raison fournie';
+        const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
 
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {

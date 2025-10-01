@@ -93,11 +93,16 @@
             "config_success": "✅ Log type **{type}** {status}.",
             "status_title": "📊 Logs Configuration",
             "status_description": "**Status:** {status}\n**Channel:** {channel}\n\n**Log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "invalid_types": "❌ Invalid log types. Available types: Voice, Message, Channels, Roles, Server",
+            "channel_configured": "✅ Channel {channel} configured for log types: {types}",
+            "no_channels_configured": "❌ No specific channels are configured for logs.",
+            "channel_not_found": "❌ Channel {channel} is not configured for logs.",
+            "channel_removed": "✅ Channel {channel} removed from logs configuration.",
             "types": {
                 "voice": "Voice logs",
                 "message": "Message logs",
-                "channel": "Channel logs",
-                "role": "Role logs",
+                "channels": "Channel logs",
+                "roles": "Role logs",
                 "server": "Server logs"
             }
         },
