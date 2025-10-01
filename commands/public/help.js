@@ -2,14 +2,21 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const BotEmbeds = require('../../utils/embeds');
 const Guild = require('../../models/Guild');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('help')
-        .setDescription('Afficher la liste des commandes')
+        .setDescription(LanguageManager.get('fr', 'commands.help.description') || 'Afficher la liste des commandes')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.help.description') || 'Show commands list'
+        })
         .addStringOption(option =>
             option.setName('category')
-                .setDescription('Catégorie de commandes')
+                .setDescription(LanguageManager.get('fr', 'commands.help.category_option') || 'Catégorie de commandes')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.help.category_option') || 'Commands category'
+                })
                 .addChoices(
                     { name: 'Modération', value: 'moderation' },
                     { name: 'Public', value: 'public' },

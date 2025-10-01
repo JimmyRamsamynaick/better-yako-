@@ -7,7 +7,10 @@ const LanguageManager = require('../../utils/languageManager');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('serverinfo')
-        .setDescription('Afficher les informations du serveur'),
+        .setDescription(LanguageManager.get('fr', 'commands.serverinfo.description') || 'Afficher les informations du serveur')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.serverinfo.description') || 'Show server information'
+        }),
     
     async execute(interaction) {
         // Récupérer la langue du serveur

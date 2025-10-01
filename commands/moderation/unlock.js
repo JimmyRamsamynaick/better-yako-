@@ -2,19 +2,29 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('unlock')
-        .setDescription('Déverrouiller un salon')
+        .setDescription(LanguageManager.get('fr', 'commands.unlock.description') || 'Déverrouiller un salon')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.unlock.description') || 'Unlock a channel'
+        })
         .addChannelOption(option =>
             option.setName('channel')
-                .setDescription('Le salon à déverrouiller')
+                .setDescription(LanguageManager.get('fr', 'commands.unlock.channel_option') || 'Le salon à déverrouiller')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.unlock.channel_option') || 'The channel to unlock'
+                })
                 .addChannelTypes(ChannelType.GuildText, ChannelType.GuildVoice)
                 .setRequired(false))
         .addStringOption(option =>
             option.setName('reason')
-                .setDescription('Raison du déverrouillage')
+                .setDescription(LanguageManager.get('fr', 'commands.unlock.reason_option') || 'Raison du déverrouillage')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.unlock.reason_option') || 'Reason for the unlock'
+                })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
     

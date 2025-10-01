@@ -2,11 +2,15 @@
 const { SlashCommandBuilder } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
-        .setDescription('Vérifier la latence du bot'),
+        .setDescription(LanguageManager.get('fr', 'commands.ping.description') || 'Vérifier la latence du bot')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.ping.description') || 'Check bot latency'
+        }),
     
     async execute(interaction) {
         // Récupérer la langue du serveur

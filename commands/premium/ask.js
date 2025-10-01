@@ -3,14 +3,21 @@ const { SlashCommandBuilder } = require('discord.js');
 const Guild = require('../../models/Guild');
 const AIService = require('../../utils/aiService');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ask')
-        .setDescription('Poser une question à l\'IA')
+        .setDescription(LanguageManager.get('fr', 'commands.ask.description') || 'Poser une question à l\'IA')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.ask.description') || 'Ask a question to the AI'
+        })
         .addStringOption(option =>
             option.setName('message')
-                .setDescription('Votre question')
+                .setDescription(LanguageManager.get('fr', 'commands.ask.message_option') || 'Votre question')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.ask.message_option') || 'Your question'
+                })
                 .setRequired(true)
                 .setMaxLength(500)),
     

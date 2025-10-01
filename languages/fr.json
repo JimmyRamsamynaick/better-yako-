@@ -81,15 +81,50 @@
             "error": "Une erreur est survenue lors de la suppression des messages",
             "no_messages_found": "Aucun message trouvé pour {user} dans les 100 derniers messages."
         },
-        "setlang": {
-            "description": "Changer la langue du bot",
-            "success": "✅ Langue du bot changée en **{language}**.",
-            "success_title": "✅ Langue modifiée",
-            "error": "❌ Une erreur est survenue lors du changement de langue.",
-            "error_title": "❌ Erreur de changement de langue"
+        "setupmute": {
+            "description": "Configurer le système de mute"
+        },
+        "help": {
+            "description": "Afficher la liste des commandes",
+            "category_option": "Catégorie de commandes"
+        },
+        "userinfo": {
+            "description": "Afficher les informations d'un utilisateur",
+            "user_option": "L'utilisateur dont vous voulez voir les informations"
+        },
+        "ask": {
+            "description": "Poser une question à l'IA",
+            "message_option": "Votre question"
+        },
+        "unban": {
+            "description": "Débannir un utilisateur",
+            "user_option": "ID de l'utilisateur à débannir",
+            "reason_option": "Raison du débannissement"
+        },
+        "lock": {
+            "description": "Verrouiller un salon",
+            "channel_option": "Le salon à verrouiller",
+            "reason_option": "Raison du verrouillage"
+        },
+        "unlock": {
+            "description": "Déverrouiller un salon",
+            "channel_option": "Le salon à déverrouiller",
+            "reason_option": "Raison du déverrouillage"
         },
         "setlogs": {
             "description": "Configure les logs du serveur",
+            "enable_description": "Active les logs dans un salon",
+            "disable_description": "Désactive les logs",
+            "config_description": "Configure les types de logs",
+            "setchannel_description": "Configure un canal spécifique pour un type de log",
+            "removechannel_description": "Supprime un canal de log spécifique",
+            "status_description": "Affiche la configuration actuelle des logs",
+            "channel_option": "Salon pour les logs",
+            "type_option": "Type de log à configurer",
+            "enabled_option": "Activer ou désactiver ce type de log",
+            "setchannel_channel_option": "Canal pour ce type de log",
+            "types_option": "Types de logs pour ce canal (séparés par des virgules)",
+            "removechannel_channel_option": "Canal à supprimer des logs",
             "no_permission": "❌ Vous n'avez pas la permission de gérer le serveur.",
             "error": "❌ Une erreur est survenue lors de la configuration des logs.",
             "enabled_success": "✅ Logs activés dans {channel}\n\n**Types de logs actifs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
@@ -98,8 +133,19 @@
             "status_title": "📊 Configuration des Logs",
             "status_description": "**État:** {status}\n**Salon:** {channel}\n\n**Types de logs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
             "invalid_types": "❌ Types de logs invalides. Types disponibles: {validTypes}",
+            "channel_set_success": "✅ Canal {channel} configuré pour les types: {types}",
+            "channel_removed_success": "✅ Canal {channel} supprimé des logs",
             "channel_configured": "✅ Canal {channel} configuré pour les types de logs: {types}",
-            "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs.",
+            "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs."
+        },
+        "setlang": {
+            "description": "Changer la langue du bot",
+            "language_option": "Langue à utiliser",
+            "success": "✅ Langue du bot changée en **{language}**.",
+            "success_title": "✅ Langue modifiée",
+            "error": "❌ Une erreur est survenue lors du changement de langue.",
+            "error_title": "❌ Erreur de changement de langue"
+        },
             "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
             "channel_removed": "✅ Canal {channel} retiré de la configuration des logs.",
             "types": {

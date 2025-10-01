@@ -98,6 +98,8 @@
             "status_title": "📊 Logs Configuration",
             "status_description": "**Status:** {status}\n**Channel:** {channel}\n\n**Log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
             "invalid_types": "❌ Invalid log types. Available types: {validTypes}",
+            "channel_set_success": "✅ Channel {channel} configured for types: {types}",
+            "channel_removed_success": "✅ Channel {channel} removed from logs",
             "channel_configured": "✅ Channel {channel} configured for log types: {types}",
             "no_channels_configured": "❌ No specific channels are configured for logs.",
             "channel_not_found": "❌ Channel {channel} is not configured for logs.",
@@ -109,6 +111,14 @@
                 "roles": "🎭 Role logs",
                 "server": "⚙️ Server logs"
             }
+        },
+        "setlang": {
+            "description": "Change bot language",
+            "language_option": "Language to use",
+            "success": "✅ Bot language changed to **{language}**.",
+            "success_title": "✅ Language changed",
+            "error": "❌ An error occurred while changing language.",
+            "error_title": "❌ Language change error"
         },
         "lock": {
             "description": "Lock a channel",

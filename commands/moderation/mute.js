@@ -2,23 +2,36 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 const ms = require('ms');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('mute')
-        .setDescription('Rendre muet un membre')
+        .setDescription(LanguageManager.get('fr', 'commands.mute.description') || 'Rendre muet un membre')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.mute.description') || 'Mute a member'
+        })
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('Le membre à rendre muet')
+                .setDescription(LanguageManager.get('fr', 'commands.mute.user_option') || 'Le membre à rendre muet')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.mute.user_option') || 'The member to mute'
+                })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('duration')
-                .setDescription('Durée du mute (ex: 10m, 1h, 1d)')
+                .setDescription(LanguageManager.get('fr', 'commands.mute.duration_option') || 'Durée du mute (ex: 10m, 1h, 1d)')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.mute.duration_option') || 'Duration of the mute (ex: 10m, 1h, 1d)'
+                })
                 .setRequired(false))
         .addStringOption(option =>
             option.setName('reason')
-                .setDescription('Raison du mute')
+                .setDescription(LanguageManager.get('fr', 'commands.mute.reason_option') || 'Raison du mute')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.mute.reason_option') || 'Reason for the mute'
+                })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
     

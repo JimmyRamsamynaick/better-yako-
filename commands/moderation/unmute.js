@@ -2,18 +2,28 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('unmute')
-        .setDescription('Rendre la parole à un membre')
+        .setDescription(LanguageManager.get('fr', 'commands.unmute.description') || 'Rendre la parole à un membre')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.unmute.description') || 'Unmute a member'
+        })
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('Le membre à qui rendre la parole')
+                .setDescription(LanguageManager.get('fr', 'commands.unmute.user_option') || 'Le membre à qui rendre la parole')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.unmute.user_option') || 'The member to unmute'
+                })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
-                .setDescription('Raison du unmute')
+                .setDescription(LanguageManager.get('fr', 'commands.unmute.reason_option') || 'Raison du unmute')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.unmute.reason_option') || 'Reason for the unmute'
+                })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
     

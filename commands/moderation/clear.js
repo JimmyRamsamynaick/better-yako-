@@ -7,16 +7,25 @@ const LanguageManager = require('../../utils/languageManager');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('clear')
-        .setDescription('Supprimer des messages')
+        .setDescription(LanguageManager.get('fr', 'commands.clear.description') || 'Supprimer des messages')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.clear.description') || 'Delete messages'
+        })
         .addIntegerOption(option =>
             option.setName('amount')
-                .setDescription('Nombre de messages à supprimer (1-100)')
+                .setDescription(LanguageManager.get('fr', 'commands.clear.amount_option') || 'Nombre de messages à supprimer (1-100)')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.clear.amount_option') || 'Number of messages to delete (1-100)'
+                })
                 .setMinValue(1)
                 .setMaxValue(100)
                 .setRequired(true))
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('Supprimer seulement les messages de cet utilisateur')
+                .setDescription(LanguageManager.get('fr', 'commands.clear.user_option') || 'Supprimer seulement les messages de cet utilisateur')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.clear.user_option') || 'Delete only messages from this user'
+                })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     

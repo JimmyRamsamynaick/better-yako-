@@ -2,22 +2,35 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const Guild = require('../../models/Guild');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ban')
-        .setDescription('Bannir un membre du serveur')
+        .setDescription(LanguageManager.get('fr', 'commands.ban.description') || 'Bannir un membre du serveur')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.ban.description') || 'Ban a member from the server'
+        })
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('Le membre à bannir')
+                .setDescription(LanguageManager.get('fr', 'commands.ban.user_option') || 'Le membre à bannir')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.ban.user_option') || 'The member to ban'
+                })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
-                .setDescription('Raison du bannissement')
+                .setDescription(LanguageManager.get('fr', 'commands.ban.reason_option') || 'Raison du bannissement')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.ban.reason_option') || 'Reason for the ban'
+                })
                 .setRequired(false))
         .addIntegerOption(option =>
             option.setName('days')
-                .setDescription('Nombre de jours de messages à supprimer (0-7)')
+                .setDescription(LanguageManager.get('fr', 'commands.ban.days_option') || 'Nombre de jours de messages à supprimer (0-7)')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.ban.days_option') || 'Number of days of messages to delete (0-7)'
+                })
                 .setMinValue(0)
                 .setMaxValue(7)
                 .setRequired(false))

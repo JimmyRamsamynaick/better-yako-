@@ -2,33 +2,52 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const Guild = require('../../models/Guild');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setlogs')
-        .setDescription('Configure les logs du serveur')
+        .setDescription(LanguageManager.get('fr', 'commands.setlogs.description') || 'Configure les logs du serveur')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.setlogs.description') || 'Configure server logs'
+        })
         .addSubcommand(subcommand =>
             subcommand
                 .setName('enable')
-                .setDescription('Active les logs dans un salon')
+                .setDescription(LanguageManager.get('fr', 'commands.setlogs.enable_description') || 'Active les logs dans un salon')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlogs.enable_description') || 'Enable logs in a channel'
+                })
                 .addChannelOption(option =>
                     option.setName('channel')
-                        .setDescription('Salon pour les logs')
+                        .setDescription(LanguageManager.get('fr', 'commands.setlogs.channel_option') || 'Salon pour les logs')
+                        .setDescriptionLocalizations({
+                            'en': LanguageManager.get('en', 'commands.setlogs.channel_option') || 'Channel for logs'
+                        })
                         .addChannelTypes(ChannelType.GuildText)
                         .setRequired(true))
         )
         .addSubcommand(subcommand =>
             subcommand
                 .setName('disable')
-                .setDescription('Désactive les logs')
+                .setDescription(LanguageManager.get('fr', 'commands.setlogs.disable_description') || 'Désactive les logs')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlogs.disable_description') || 'Disable logs'
+                })
         )
         .addSubcommand(subcommand =>
             subcommand
                 .setName('config')
-                .setDescription('Configure les types de logs')
+                .setDescription(LanguageManager.get('fr', 'commands.setlogs.config_description') || 'Configure les types de logs')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlogs.config_description') || 'Configure log types'
+                })
                 .addStringOption(option =>
                     option.setName('type')
-                        .setDescription('Type de log à configurer')
+                        .setDescription(LanguageManager.get('fr', 'commands.setlogs.type_option') || 'Type de log à configurer')
+                        .setDescriptionLocalizations({
+                            'en': LanguageManager.get('en', 'commands.setlogs.type_option') || 'Log type to configure'
+                        })
                         .addChoices(
                             { name: '🔊 Voice (Vocal)', value: 'voice' },
                             { name: '💬 Message', value: 'message' },
@@ -39,37 +58,58 @@ module.exports = {
                         .setRequired(true))
                 .addBooleanOption(option =>
                     option.setName('enabled')
-                        .setDescription('Activer ou désactiver ce type de log')
+                        .setDescription(LanguageManager.get('fr', 'commands.setlogs.enabled_option') || 'Activer ou désactiver ce type de log')
+                        .setDescriptionLocalizations({
+                            'en': LanguageManager.get('en', 'commands.setlogs.enabled_option') || 'Enable or disable this log type'
+                        })
                         .setRequired(true))
         )
         .addSubcommand(subcommand =>
             subcommand
                 .setName('setchannel')
-                .setDescription('Configure un canal spécifique pour un type de log')
+                .setDescription(LanguageManager.get('fr', 'commands.setlogs.setchannel_description') || 'Configure un canal spécifique pour un type de log')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlogs.setchannel_description') || 'Configure a specific channel for a log type'
+                })
                 .addChannelOption(option =>
                     option.setName('channel')
-                        .setDescription('Canal pour ce type de log')
+                        .setDescription(LanguageManager.get('fr', 'commands.setlogs.setchannel_channel_option') || 'Canal pour ce type de log')
+                        .setDescriptionLocalizations({
+                            'en': LanguageManager.get('en', 'commands.setlogs.setchannel_channel_option') || 'Channel for this log type'
+                        })
                         .addChannelTypes(ChannelType.GuildText)
                         .setRequired(true))
                 .addStringOption(option =>
                     option.setName('types')
-                        .setDescription('Types de logs pour ce canal (séparés par des virgules)')
+                        .setDescription(LanguageManager.get('fr', 'commands.setlogs.types_option') || 'Types de logs pour ce canal (séparés par des virgules)')
+                        .setDescriptionLocalizations({
+                            'en': LanguageManager.get('en', 'commands.setlogs.types_option') || 'Log types for this channel (comma separated)'
+                        })
                         .setRequired(true))
         )
         .addSubcommand(subcommand =>
             subcommand
                 .setName('removechannel')
-                .setDescription('Supprime un canal de log spécifique')
+                .setDescription(LanguageManager.get('fr', 'commands.setlogs.removechannel_description') || 'Supprime un canal de log spécifique')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlogs.removechannel_description') || 'Remove a specific log channel'
+                })
                 .addChannelOption(option =>
                     option.setName('channel')
-                        .setDescription('Canal à supprimer des logs')
+                        .setDescription(LanguageManager.get('fr', 'commands.setlogs.removechannel_channel_option') || 'Canal à supprimer des logs')
+                        .setDescriptionLocalizations({
+                            'en': LanguageManager.get('en', 'commands.setlogs.removechannel_channel_option') || 'Channel to remove from logs'
+                        })
                         .addChannelTypes(ChannelType.GuildText)
                         .setRequired(true))
         )
         .addSubcommand(subcommand =>
             subcommand
                 .setName('status')
-                .setDescription('Affiche la configuration actuelle des logs')
+                .setDescription(LanguageManager.get('fr', 'commands.setlogs.status_description') || 'Affiche la configuration actuelle des logs')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlogs.status_description') || 'Show current logs configuration'
+                })
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     

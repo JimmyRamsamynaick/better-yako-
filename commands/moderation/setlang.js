@@ -2,14 +2,21 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setlang')
-        .setDescription('Changer la langue du bot')
+        .setDescription(LanguageManager.get('fr', 'commands.setlang.description') || 'Changer la langue du bot')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.setlang.description') || 'Change bot language'
+        })
         .addStringOption(option =>
             option.setName('language')
-                .setDescription('Langue à utiliser')
+                .setDescription(LanguageManager.get('fr', 'commands.setlang.language_option') || 'Langue à utiliser')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.setlang.language_option') || 'Language to use'
+                })
                 .addChoices(
                     { name: 'Français', value: 'fr' },
                     { name: 'English', value: 'en' }

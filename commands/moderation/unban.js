@@ -2,18 +2,28 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const Guild = require('../../models/Guild');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('unban')
-        .setDescription('Débannir un utilisateur')
+        .setDescription(LanguageManager.get('fr', 'commands.unban.description') || 'Débannir un utilisateur')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.unban.description') || 'Unban a user'
+        })
         .addStringOption(option =>
             option.setName('userid')
-                .setDescription('ID de l\'utilisateur à débannir')
+                .setDescription(LanguageManager.get('fr', 'commands.unban.userid_option') || 'ID de l\'utilisateur à débannir')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.unban.userid_option') || 'ID of the user to unban'
+                })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
-                .setDescription('Raison du débannissement')
+                .setDescription(LanguageManager.get('fr', 'commands.unban.reason_option') || 'Raison du débannissement')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.unban.reason_option') || 'Reason for the unban'
+                })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     

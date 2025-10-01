@@ -2,11 +2,15 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Guild = require('../../models/Guild');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setupmute')
-        .setDescription('Configurer le système de mute')
+        .setDescription(LanguageManager.get('fr', 'commands.setupmute.description') || 'Configurer le système de mute')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.setupmute.description') || 'Configure the mute system'
+        })
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     
     async execute(interaction) {

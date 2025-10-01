@@ -2,18 +2,28 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('kick')
-        .setDescription('Expulser un membre du serveur')
+        .setDescription(LanguageManager.get('fr', 'commands.kick.description') || 'Expulser un membre du serveur')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.kick.description') || 'Kick a member from the server'
+        })
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('Le membre à expulser')
+                .setDescription(LanguageManager.get('fr', 'commands.kick.user_option') || 'Le membre à expulser')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.kick.user_option') || 'The member to kick'
+                })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
-                .setDescription('Raison de l\'expulsion')
+                .setDescription(LanguageManager.get('fr', 'commands.kick.reason_option') || 'Raison de l\'expulsion')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.kick.reason_option') || 'Reason for the kick'
+                })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers),
     

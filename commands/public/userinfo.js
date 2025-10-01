@@ -7,10 +7,16 @@ const LanguageManager = require('../../utils/languageManager');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('userinfo')
-        .setDescription('Afficher les informations d\'un utilisateur')
+        .setDescription(LanguageManager.get('fr', 'commands.userinfo.description') || 'Afficher les informations d\'un utilisateur')
+        .setDescriptionLocalizations({
+            'en': LanguageManager.get('en', 'commands.userinfo.description') || 'Show user information'
+        })
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('L\'utilisateur dont vous voulez voir les informations')
+                .setDescription(LanguageManager.get('fr', 'commands.userinfo.user_option') || 'L\'utilisateur dont vous voulez voir les informations')
+                .setDescriptionLocalizations({
+                    'en': LanguageManager.get('en', 'commands.userinfo.user_option') || 'The user whose information you want to see'
+                })
                 .setRequired(false)),
     
     async execute(interaction) {
