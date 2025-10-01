@@ -65,10 +65,11 @@ module.exports = {
                 channel,
                 reason,
                 interaction.guild.id,
+                interaction.user,
                 lang
             );
             
-            await interaction.reply({ embeds: [successEmbed] });
+            await interaction.reply(successEmbed);
 
         } catch (error) {
             console.error(error);
