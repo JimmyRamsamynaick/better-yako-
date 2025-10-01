@@ -25,10 +25,11 @@ module.exports = {
         });
         
         const latency = sent.createdTimestamp - interaction.createdTimestamp;
+        const apiLatency = interaction.client.ws.ping;
         
         const pingEmbed = BotEmbeds.createPingEmbed(
             latency,
-            null, // On n'utilise plus la latence de l'API
+            apiLatency, // Maintenant on passe la vraie latence de l'API
             interaction.guild.id,
             lang
         );

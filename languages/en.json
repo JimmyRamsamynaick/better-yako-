@@ -1,6 +1,8 @@
 {
     "common": {
         "moderator": "Moderator",
+        "no_reason": "No reason provided",
+        "permanent": "Permanent",
         "messages_deleted": "Messages deleted",
         "date": "Date",
         "deleted_messages_list": "Deleted messages",
@@ -21,7 +23,7 @@
             "response": "🏓 Pong! Latency: {latency}ms",
             "title": "🏓 Pong!",
             "footer": "Bot performance",
-            "description": "**Bot Latency:** {latency}ms"
+            "details": "**Bot Latency:** {latency}ms"
         },
 
 
@@ -63,6 +65,9 @@
         },
         "mute": {
             "description": "Temporarily mute a member",
+            "user_option": "The member to mute",
+            "duration_option": "Duration of the mute (ex: 10m, 1h, 1d)",
+            "reason_option": "Reason for the mute",
             "success_title": "🔇 User muted",
             "success": "{executor} muted {user} for {reason} (Duration: {duration})",
             "auto_unmute_title": "🔓 Mute expired",
@@ -78,6 +83,8 @@
         },
         "unmute": {
             "description": "Unmute a member",
+            "user_option": "The member to unmute",
+            "reason_option": "Reason for the unmute",
             "success_title": "🔊 User unmuted",
             "success": "{executor} unmuted {user} for {reason}",
             "error": "An error occurred while unmuting",

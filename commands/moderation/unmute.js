@@ -2,6 +2,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
+const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
@@ -97,15 +98,17 @@ module.exports = {
                 }
             );
 
-            const successEmbed = BotEmbeds.createUnmuteSuccessEmbed(
-                user,
-                reason,
-                interaction.guild.id,
-                interaction.user,
-                lang
-            );
+            const successMessage = LanguageManager.get(lang, 'commands.unmute.success', {
+                executor: `<@${interaction.user.id}>`,
+                user: user.username || user.tag,
+                reason: reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie'
+            }) || `<@${interaction.user.id}> a démute ${user.username || user.tag} pour ${reason || 'Aucune raison fournie'}`;
             
-            await interaction.reply({ ...successEmbed });
+            await interaction.reply(await ComponentsV3.successEmbed(
+                interaction.guild.id,
+                'commands.unmute.success_title',
+                successMessage
+            ));
 
         } catch (error) {
             console.error(error);

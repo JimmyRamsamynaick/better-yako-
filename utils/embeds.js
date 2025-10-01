@@ -232,23 +232,23 @@ class BotEmbeds {
      * Embed pour la commande ping
      */
     static createPingEmbed(latency, apiLatency, guildId = null, lang = 'fr') {
-        const ComponentsV3 = require('./ComponentsV3');
-        
         const title = LanguageManager.get(lang, 'commands.ping.title') || '🏓 Pong!';
         const message = LanguageManager.get(lang, 'commands.ping.description', {
-            latency: latency
-        }) || `**Bot Latency:** ${latency}ms`;
-        const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Bot performance';
+            latency: latency,
+            apiLatency: apiLatency || 'N/A'
+        }) || `**Latence du bot:** ${latency}ms\n**Latence de l'API:** ${apiLatency || 'N/A'}ms`;
+        const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Latence mesurée en temps réel';
         
         return {
-            components: [{
-                type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${title}\n\n${message}\n\n*${footer}*`
-                }]
-            }],
-            flags: 32768
+            embeds: [{
+                title: title,
+                description: message,
+                color: 0x00ff00,
+                footer: {
+                    text: footer
+                },
+                timestamp: new Date().toISOString()
+            }]
         };
     }
 
@@ -584,12 +584,12 @@ class BotEmbeds {
      * Embed pour succès de mute
      */
     static createMuteSuccessEmbed(user, reason, duration, guildId = null, executor = null, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.mute.success_title') || '✅ Membre rendu muet';
+        const title = LanguageManager.get(lang, 'mute.success_title') || '✅ Membre rendu muet';
         const executorMention = executor ? `<@${executor.id}>` : LanguageManager.get(lang, 'common.moderator') || 'Un modérateur';
         const userName = user.username || user.tag;
         const finalReason = reason || LanguageManager.get(lang, 'common.no_reason') || 'Aucune raison fournie';
         const durationText = duration || LanguageManager.get(lang, 'common.permanent') || 'Permanent';
-        const message = LanguageManager.get(lang, 'commands.mute.success', {
+        const message = LanguageManager.get(lang, 'mute.success', {
             executor: executorMention,
             user: userName,
             reason: finalReason,
@@ -600,13 +600,11 @@ class BotEmbeds {
         const content = message || 'Membre rendu muet avec succès';
         
         return {
-            flags: 32768,
-            components: [{
-                type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${title}\n\n${content}`
-                }]
+            embeds: [{
+                title: title,
+                description: content,
+                color: 0x00ff00,
+                timestamp: new Date().toISOString()
             }]
         };
     }
@@ -631,13 +629,11 @@ class BotEmbeds {
         const content = message || 'Membre démute avec succès';
         
         return {
-            flags: 32768,
-            components: [{
-                type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${title}\n\n${content}`
-                }]
+            embeds: [{
+                title: title,
+                description: content,
+                color: 0x00ff00,
+                timestamp: new Date().toISOString()
             }]
         };
     }
@@ -646,9 +642,9 @@ class BotEmbeds {
      * Embed pour auto-unmute (fin de durée)
      */
     static createAutoUnmuteEmbed(user, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.mute.auto_unmute_title') || '🔓 Mute expiré';
+        const title = LanguageManager.get(lang, 'mute.auto_unmute_title') || '🔓 Mute expiré';
         const userName = user.username || user.tag;
-        const message = LanguageManager.get(lang, 'commands.mute.auto_unmute', {
+        const message = LanguageManager.get(lang, 'mute.auto_unmute', {
             user: userName
         }) || `${userName} n'est plus rendu muet (durée expirée)`;
 
@@ -671,8 +667,8 @@ class BotEmbeds {
      * Embed pour notification directe à l'utilisateur lors d'un auto-unmute
      */
     static createUserUnmuteNotificationEmbed(serverName, lang = 'fr') {
-        const title = LanguageManager.get(lang, 'commands.mute.user_unmute_notification_title') || '🔓 Vous n\'êtes plus muet';
-        const message = LanguageManager.get(lang, 'commands.mute.user_unmute_notification', {
+        const title = LanguageManager.get(lang, 'mute.user_unmute_notification_title') || '🔓 Vous n\'êtes plus muet';
+        const message = LanguageManager.get(lang, 'mute.user_unmute_notification', {
             server: serverName
         }) || `Votre mute sur le serveur **${serverName}** a expiré. Vous pouvez maintenant parler à nouveau.`;
 

@@ -1,6 +1,8 @@
 {
     "common": {
         "moderator": "Modérateur",
+        "no_reason": "Aucune raison fournie",
+        "permanent": "Permanent",
         "messages_deleted": "Messages supprimés",
         "date": "Date",
         "deleted_messages_list": "Messages supprimés",
@@ -21,7 +23,7 @@
             "response": "🏓 Pong! Latence: {latency}ms",
             "title": "🏓 Pong!",
             "footer": "Performance du bot",
-            "description": "**Latence du bot:** {latency}ms"
+            "details": "**Latence du bot:** {latency}ms"
         },
         "serverinfo": {
             "description": "Affiche les informations du serveur",
@@ -61,6 +63,10 @@
         },
         "mute": {
             "description": "Rendre muet un membre temporairement",
+            "user_option": "Le membre à rendre muet",
+            "duration_option": "Durée du mute (ex: 10m, 1h, 1d)",
+            "reason_option": "Raison du mute",
+            "success_title": "✅ Membre rendu muet",
             "success": "{executor} a rendu muet {user} pour {reason} (Durée: {duration})",
             "auto_unmute_title": "🔓 Mute expiré",
             "auto_unmute": "{user} n'est plus rendu muet (durée expirée)",
@@ -75,11 +81,14 @@
         },
         "unmute": {
             "description": "Rendre la parole à un membre",
+            "user_option": "Le membre à qui rendre la parole",
+            "reason_option": "Raison du unmute",
             "success_title": "🔊 Utilisateur démuté",
             "success": "{executor} a rendu la parole à {user} pour {reason}",
             "error": "Une erreur est survenue lors du unmute",
             "error_no_setup": "Le système de mute n'est pas configuré",
-            "error_role_not_found": "Le rôle de mute est introuvable"
+            "error_role_not_found": "Le rôle de mute est introuvable",
+            "error_not_muted": "Ce membre n'est pas rendu muet"
         },
         "clear": {
             "description": "Supprimer des messages en masse",
@@ -90,7 +99,9 @@
             "no_messages_found": "Aucun message trouvé pour {user} dans les 100 derniers messages."
         },
         "setupmute": {
-            "description": "Configurer le système de mute"
+            "description": "Configurer le système de mute",
+            "success": "✅ Système de mute configuré avec succès !\n**Rôle :** {role}\n**Salons configurés :** {channels}",
+            "error": "❌ Une erreur s'est produite lors de la configuration."
         },
         "help": {
             "description": "Afficher la liste des commandes",
@@ -155,7 +166,12 @@
         "unban": {
             "description": "Débannir un utilisateur",
             "user_option": "ID de l'utilisateur à débannir",
-            "reason_option": "Raison du débannissement"
+            "reason_option": "Raison du débannissement",
+            "success_title": "✅ Utilisateur débanni",
+            "success": "{executor} a débanni {user} pour {reason}",
+            "error_title": "❌ Erreur de débannissement",
+            "error": "Une erreur s'est produite lors du débannissement",
+            "no_permission": "❌ Vous n'avez pas la permission de débannir des membres."
         },
         "lock": {
             "description": "Verrouiller un salon",

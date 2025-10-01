@@ -3,6 +3,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Guild = require('../../models/Guild');
 const BotEmbeds = require('../../utils/embeds');
 const LanguageManager = require('../../utils/languageManager');
+const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const ms = require('ms');
 
 module.exports = {
@@ -49,7 +50,7 @@ module.exports = {
             const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
             return await interaction.reply({
                 ...noPermEmbed,
-                ephemeral: true
+                flags: 64 // MessageFlags.Ephemeral
             });
         }
 
@@ -58,15 +59,16 @@ module.exports = {
             const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
             return await interaction.reply({
                 ...botNoPermEmbed,
-                ephemeral: true
+                flags: 64 // MessageFlags.Ephemeral
             });
         }
 
         if (user.id === interaction.user.id) {
-            const selfMuteEmbed = BotEmbeds.createGenericErrorEmbed('Vous ne pouvez pas vous mute vous-même.');
+            const selfMuteMessage = LanguageManager.get(lang, 'mute.error_self') || 'Vous ne pouvez pas vous mute vous-même.';
+            const selfMuteEmbed = BotEmbeds.createGenericErrorEmbed(selfMuteMessage, interaction.guild.id, lang);
             return await interaction.reply({
                 ...selfMuteEmbed,
-                ephemeral: true
+                flags: 64 // MessageFlags.Ephemeral
             });
         }
 
@@ -74,28 +76,31 @@ module.exports = {
             const member = await interaction.guild.members.fetch(user.id);
 
             if (!guildData?.muteRole) {
-                const noSetupEmbed = BotEmbeds.createGenericErrorEmbed('Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.');
-            return await interaction.reply({
-                ...noSetupEmbed,
-                ephemeral: true
-            });
+                const noSetupMessage = LanguageManager.get(lang, 'mute.error_no_setup') || 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.';
+                const noSetupEmbed = BotEmbeds.createGenericErrorEmbed(noSetupMessage, interaction.guild.id, lang);
+                return await interaction.reply({
+                    ...noSetupEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
             }
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
-                const noRoleEmbed = BotEmbeds.createGenericErrorEmbed('Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.');
-            return await interaction.reply({
-                ...noRoleEmbed,
-                ephemeral: true
-            });
+                const noRoleMessage = LanguageManager.get(lang, 'mute.error_role_not_found') || 'Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.';
+                const noRoleEmbed = BotEmbeds.createGenericErrorEmbed(noRoleMessage, interaction.guild.id, lang);
+                return await interaction.reply({
+                    ...noRoleEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
             }
 
             if (member.roles.cache.has(muteRole.id)) {
-                const alreadyMutedEmbed = BotEmbeds.createGenericErrorEmbed('Ce membre est déjà rendu muet.');
-            return await interaction.reply({
-                ...alreadyMutedEmbed,
-                ephemeral: true
-            });
+                const alreadyMutedMessage = LanguageManager.get(lang, 'mute.error_already_muted') || 'Ce membre est déjà rendu muet.';
+                const alreadyMutedEmbed = BotEmbeds.createGenericErrorEmbed(alreadyMutedMessage, interaction.guild.id, lang);
+                return await interaction.reply({
+                    ...alreadyMutedEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
             }
 
             let muteUntil = null;
@@ -104,11 +109,12 @@ module.exports = {
             if (duration) {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
-                    const invalidDurationEmbed = BotEmbeds.createGenericErrorEmbed('Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).');
-                return await interaction.reply({
-                    ...invalidDurationEmbed,
-                    ephemeral: true
-                });
+                    const invalidDurationMessage = LanguageManager.get(lang, 'mute.error_invalid_duration') || 'Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).';
+                    const invalidDurationEmbed = BotEmbeds.createGenericErrorEmbed(invalidDurationMessage, interaction.guild.id, lang);
+                    return await interaction.reply({
+                        ...invalidDurationEmbed,
+                        flags: 64 // MessageFlags.Ephemeral
+                    });
                 }
                 muteUntil = new Date(Date.now() + parsedDuration);
                 durationText = duration;
@@ -140,7 +146,18 @@ module.exports = {
                 { upsert: true }
             );
 
-            await interaction.reply(BotEmbeds.createMuteSuccessEmbed(user, reason, durationText, interaction.guild.id, interaction.user, lang));
+            const successMessage = LanguageManager.get(lang, 'commands.mute.success', {
+                executor: interaction.user.toString(),
+                user: user.toString(),
+                reason: reason,
+                duration: durationText
+            }) || `${interaction.user.toString()} a mute ${user.toString()} pour ${reason} (durée: ${durationText})`;
+
+            await interaction.reply(await ComponentsV3.successEmbed(
+                interaction.guild.id,
+                'commands.mute.success_title',
+                successMessage
+            ));
 
             // Auto-unmute si durée définie
             if (muteUntil) {
@@ -193,11 +210,14 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            const errorEmbed = BotEmbeds.createGenericErrorEmbed('Une erreur est survenue lors du mute.');
-            await interaction.reply({
-                ...errorEmbed,
-                ephemeral: true
-            });
+            if (!interaction.replied && !interaction.deferred) {
+                const errorMessage = LanguageManager.get(lang, 'mute.error') || 'Une erreur est survenue lors du mute.';
+                const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMessage, interaction.guild.id, lang);
+                await interaction.reply({
+                    ...errorEmbed,
+                    flags: 64 // MessageFlags.Ephemeral
+                });
+            }
         }
     }
 };
