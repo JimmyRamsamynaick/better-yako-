@@ -20,7 +20,10 @@ client.commands = new Collection();
 client.cooldowns = new Collection();
 
 // Chargement des commandes
-const commandFolders = fs.readdirSync('./commands');
+const commandFolders = fs.readdirSync('./commands').filter(item => {
+    const itemPath = path.join('./commands', item);
+    return fs.statSync(itemPath).isDirectory();
+});
 for (const folder of commandFolders) {
     const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
     for (const file of commandFiles) {
