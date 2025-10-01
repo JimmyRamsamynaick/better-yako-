@@ -72,26 +72,41 @@ module.exports = {
         }
 
         try {
-            // Vérifier d'abord si l'utilisateur est banni
+            // Vérifier d'abord si l'utilisateur est banni avec un petit délai pour la synchronisation
             let isBanned = false;
-            try {
-                await interaction.guild.bans.fetch(userId);
-                isBanned = true;
-            } catch (fetchError) {
-                if (fetchError.code === 10026) {
-                    // L'utilisateur n'est pas banni
-                    const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
-                    return await interaction.editReply({
-                        ...notBannedMessage
-                    });
+            let fetchAttempts = 0;
+            const maxAttempts = 3;
+            
+            while (fetchAttempts < maxAttempts && !isBanned) {
+                try {
+                    await interaction.guild.bans.fetch(userId);
+                    isBanned = true;
+                    console.log(`✅ [UNBAN] Utilisateur ${userId} trouvé dans les bans`);
+                } catch (fetchError) {
+                    fetchAttempts++;
+                    if (fetchError.code === 10026) {
+                        if (fetchAttempts < maxAttempts) {
+                            console.log(`🔍 [UNBAN] Tentative ${fetchAttempts}/${maxAttempts} - Ban non trouvé, attente...`);
+                            await new Promise(resolve => setTimeout(resolve, 1000)); // Attendre 1 seconde
+                            continue;
+                        }
+                        // L'utilisateur n'est vraiment pas banni après toutes les tentatives
+                        console.log(`❌ [UNBAN] Utilisateur ${userId} n'est pas banni après ${maxAttempts} tentatives`);
+                        const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
+                        return await interaction.editReply({
+                            ...notBannedMessage
+                        });
+                    }
+                    // Autre erreur lors de la vérification
+                    throw fetchError;
                 }
-                // Autre erreur lors de la vérification
-                throw fetchError;
             }
 
             // Si l'utilisateur est banni, procéder au débannissement
             if (isBanned) {
+                console.log(`🔍 [UNBAN] Débannissement de l'utilisateur ${userId}...`);
                 await interaction.guild.bans.remove(userId, reason);
+                console.log(`✅ [UNBAN] Débannissement réussi pour ${userId}`);
 
                 // Récupérer l'utilisateur pour l'affichage
                 let userForDisplay;
@@ -110,10 +125,16 @@ module.exports = {
                 
                 const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success_title', translatedMessage);
                 await interaction.editReply(successMessage);
+                console.log(`✅ [UNBAN] Message de succès envoyé`);
             }
 
         } catch (error) {
-            console.error(error);
+            console.error('❌ [UNBAN] ERREUR DÉTAILLÉE:', {
+                message: error.message,
+                code: error.code,
+                userId: userId,
+                reason: reason
+            });
             
             try {
                 const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error');
