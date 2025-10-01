@@ -28,6 +28,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     
     async execute(interaction) {
+        // Déférer la réponse immédiatement pour éviter l'expiration
+        await interaction.deferReply();
+        
         let userId = interaction.options.getString('userid');
         
         // Extraire l'ID de la mention si nécessaire
@@ -45,35 +48,27 @@ module.exports = {
         const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
 
         if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
-            if (!interaction.replied && !interaction.deferred) {
-                try {
-                    const noPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'common.no_permission');
-                    return await interaction.reply({
-                        ...noPermMessage,
-                        ephemeral: true
-                    });
-                } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'interaction (no permission):', replyError);
-                    return;
-                }
+            try {
+                const noPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'common.no_permission');
+                return await interaction.editReply({
+                    ...noPermMessage
+                });
+            } catch (replyError) {
+                console.error('Erreur lors de la réponse d\'interaction (no permission):', replyError);
+                return;
             }
-            return;
         }
 
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
-            if (!interaction.replied && !interaction.deferred) {
-                try {
-                    const botNoPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
-                    return await interaction.reply({
-                        ...botNoPermMessage,
-                        ephemeral: true
-                    });
-                } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'interaction (bot no permission):', replyError);
-                    return;
-                }
+            try {
+                const botNoPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
+                return await interaction.editReply({
+                    ...botNoPermMessage
+                });
+            } catch (replyError) {
+                console.error('Erreur lors de la réponse d\'interaction (bot no permission):', replyError);
+                return;
             }
-            return;
         }
 
         try {
@@ -81,20 +76,18 @@ module.exports = {
             
             await interaction.guild.members.unban(userId, reason);
 
-            if (!interaction.replied && !interaction.deferred) {
-                try {
-                    // Récupérer le message traduit avec les placeholders remplacés
-                    const translatedMessage = LanguageManager.get(lang, 'commands.unban.success', {
-                        executor: interaction.user.toString(),
-                        user: bannedUser.user.toString(),
-                        reason: reason
-                    });
-                    
-                    const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success_title', translatedMessage);
-                    await interaction.reply(successMessage);
-                } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
-                }
+            try {
+                // Récupérer le message traduit avec les placeholders remplacés
+                const translatedMessage = LanguageManager.get(lang, 'commands.unban.success', {
+                    executor: interaction.user.toString(),
+                    user: bannedUser.user.toString(),
+                    reason: reason
+                });
+                
+                const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success_title', translatedMessage);
+                await interaction.editReply(successMessage);
+            } catch (replyError) {
+                console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
             }
 
         } catch (error) {
@@ -102,31 +95,24 @@ module.exports = {
             
             // Gérer spécifiquement l'erreur "Unknown Ban"
             if (error.code === 10026) {
-                if (!interaction.replied && !interaction.deferred) {
-                    try {
-                        const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
-                        return await interaction.reply({
-                            ...notBannedMessage,
-                            ephemeral: true
-                        });
-                    } catch (replyError) {
-                        console.error('Erreur lors de la réponse d\'interaction (not banned):', replyError);
-                        return;
-                    }
-                }
-                return;
-            }
-            
-            if (!interaction.replied && !interaction.deferred) {
                 try {
-                    const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error');
-                    await interaction.reply({
-                        ...errorMessage,
-                        ephemeral: true
+                    const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
+                    return await interaction.editReply({
+                        ...notBannedMessage
                     });
                 } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'interaction (unban error):', replyError);
+                    console.error('Erreur lors de la réponse d\'interaction (not banned):', replyError);
+                    return;
                 }
+            }
+            
+            try {
+                const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error');
+                await interaction.editReply({
+                    ...errorMessage
+                });
+            } catch (replyError) {
+                console.error('Erreur lors de la réponse d\'interaction (unban error):', replyError);
             }
         }
     }

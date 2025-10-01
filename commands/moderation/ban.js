@@ -37,6 +37,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     
     async execute(interaction) {
+        // Déférer la réponse immédiatement pour éviter l'expiration
+        await interaction.deferReply();
+        
         console.log('🔍 [BAN] Commande ban exécutée par:', interaction.user.tag);
         
         const user = interaction.options.getUser('user');
@@ -53,36 +56,32 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
             console.log('❌ [BAN] Permissions insuffisantes pour:', interaction.user.tag);
             const noPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'common.no_permission');
-            return interaction.reply({
-                ...noPermMessage,
-                ephemeral: true
+            return interaction.editReply({
+                ...noPermMessage
             });
         }
 
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
             console.log('❌ [BAN] Le bot n\'a pas les permissions de bannissement');
             const botNoPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
-            return interaction.reply({
-                ...botNoPermMessage,
-                ephemeral: true
+            return interaction.editReply({
+                ...botNoPermMessage
             });
         }
 
         if (user.id === interaction.user.id) {
             console.log('❌ [BAN] Tentative d\'auto-ban par:', interaction.user.tag);
             const selfBanMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_self');
-            return interaction.reply({
-                ...selfBanMessage,
-                ephemeral: true
+            return interaction.editReply({
+                ...selfBanMessage
             });
         }
 
         if (user.id === interaction.client.user.id) {
             console.log('❌ [BAN] Tentative de ban du bot par:', interaction.user.tag);
             const botBanMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot');
-            return interaction.reply({
-                ...botBanMessage,
-                ephemeral: true
+            return interaction.editReply({
+                ...botBanMessage
             });
         }
 
@@ -93,9 +92,8 @@ module.exports = {
                 if (bannedUser) {
                     console.log('❌ [BAN] Utilisateur déjà banni:', user.tag);
                     const alreadyBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_already_banned');
-                    return await interaction.reply({
-                        ...alreadyBannedMessage,
-                        ephemeral: true
+                    return await interaction.editReply({
+                        ...alreadyBannedMessage
                     });
                 }
             } catch (banCheckError) {
@@ -111,9 +109,8 @@ module.exports = {
             if (member.roles.highest.position >= interaction.member.roles.highest.position) {
                 console.log('❌ [BAN] Hiérarchie insuffisante');
                 const hierarchyMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_hierarchy', { user: user.toString() });
-                return await interaction.reply({
-                    ...hierarchyMessage,
-                    ephemeral: true
+                return await interaction.editReply({
+                    ...hierarchyMessage
                 });
             }
 
@@ -121,9 +118,8 @@ module.exports = {
             if (!member.bannable) {
                 console.log('❌ [BAN] Membre non bannable (permissions bot insuffisantes)');
                 const botPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
-                return await interaction.reply({
-                    ...botPermMessage,
-                    ephemeral: true
+                return await interaction.editReply({
+                    ...botPermMessage
                 });
             }
 
@@ -140,7 +136,7 @@ module.exports = {
             });
             
             const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.ban.success_title', translatedMessage);
-            await interaction.reply(successMessage);
+            await interaction.editReply(successMessage);
             console.log('✅ [BAN] Réponse envoyée avec succès');
 
         } catch (error) {
@@ -153,17 +149,14 @@ module.exports = {
                 days: days
             });
             
-            // Vérifier si l'interaction n'a pas déjà été répondue
-            if (!interaction.replied && !interaction.deferred) {
-                try {
-                    const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error');
-                    await interaction.reply({
-                        ...errorMessage,
-                        ephemeral: true
-                    });
-                } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'erreur:', replyError);
-                }
+            // Gérer l'erreur avec editReply puisque l'interaction est déjà déférée
+            try {
+                const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error');
+                await interaction.editReply({
+                    ...errorMessage
+                });
+            } catch (replyError) {
+                console.error('Erreur lors de la réponse d\'erreur:', replyError);
             }
         }
     }
