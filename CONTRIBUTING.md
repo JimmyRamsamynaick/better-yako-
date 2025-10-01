@@ -124,7 +124,7 @@ git checkout -b feature/nom-de-votre-fonctionnalite
 ### Structure du Projet
 
 ```
-better-yako-/
+yako/
 ├── commands/           # Commandes Discord
 │   ├── moderation/    # Commandes de modération
 │   ├── premium/       # Commandes premium

@@ -64,7 +64,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### 📁 Structure du projet
 ```
-better-yako-/
+yako/
 ├── commands/           # Commandes organisées par catégorie
 ├── events/            # Gestionnaires d'événements Discord
 ├── languages/         # Fichiers de traduction (fr/en)

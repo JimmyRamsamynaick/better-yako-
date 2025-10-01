@@ -10,10 +10,11 @@ module.exports = {
         
         client.user.setPresence({
             activities: [{
-                name: `${client.guilds.cache.size} serveurs`,
-                type: ActivityType.Watching
+                name: `🛡️ ${client.guilds.cache.size} serveurs protégés`,
+                type: ActivityType.Streaming,
+                url: 'https://www.twitch.tv/jimmy_9708'
             }],
-            status: 'online'
+            status: 'dnd'
         });
 
         // Initialiser les guildes en base

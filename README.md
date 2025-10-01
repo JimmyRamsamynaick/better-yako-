@@ -138,7 +138,7 @@ DEBUG_MODE=false
 ## 🏗️ Architecture
 
 ```
-better-yako-/
+yako/
 ├── 📁 commands/           # Commandes organisées par catégorie
 │   ├── 🛡️ moderation/    # Commandes de modération
 │   ├── ⭐ premium/        # Commandes premium
