@@ -64,7 +64,7 @@ module.exports = {
 
             const successResponse = await ComponentsV3.successEmbed(
                 interaction.guild.id,
-                'setupmute.success',
+                'commands.setupmute.success',
                 {
                     role: muteRole.toString(),
                     channels: channelCount
@@ -75,7 +75,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.error');
+            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setupmute.error');
             await interaction.editReply(errorResponse);
         }
     }

@@ -1,6 +1,6 @@
 // commands/moderation/ban.js
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
-const BotEmbeds = require('../../utils/embeds');
+const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const Guild = require('../../models/Guild');
 
 module.exports = {
@@ -39,36 +39,36 @@ module.exports = {
 
         if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
             console.log('❌ [BAN] Permissions insuffisantes pour:', interaction.user.tag);
-            const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
+            const noPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'common.no_permission');
             return interaction.reply({
-                ...noPermEmbed,
+                ...noPermMessage,
                 ephemeral: true
             });
         }
 
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
             console.log('❌ [BAN] Le bot n\'a pas les permissions de bannissement');
-            const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
+            const botNoPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
             return interaction.reply({
-                ...botNoPermEmbed,
+                ...botNoPermMessage,
                 ephemeral: true
             });
         }
 
         if (user.id === interaction.user.id) {
             console.log('❌ [BAN] Tentative d\'auto-ban par:', interaction.user.tag);
-            const notBannableEmbed = BotEmbeds.createUserNotBannableEmbed(user, interaction.guild.id, lang);
+            const selfBanMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_self');
             return interaction.reply({
-                ...notBannableEmbed,
+                ...selfBanMessage,
                 ephemeral: true
             });
         }
 
         if (user.id === interaction.client.user.id) {
             console.log('❌ [BAN] Tentative de ban du bot par:', interaction.user.tag);
-            const banBotPermEmbed = BotEmbeds.createBanBotPermissionEmbed(interaction.guild.id, lang);
+            const botBanMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot');
             return interaction.reply({
-                ...banBotPermEmbed,
+                ...botBanMessage,
                 ephemeral: true
             });
         }
@@ -81,9 +81,9 @@ module.exports = {
             console.log('🔍 [BAN] Vérification hiérarchie - Membre:', member.roles.highest.position, '| Exécuteur:', interaction.member.roles.highest.position);
             if (member.roles.highest.position >= interaction.member.roles.highest.position) {
                 console.log('❌ [BAN] Hiérarchie insuffisante');
-                const notBannableEmbed = BotEmbeds.createUserNotBannableEmbed(user, interaction.guild.id, lang);
+                const hierarchyMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_hierarchy', { user: user.toString() });
                 return interaction.reply({
-                    ...notBannableEmbed,
+                    ...hierarchyMessage,
                     ephemeral: true
                 });
             }
@@ -91,9 +91,9 @@ module.exports = {
             console.log('🔍 [BAN] Vérification bannable:', member.bannable);
             if (!member.bannable) {
                 console.log('❌ [BAN] Membre non bannable (permissions bot insuffisantes)');
-                const banBotPermEmbed = BotEmbeds.createBanBotPermissionEmbed(interaction.guild.id, lang);
+                const botPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
                 return interaction.reply({
-                    ...banBotPermEmbed,
+                    ...botPermMessage,
                     ephemeral: true
                 });
             }
@@ -103,10 +103,12 @@ module.exports = {
             console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
 
             console.log('🔍 [BAN] Envoi de la réponse de succès...');
-            const successEmbed = BotEmbeds.createBanSuccessEmbed(user, reason, interaction.guild.id, interaction.user, lang);
-            await interaction.reply({
-                ...successEmbed
+            const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.ban.success', {
+                executor: interaction.user.toString(),
+                user: user.toString(),
+                reason: reason
             });
+            await interaction.reply(successMessage);
             console.log('✅ [BAN] Réponse envoyée avec succès');
 
         } catch (error) {
@@ -129,9 +131,9 @@ module.exports = {
                             const bannedUser = await interaction.guild.bans.fetch(user.id);
                             if (bannedUser) {
                                 console.log('❌ [BAN] Utilisateur déjà banni:', user.tag);
-                                const alreadyBannedEmbed = BotEmbeds.createUserAlreadyBannedEmbed(user, interaction.guild.id, lang);
+                                const alreadyBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_already_banned');
                                 return await interaction.reply({
-                                    ...alreadyBannedEmbed,
+                                    ...alreadyBannedMessage,
                                     ephemeral: true
                                 });
                             }
@@ -140,9 +142,9 @@ module.exports = {
                         }
                     }
                     
-                    const errorEmbed = BotEmbeds.createBanErrorEmbed(error, interaction.guild.id, lang);
+                    const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error');
                     await interaction.reply({
-                        ...errorEmbed,
+                        ...errorMessage,
                         ephemeral: true
                     });
                 } catch (replyError) {

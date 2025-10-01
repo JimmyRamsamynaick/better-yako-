@@ -1,6 +1,6 @@
 // commands/moderation/unban.js
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
-const BotEmbeds = require('../../utils/embeds');
+const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const Guild = require('../../models/Guild');
 
 module.exports = {
@@ -37,9 +37,9 @@ module.exports = {
         if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
             if (!interaction.replied && !interaction.deferred) {
                 try {
-                    const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
+                    const noPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'common.no_permission');
                     return await interaction.reply({
-                        ...noPermEmbed,
+                        ...noPermMessage,
                         ephemeral: true
                     });
                 } catch (replyError) {
@@ -53,9 +53,9 @@ module.exports = {
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
             if (!interaction.replied && !interaction.deferred) {
                 try {
-                    const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
+                    const botNoPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
                     return await interaction.reply({
-                        ...botNoPermEmbed,
+                        ...botNoPermMessage,
                         ephemeral: true
                     });
                 } catch (replyError) {
@@ -72,9 +72,9 @@ module.exports = {
             if (!bannedUser) {
                 if (!interaction.replied && !interaction.deferred) {
                      try {
-                         const notBannedEmbed = BotEmbeds.createUserNotBannedEmbed({ id: userId }, interaction.guild.id, lang);
+                         const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
                          return await interaction.reply({
-                             ...notBannedEmbed,
+                             ...notBannedMessage,
                              ephemeral: true
                          });
                      } catch (replyError) {
@@ -89,10 +89,12 @@ module.exports = {
 
             if (!interaction.replied && !interaction.deferred) {
                 try {
-                    const successEmbed = BotEmbeds.createUnbanSuccessEmbed(bannedUser.user, interaction.guild.id, interaction.user, reason, lang);
-                    await interaction.reply({
-                        ...successEmbed
+                    const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success', {
+                        executor: interaction.user.toString(),
+                        user: bannedUser.user.toString(),
+                        reason: reason
                     });
+                    await interaction.reply(successMessage);
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
                 }
@@ -103,9 +105,9 @@ module.exports = {
             
             if (!interaction.replied && !interaction.deferred) {
                 try {
-                    const errorEmbed = BotEmbeds.createUnbanErrorEmbed(error, interaction.guild.id, lang);
+                    const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error');
                     await interaction.reply({
-                        ...errorEmbed,
+                        ...errorMessage,
                         ephemeral: true
                     });
                 } catch (replyError) {

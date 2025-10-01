@@ -159,8 +159,7 @@
                 "permissions": "🔐 Permissions clés",
                 "status": "🟢 Statut",
                 "activity": "🎮 Activité",
-                "boost_since": "💎 Boost depuis",
-                "avatar": "🖼️ Avatar"
+                "boost_since": "💎 Boost depuis"
             },
             "status": {
                 "online": "🟢 En ligne",
@@ -192,7 +191,7 @@
             "moderation_title": "🛡️ Commandes de Modération",
             "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Rendre la parole à un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue",
             "public_title": "👥 Commandes Publiques",
-            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/avatar`** - Afficher l'avatar d'un utilisateur",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
             "premium_title": "⭐ Commandes Premium",
         "premium_description": "**`/ask`** - Poser une question à l'IA intégrée\n\n*Les commandes premium nécessitent un serveur premium*"
         }

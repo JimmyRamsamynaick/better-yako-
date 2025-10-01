@@ -156,7 +156,7 @@
             "moderation_title": "🛡️ Moderation Commands",
             "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language",
             "public_title": "👥 Public Commands",
-            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/avatar`** - Display user avatar",
+            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information",
             "premium_title": "⭐ Premium Commands",
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
@@ -181,8 +181,7 @@
                 "permissions": "🔐 Key permissions",
                 "status": "🟢 Status",
                 "activity": "🎮 Activity",
-                "boost_since": "💎 Boosting since",
-                "avatar": "🖼️ Avatar"
+                "boost_since": "💎 Boosting since"
             },
             "status": {
                 "online": "🟢 Online",
