@@ -147,6 +147,30 @@ module.exports = {
                                     }
                                 }
                             );
+
+                            // Envoyer notification directe à l'utilisateur
+                            try {
+                                const languageManager = require('../../utils/languageManager');
+                                const guildLang = guildDoc?.language || 'fr';
+                                const userNotificationEmbed = BotEmbeds.createUserUnmuteNotificationEmbed(interaction.guild.name, guildLang);
+                                await user.send(userNotificationEmbed);
+                            } catch (error) {
+                                console.log('Impossible d\'envoyer un MP à l\'utilisateur:', error.message);
+                            }
+
+                            // Envoyer notification dans les logs
+                            const logChannels = guildDoc?.logChannels || {};
+                            const logChannel = logChannels.message || guildDoc?.logChannel;
+                            
+                            if (logChannel) {
+                                const channel = interaction.guild.channels.cache.get(logChannel);
+                                if (channel) {
+                                    const languageManager = require('../../utils/languageManager');
+                                    const guildLang = guildDoc?.language || 'fr';
+                                    const unmuteEmbed = BotEmbeds.createAutoUnmuteEmbed(user, guildLang);
+                                    await channel.send(unmuteEmbed);
+                                }
+                            }
                         }
                     } catch (error) {
                         console.error('Erreur auto-unmute:', error);

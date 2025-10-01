@@ -1,4 +1,5 @@
 const LanguageManager = require('./languageManager');
+const Guild = require('../models/Guild');
 
 class ComponentsV3 {
     /**
@@ -183,9 +184,13 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static infoEmbed(guildId, titleKey, contentKey, placeholders = {}) {
-        const title = LanguageManager.get('fr', titleKey, placeholders);
-        const content = LanguageManager.get('fr', contentKey, placeholders);
+    static async infoEmbed(guildId, titleKey, contentKey, placeholders = {}) {
+        // Récupérer la langue du serveur
+        const guildData = await Guild.findOne({ guildId: guildId });
+        const lang = guildData?.language || 'fr';
+        
+        const title = LanguageManager.get(lang, titleKey, placeholders);
+        const content = LanguageManager.get(lang, contentKey, placeholders);
         
         return {
             flags: 32768,
@@ -208,8 +213,12 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static errorEmbed(guildId, errorKey, placeholders = {}) {
-        const errorMessage = LanguageManager.get('fr', errorKey, placeholders);
+    static async errorEmbed(guildId, errorKey, placeholders = {}) {
+        // Récupérer la langue du serveur
+        const guildData = await Guild.findOne({ guildId: guildId });
+        const lang = guildData?.language || 'fr';
+        
+        const errorMessage = LanguageManager.get(lang, errorKey, placeholders);
         
         return {
             flags: 32768,
@@ -232,8 +241,12 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static successEmbed(guildId, successKey, placeholders = {}) {
-        const successMessage = LanguageManager.get('fr', successKey, placeholders);
+    static async successEmbed(guildId, successKey, placeholders = {}) {
+        // Récupérer la langue du serveur
+        const guildData = await Guild.findOne({ guildId: guildId });
+        const lang = guildData?.language || 'fr';
+        
+        const successMessage = LanguageManager.get(lang, successKey, placeholders);
         
         return {
             flags: 32768,
@@ -256,8 +269,12 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static warningEmbed(guildId, warningKey, placeholders = {}) {
-        const warningMessage = LanguageManager.get('fr', warningKey, placeholders);
+    static async warningEmbed(guildId, warningKey, placeholders = {}) {
+        // Récupérer la langue du serveur
+        const guildData = await Guild.findOne({ guildId: guildId });
+        const lang = guildData?.language || 'fr';
+        
+        const warningMessage = LanguageManager.get(lang, warningKey, placeholders);
         
         return {
             flags: 32768,

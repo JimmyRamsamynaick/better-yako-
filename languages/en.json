@@ -53,6 +53,10 @@
             "description": "Temporarily mute a member",
             "success_title": "🔇 User muted",
             "success": "{executor} muted {user} for {reason} (Duration: {duration})",
+            "auto_unmute_title": "🔓 Mute expired",
+            "auto_unmute": "{user} is no longer muted (duration expired)",
+            "user_unmute_notification_title": "🔓 You are no longer muted",
+            "user_unmute_notification": "Your mute on the server **{server}** has expired. You can now speak again.",
             "error": "An error occurred while muting",
             "error_self": "You cannot mute yourself",
             "error_no_setup": "The mute system is not configured. Use `/setupmute` first",
@@ -93,17 +97,17 @@
             "config_success": "✅ Log type **{type}** {status}.",
             "status_title": "📊 Logs Configuration",
             "status_description": "**Status:** {status}\n**Channel:** {channel}\n\n**Log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
-            "invalid_types": "❌ Invalid log types. Available types: Voice, Message, Channels, Roles, Server",
+            "invalid_types": "❌ Invalid log types. Available types: {validTypes}",
             "channel_configured": "✅ Channel {channel} configured for log types: {types}",
             "no_channels_configured": "❌ No specific channels are configured for logs.",
             "channel_not_found": "❌ Channel {channel} is not configured for logs.",
             "channel_removed": "✅ Channel {channel} removed from logs configuration.",
             "types": {
-                "voice": "Voice logs",
-                "message": "Message logs",
-                "channels": "Channel logs",
-                "roles": "Role logs",
-                "server": "Server logs"
+                "voice": "🔊 Voice logs",
+                "message": "💬 Message logs",
+                "channels": "📁 Channel logs",
+                "roles": "🎭 Role logs",
+                "server": "⚙️ Server logs"
             }
         },
         "lock": {

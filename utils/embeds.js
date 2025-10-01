@@ -454,6 +454,54 @@ class BotEmbeds {
         };
     }
 
+    /**
+     * Embed pour auto-unmute (fin de durée)
+     */
+    static createAutoUnmuteEmbed(user, lang = 'fr') {
+        const title = LanguageManager.get(lang, 'commands.mute.auto_unmute_title') || '🔓 Mute expiré';
+        const userName = user.username || user.tag;
+        const message = LanguageManager.get(lang, 'commands.mute.auto_unmute', {
+            user: userName
+        }) || `${userName} n'est plus rendu muet (durée expirée)`;
+
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
+        const content = message || 'Mute expiré automatiquement';
+        
+        return {
+            flags: 32768,
+            components: [{
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${content}`
+                }]
+            }]
+        };
+    }
+
+    /**
+     * Embed pour notification directe à l'utilisateur lors d'un auto-unmute
+     */
+    static createUserUnmuteNotificationEmbed(serverName, lang = 'fr') {
+        const title = LanguageManager.get(lang, 'commands.mute.user_unmute_notification_title') || '🔓 Vous n\'êtes plus muet';
+        const message = LanguageManager.get(lang, 'commands.mute.user_unmute_notification', {
+            server: serverName
+        }) || `Votre mute sur le serveur **${serverName}** a expiré. Vous pouvez maintenant parler à nouveau.`;
+
+        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
+        const content = message || 'Votre mute a expiré';
+        
+        return {
+            components: [{
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${content}`
+                }]
+            }]
+        };
+    }
+
     // ===== EMBEDS POUR LA COMMANDE LOCK =====
 
     /**

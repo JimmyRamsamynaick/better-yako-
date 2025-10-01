@@ -11,7 +11,7 @@ module.exports = {
     
     async execute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles)) {
-            const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.no_permission');
+            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.no_permission');
             return interaction.reply({ ...errorResponse, ephemeral: true });
         }
 
@@ -62,7 +62,7 @@ module.exports = {
                 { upsert: true }
             );
 
-            const successResponse = ComponentsV3.successEmbed(
+            const successResponse = await ComponentsV3.successEmbed(
                 interaction.guild.id,
                 'setupmute.success',
                 {
@@ -75,7 +75,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.error');
+            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.error');
             await interaction.editReply(errorResponse);
         }
     }

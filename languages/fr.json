@@ -53,6 +53,10 @@
             "description": "Rendre muet un membre temporairement",
             "success_title": "🔇 Utilisateur rendu muet",
             "success": "{executor} a rendu muet {user} pour {reason} (Durée: {duration})",
+            "auto_unmute_title": "🔓 Mute expiré",
+            "auto_unmute": "{user} n'est plus rendu muet (durée expirée)",
+            "user_unmute_notification_title": "🔓 Vous n'êtes plus muet",
+            "user_unmute_notification": "Votre mute sur le serveur **{server}** a expiré. Vous pouvez maintenant parler à nouveau.",
             "error": "Une erreur est survenue lors du mute",
             "error_self": "Vous ne pouvez pas vous rendre muet vous-même",
             "error_no_setup": "Le système de mute n'est pas configuré. Utilisez `/setupmute` d'abord",
@@ -93,17 +97,17 @@
             "config_success": "✅ Type de log **{type}** {status}.",
             "status_title": "📊 Configuration des Logs",
             "status_description": "**État:** {status}\n**Salon:** {channel}\n\n**Types de logs:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
-            "invalid_types": "❌ Types de logs invalides. Types disponibles: Voice, Message, Channels, Roles, Server",
+            "invalid_types": "❌ Types de logs invalides. Types disponibles: {validTypes}",
             "channel_configured": "✅ Canal {channel} configuré pour les types de logs: {types}",
             "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs.",
             "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
             "channel_removed": "✅ Canal {channel} retiré de la configuration des logs.",
             "types": {
-                "voice": "Logs vocaux",
-                "message": "Logs de messages",
-                "channels": "Logs de canaux",
-                "roles": "Logs de rôles",
-                "server": "Logs du serveur"
+                "voice": "🔊 Logs vocaux",
+                "message": "💬 Logs de messages",
+                "channels": "📁 Logs de canaux",
+                "roles": "🎭 Logs de rôles",
+                "server": "⚙️ Logs du serveur"
             }
         },
         "lock": {

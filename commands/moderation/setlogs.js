@@ -75,7 +75,7 @@ module.exports = {
     
     async execute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-            const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.no_permission');
+            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.no_permission');
             return interaction.reply({ ...errorResponse, ephemeral: true });
         }
 
@@ -117,7 +117,7 @@ module.exports = {
             }
         } catch (error) {
             console.error('Erreur setlogs:', error);
-            const errorResponse = ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.error');
+            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.error');
             await interaction.reply({ ...errorResponse, ephemeral: true });
         }
     },
@@ -139,7 +139,7 @@ module.exports = {
         
         await guild.save();
 
-        const successResponse = ComponentsV3.successEmbed(
+        const successResponse = await ComponentsV3.successEmbed(
             interaction.guild.id, 
             'commands.setlogs.enabled_success',
             {
@@ -160,16 +160,29 @@ module.exports = {
         const channel = interaction.options.getChannel('channel');
         const typesString = interaction.options.getString('types');
         
+        const LanguageManager = require('../../utils/languageManager');
+        const lang = guild.language || 'en';
+        
         // Valider les types fournis
         const validTypes = ['voice', 'message', 'channels', 'roles', 'server'];
         const requestedTypes = typesString.split(',').map(t => t.trim().toLowerCase());
         const invalidTypes = requestedTypes.filter(type => !validTypes.includes(type));
         
         if (invalidTypes.length > 0) {
-            const errorResponse = ComponentsV3.errorEmbed(
+            const typeNames = {
+                voice: LanguageManager.get(lang, 'commands.setlogs.types.voice'),
+                message: LanguageManager.get(lang, 'commands.setlogs.types.message'),
+                channels: LanguageManager.get(lang, 'commands.setlogs.types.channels'),
+                roles: LanguageManager.get(lang, 'commands.setlogs.types.roles'),
+                server: LanguageManager.get(lang, 'commands.setlogs.types.server')
+            };
+            
+            const validTypesTranslated = validTypes.map(type => typeNames[type]).join(', ');
+            
+            const errorResponse = await ComponentsV3.errorEmbed(
                 interaction.guild.id, 
                 'commands.setlogs.invalid_types',
-                { types: invalidTypes.join(', '), validTypes: validTypes.join(', ') }
+                { types: invalidTypes.join(', '), validTypes: validTypesTranslated }
             );
             return interaction.reply({ ...errorResponse, ephemeral: true });
         }
@@ -220,16 +233,16 @@ module.exports = {
         await guild.save();
 
         const typeNames = {
-            voice: '🔊 Voice',
-            message: '💬 Message',
-            channels: '📁 Channels',
-            roles: '🎭 Roles',
-            server: '⚙️ Server'
+            voice: LanguageManager.get(lang, 'commands.setlogs.types.voice'),
+            message: LanguageManager.get(lang, 'commands.setlogs.types.message'),
+            channels: LanguageManager.get(lang, 'commands.setlogs.types.channels'),
+            roles: LanguageManager.get(lang, 'commands.setlogs.types.roles'),
+            server: LanguageManager.get(lang, 'commands.setlogs.types.server')
         };
 
         const enabledTypes = requestedTypes.map(type => typeNames[type]).join(', ');
 
-        const successResponse = ComponentsV3.successEmbed(
+        const successResponse = await ComponentsV3.successEmbed(
             interaction.guild.id,
             'commands.setlogs.channel_configured',
             {
@@ -245,7 +258,7 @@ module.exports = {
         const channel = interaction.options.getChannel('channel');
 
         if (!guild.logs.channels || guild.logs.channels.length === 0) {
-            const errorResponse = ComponentsV3.errorEmbed(
+            const errorResponse = await ComponentsV3.errorEmbed(
                 interaction.guild.id,
                 'commands.setlogs.no_channels_configured'
             );
@@ -255,7 +268,7 @@ module.exports = {
         const channelIndex = guild.logs.channels.findIndex(ch => ch.channelId === channel.id);
         
         if (channelIndex === -1) {
-            const errorResponse = ComponentsV3.errorEmbed(
+            const errorResponse = await ComponentsV3.errorEmbed(
                 interaction.guild.id,
                 'commands.setlogs.channel_not_found',
                 { channel: channel.toString() }
@@ -276,7 +289,7 @@ module.exports = {
 
         await guild.save();
 
-        const successResponse = ComponentsV3.successEmbed(
+        const successResponse = await ComponentsV3.successEmbed(
             interaction.guild.id,
             'commands.setlogs.channel_removed',
             { channel: channel.toString() }
@@ -300,7 +313,7 @@ module.exports = {
         
         await guild.save();
 
-        const successResponse = ComponentsV3.successEmbed(interaction.guild.id, 'commands.setlogs.disabled_success', {}, guild.language);
+        const successResponse = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.setlogs.disabled_success', {}, guild.language);
         await interaction.reply(successResponse);
     },
 
@@ -334,7 +347,7 @@ module.exports = {
             server: '⚙️ Server (Serveur)'
         };
 
-        const successResponse = ComponentsV3.successEmbed(
+        const successResponse = await ComponentsV3.successEmbed(
             interaction.guild.id, 
             'commands.setlogs.config_success',
             {
