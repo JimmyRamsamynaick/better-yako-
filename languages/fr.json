@@ -171,6 +171,7 @@
             "success": "{executor} a débanni {user} pour {reason}",
             "error_title": "❌ Erreur de débannissement",
             "error": "Une erreur s'est produite lors du débannissement",
+            "error_not_banned": "Cet utilisateur n'est pas banni du serveur",
             "no_permission": "❌ Vous n'avez pas la permission de débannir des membres."
         },
         "lock": {

@@ -86,20 +86,6 @@ module.exports = {
         }
 
         try {
-            // Vérifier d'abord si l'utilisateur est déjà banni
-            try {
-                const bannedUser = await interaction.guild.bans.fetch(user.id);
-                if (bannedUser) {
-                    console.log('❌ [BAN] Utilisateur déjà banni:', user.tag);
-                    const alreadyBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_already_banned');
-                    return await interaction.editReply({
-                        ...alreadyBannedMessage
-                    });
-                }
-            } catch (banCheckError) {
-                // Si l'utilisateur n'est pas banni, continuer normalement
-                console.log('🔍 [BAN] Utilisateur non banni, procédure normale');
-            }
 
             console.log('🔍 [BAN] Récupération du membre...');
             const member = await interaction.guild.members.fetch(user.id);
