@@ -1,16 +1,18 @@
 const { Schema, model } = require('mongoose');
 
 // Schéma pour les utilisateurs du serveur
+const warningSchema = new Schema({
+    reason: String,
+    moderator: String,
+    date: { type: Date, default: Date.now }
+});
+
 const userSchema = new Schema({
     userId: {
         type: String,
         required: true
     },
-    warnings: [{
-        reason: String,
-        moderator: String,
-        date: { type: Date, default: Date.now }
-    }],
+    warnings: [warningSchema],
     muted: {
         type: Boolean,
         default: false
@@ -40,6 +42,19 @@ const guildSchema = new Schema({
             type: Boolean,
             default: false
         },
+        channels: [{
+            channelId: {
+                type: String,
+                required: true
+            },
+            types: {
+                voice: { type: Boolean, default: false },
+                message: { type: Boolean, default: false },
+                channels: { type: Boolean, default: false },
+                roles: { type: Boolean, default: false },
+                server: { type: Boolean, default: false }
+            }
+        }],
         channelId: {
             type: String,
             default: null
