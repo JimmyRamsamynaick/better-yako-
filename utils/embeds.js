@@ -357,8 +357,8 @@ class BotEmbeds {
         const title = LanguageManager.get(lang, 'commands.userinfo.title', { user: user.tag }) || `👤 ${user.tag} Information`;
         
         // Informations de base
-        const userInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.id') || '🆔 ID'}:** ${user.id}
-**${LanguageManager.get(lang, 'commands.userinfo.fields.created_at') || '📅 Account created'}:** <t:${Math.floor(user.createdTimestamp / 1000)}:D> (<t:${Math.floor(user.createdTimestamp / 1000)}:R>)`;
+        const userInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.user_id') || '🆔 ID'}:** ${user.id}
+**${LanguageManager.get(lang, 'commands.userinfo.fields.account_created') || '📅 Account created'}:** <t:${Math.floor(user.createdTimestamp / 1000)}:D> (<t:${Math.floor(user.createdTimestamp / 1000)}:R>)`;
 
         let memberInfo = '';
         if (member) {
@@ -366,7 +366,7 @@ class BotEmbeds {
             const joinedAt = member.joinedTimestamp ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:D> (<t:${Math.floor(member.joinedTimestamp / 1000)}:R>)` : (LanguageManager.get(lang, 'commands.userinfo.no_data') || 'Unknown');
             const nickname = member.nickname || LanguageManager.get(lang, 'commands.userinfo.no_nickname') || 'None';
             
-            memberInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.joined_at') || '📥 Joined server'}:** ${joinedAt}
+            memberInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.joined_server') || '📥 Joined server'}:** ${joinedAt}
 **${LanguageManager.get(lang, 'commands.userinfo.fields.nickname') || '📝 Nickname'}:** ${nickname}`;
 
             // Rôles
@@ -480,7 +480,7 @@ class BotEmbeds {
             );
         }
 
-        // Ajouter l'avatar comme image principale
+        // Ajouter les informations sur l'avatar et la bannière
         components.push(
             {
                 type: 14,
@@ -490,38 +490,8 @@ class BotEmbeds {
             {
                 type: 10,
                 content: mediaInfo
-            },
-            {
-                type: 14,
-                divider: true,
-                spacing: 2
-            },
-            {
-                type: 11,
-                url: avatarUrl,
-                alt: `Avatar de ${user.tag}`,
-                width: 256,
-                height: 256
             }
         );
-
-        // Ajouter la bannière si elle existe
-        if (bannerUrl) {
-            components.push(
-                {
-                    type: 14,
-                    divider: true,
-                    spacing: 2
-                },
-                {
-                    type: 11,
-                    url: bannerUrl,
-                    alt: `Bannière de ${user.tag}`,
-                    width: 600,
-                    height: 200
-                }
-            );
-        }
 
         return {
             components: [{
@@ -911,8 +881,8 @@ class BotEmbeds {
      */
     static createSetlangSuccessEmbed(language, guildId = null, lang = 'fr') {
         const languageNames = {
-            'French': 'Français 🇫🇷',
-            'EnglishUS': 'English 🇺🇸'
+            'fr': 'Français 🇫🇷',
+            'en': 'English 🇺🇸'
         };
         
         const title = LanguageManager.get(lang, 'commands.setlang.success_title') || '✅ Language changed';
@@ -964,16 +934,6 @@ class BotEmbeds {
             {
                 type: 17,
                 components: [
-                    {
-                        type: 12,
-                        items: [
-                            {
-                                media: {
-                                    url: "https://cdn.discordapp.com/attachments/1176977094908071979/1393225945439015006/helpLNTR-PSD.png?ex=68726646&is=687114c6&hm=5cad4cc3a7b7420ef85b5dcc84b52378dd347f97c12a7c1234d7658e8d1dc933&"
-                                }
-                            }
-                        ]
-                    },
                     {
                         type: 10,
                         content: `# ${LanguageManager.get(lang, 'commands.help.main_title')}\n\n${LanguageManager.get(lang, 'commands.help.main_description')}`

@@ -82,7 +82,24 @@
         },
         "help": {
             "description": "Afficher la liste des commandes",
-            "category_option": "Catégorie de commandes"
+            "category_option": "Catégorie de commandes",
+            "main_title": "📚 Centre d'aide YAKO",
+            "main_description": "Voici la liste de toutes les commandes disponibles. Sélectionnez une catégorie dans le menu déroulant ci-dessous pour voir les détails.\n\n**Catégories disponibles :**\n🛡️ **Modération** - Commandes de gestion du serveur\n🌍 **Public** - Commandes accessibles à tous\n⭐ **Premium** - Commandes premium exclusives",
+            "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
+            "select_placeholder": "🔍 Sélectionnez une catégorie...",
+            "moderation_title": "🛡️ Commandes de Modération",
+            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Enlever le mute d'un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue",
+            "moderation_option": "Modération",
+            "moderation_desc": "Outils de gestion du serveur",
+            "public_title": "👥 Commandes Publiques",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
+            "public_option": "Public",
+            "public_desc": "Commandes pour tous les membres",
+            "premium_title": "⭐ Commandes Premium",
+            "premium_description": "**`/ask`** - Poser une question à l'IA\n\n*Fonctionnalités avancées réservées aux serveurs premium*",
+            "premium_option": "Premium",
+            "premium_desc": "Fonctionnalités premium exclusives",
+            "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !"
         },
         "userinfo": {
             "description": "Afficher les informations d'un utilisateur",
