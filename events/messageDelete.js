@@ -2,6 +2,7 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
 const LanguageManager = require('../utils/languageManager');
+const ComponentsV3 = require('../utils/ComponentsV3');
 
 module.exports = {
     name: 'messageDelete',
@@ -21,39 +22,41 @@ module.exports = {
             const logChannel = message.guild.channels.cache.get(guildData.logs.channelId);
             if (!logChannel) return;
             
-            // Créer l'embed pour le message supprimé
-            const embed = new EmbedBuilder()
-                .setTitle('🗑️ Message supprimé')
-                .setColor('#FF0000')
-                .setDescription(`**Auteur:** ${message.author.toString()} (${message.author.tag})
-**Canal:** ${message.channel.toString()}
-**Date:** ${new Date().toLocaleString()}`)
-                .setTimestamp();
+            // Créer le message avec le format components
+            let content = `## 🗑️ Message supprimé\n\n`;
+            content += `**Auteur:** ${message.author.toString()} (${message.author.tag})\n`;
+            content += `**Canal:** ${message.channel.toString()}\n`;
+            content += `**Date:** <t:${Math.floor(Date.now() / 1000)}:F>\n\n`;
             
             // Ajouter le contenu du message s'il existe
             if (message.content) {
-                // Limiter la taille du contenu pour éviter les erreurs Discord
-                const content = message.content.length > 1024 
-                    ? message.content.substring(0, 1021) + '...' 
+                const messageContent = message.content.length > 1000 
+                    ? message.content.substring(0, 997) + '...' 
                     : message.content;
-                
-                embed.addFields({ name: 'Contenu', value: content });
+                content += `### 📝 Contenu du message:\n\`\`\`\n${messageContent}\n\`\`\`\n`;
             }
             
             // Ajouter les pièces jointes s'il y en a
             if (message.attachments.size > 0) {
-                const attachments = message.attachments.map(a => `[${a.name}](${a.url})`).join('\n');
-                embed.addFields({ name: 'Pièces jointes', value: attachments.substring(0, 1024) });
-                
-                // Ajouter la première image comme thumbnail si c'est une image
-                const firstAttachment = message.attachments.first();
-                if (firstAttachment && firstAttachment.contentType && firstAttachment.contentType.startsWith('image/')) {
-                    embed.setThumbnail(firstAttachment.url);
-                }
+                content += `### 📎 Pièces jointes (${message.attachments.size}):\n`;
+                message.attachments.forEach(attachment => {
+                    content += `• [${attachment.name}](${attachment.url})\n`;
+                });
             }
             
-            // Envoyer l'embed dans le canal de logs
-            await logChannel.send({ embeds: [embed] });
+            const componentMessage = {
+                flags: 32768,
+                components: [{
+                    type: 17,
+                    components: [{
+                        type: 10,
+                        content: content
+                    }]
+                }]
+            };
+            
+            // Envoyer le message dans le canal de logs
+            await logChannel.send(componentMessage);
             
         } catch (error) {
             console.error('Erreur lors de la journalisation du message supprimé:', error);

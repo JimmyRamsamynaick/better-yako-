@@ -102,24 +102,58 @@ class BotEmbeds {
     /**
      * Embed pour succès de clear
      */
-    static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr', executor = null) {
+    static createClearSuccessEmbed(count, targetUser = null, guildId = null, lang = 'fr', executor = null, deletedMessages = null) {
         const title = LanguageManager.get(lang, 'commands.clear.success_title') || '✅ Messages supprimés';
         const executorName = executor ? executor.toString() : LanguageManager.get(lang, 'common.moderator') || 'Un utilisateur';
-        const message = LanguageManager.get(lang, 'commands.clear.success', {
-            user: executorName,
-            count: count
-        }) || `${executorName} a supprimé ${count} message(s)`;
-
-        // S'assurer que le contenu n'est jamais vide pour éviter l'erreur DiscordAPIError[50035]
-        const content = message || `${count} message(s) supprimé(s) avec succès`;
+        
+        // Traductions pour les labels
+        const moderatorLabel = LanguageManager.get(lang, 'common.moderator') || 'Modérateur';
+        const messagesDeletedLabel = LanguageManager.get(lang, 'common.messages_deleted') || 'Messages supprimés';
+        const dateLabel = LanguageManager.get(lang, 'common.date') || 'Date';
+        const deletedMessagesLabel = LanguageManager.get(lang, 'common.deleted_messages_list') || (lang === 'en' ? 'Deleted messages' : 'Messages supprimés');
+        const noContentLabel = LanguageManager.get(lang, 'common.no_content') || '*[Message sans contenu]*';
+        const moreMessagesLabel = LanguageManager.get(lang, 'common.more_messages') || 'autre(s) message(s)';
+        
+        let content = `## 🧹 ${title.replace('✅ ', '')}\n\n`;
+        
+        if (targetUser) {
+            content += `**${moderatorLabel}:** ${executorName}\n`;
+            content += `**${messagesDeletedLabel}:** ${count} message(s) de ${targetUser.toString()}\n`;
+        } else {
+            content += `**${moderatorLabel}:** ${executorName}\n`;
+            content += `**${messagesDeletedLabel}:** ${count} message(s)\n`;
+        }
+        
+        content += `**${dateLabel}:** <t:${Math.floor(Date.now() / 1000)}:F>\n\n`;
+        
+        // Afficher les messages supprimés si disponibles
+        if (deletedMessages && deletedMessages.size > 0) {
+            content += `### 📋 ${deletedMessagesLabel}:\n`;
+            let messageCount = 0;
+            deletedMessages.forEach(message => {
+                if (messageCount < 5) { // Limiter à 5 messages pour éviter les messages trop longs
+                    const messageContent = message.content || noContentLabel;
+                    const truncatedContent = messageContent.length > 100 ? 
+                        messageContent.substring(0, 100) + '...' : messageContent;
+                    content += `**${message.author.username}:** ${truncatedContent}\n`;
+                    messageCount++;
+                }
+            });
+            
+            if (deletedMessages.size > 5) {
+                content += `*... ${lang === 'en' ? 'and' : 'et'} ${deletedMessages.size - 5} ${moreMessagesLabel}*\n`;
+            }
+        }
         
         return {
-            type: 17,
+            flags: 32768,
             components: [{
-                type: 10,
-                content: `## 🧹 Messages supprimés\n\n${count} message(s) supprimé(s) avec succès.`
-            }],
-            flags: 32768
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: content
+                }]
+            }]
         };
     }
 

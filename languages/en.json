@@ -1,4 +1,16 @@
 {
+    "common": {
+        "moderator": "Moderator",
+        "messages_deleted": "Messages deleted",
+        "date": "Date",
+        "deleted_messages_list": "Deleted messages",
+        "no_content": "*[Message without content]*",
+        "more_messages": "other message(s)",
+        "server": "Server",
+        "channel": "Channel",
+        "message_count": "Message count",
+        "targeted_user": "Targeted user"
+    },
     "welcome": {
         "title": "👋 Thanks for adding me!",
         "description": "Hello! I'm your new moderation bot.\n\n**Main commands:**\n• `/help` - See all commands\n• `/setupmute` - Configure moderation\n• `/setlogs` - Configure logs\n\nTo get started, use `/help`!\n\n*Servers: {serverCount}*"
@@ -230,16 +242,6 @@
         "footer": "Question asked by {username}",
         "premium_required": "This command requires a premium server. ⭐\nContact the support team for more information.",
         "error": "Sorry, I couldn't process your question."
-    },
-    "common": {
-        "error": "❌ Error",
-        "success": "✅ Success",
-        "warning": "⚠️ Warning",
-        "no_reason": "No reason provided",
-        "no_description": "No description",
-        "details": "Details",
-        "moderator": "A moderator",
-        "permanent": "Permanent"
     },
     "errors": {
         "no_permission": "❌ You don't have permission to use this command.",

@@ -1,4 +1,16 @@
 {
+    "common": {
+        "moderator": "Modérateur",
+        "messages_deleted": "Messages supprimés",
+        "date": "Date",
+        "deleted_messages_list": "Messages supprimés",
+        "no_content": "*[Message sans contenu]*",
+        "more_messages": "autre(s) message(s)",
+        "server": "Serveur",
+        "channel": "Canal",
+        "message_count": "Nombre de messages",
+        "targeted_user": "Utilisateur ciblé"
+    },
     "welcome": {
         "title": "👋 Merci de m'avoir ajouté !",
         "description": "Salut ! Je suis votre nouveau bot de modération.\n\n**Commandes principales:**\n• `/help` - Voir toutes les commandes\n• `/setupmute` - Configurer la modération\n• `/setlogs` - Configurer les logs\n\nPour commencer, utilisez `/help` !\n\n*Serveurs: {serverCount}*"
@@ -189,16 +201,6 @@
             "error": "❌ Une erreur est survenue lors du changement de langue.",
             "error_title": "❌ Erreur de changement de langue"
         }
-    },
-    "common": {
-        "error": "❌ Erreur",
-        "success": "✅ Succès",
-        "warning": "⚠️ Avertissement",
-        "no_reason": "Aucune raison fournie",
-        "no_description": "Aucune description",
-        "details": "Détails",
-        "moderator": "Un modérateur",
-        "permanent": "Permanent"
     },
     "ping": {
         "title": "🏓 Pong!",

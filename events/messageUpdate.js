@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const ComponentsV3 = require('../utils/ComponentsV3');
 
 module.exports = {
     name: 'messageUpdate',
@@ -27,24 +28,37 @@ module.exports = {
 
             if (!logChannel) return;
 
-            const embed = new EmbedBuilder()
-                .setTitle('📝 Message modifié')
-                .setColor(0xFFA500)
-                .addFields(
-                    { name: '👤 Utilisateur', value: `${newMessage.author} (${newMessage.author.tag})`, inline: true },
-                    { name: '📍 Salon', value: `${newMessage.channel}`, inline: true },
-                    { name: '🔗 Lien', value: `[Aller au message](${newMessage.url})`, inline: true },
-                    { name: '📜 Ancien contenu', value: oldMessage.content.length > 1024 ? oldMessage.content.substring(0, 1021) + '...' : oldMessage.content || '*Contenu vide*' },
-                    { name: '📝 Nouveau contenu', value: newMessage.content.length > 1024 ? newMessage.content.substring(0, 1021) + '...' : newMessage.content || '*Contenu vide*' }
-                )
-                .setTimestamp()
-                .setFooter({ text: `ID: ${newMessage.id}` });
-
-            if (newMessage.author.displayAvatarURL()) {
-                embed.setThumbnail(newMessage.author.displayAvatarURL());
-            }
-
-            await logChannel.send({ embeds: [embed] });
+            // Créer le message avec le format components
+            let content = `## 📝 Message modifié\n\n`;
+            content += `**Utilisateur:** ${newMessage.author.toString()} (${newMessage.author.tag})\n`;
+            content += `**Canal:** ${newMessage.channel.toString()}\n`;
+            content += `**Date:** <t:${Math.floor(Date.now() / 1000)}:F>\n`;
+            content += `**Lien:** [Aller au message](${newMessage.url})\n\n`;
+            
+            // Ancien contenu
+            const oldContent = oldMessage.content.length > 800 
+                ? oldMessage.content.substring(0, 797) + '...' 
+                : oldMessage.content || '*Contenu vide*';
+            content += `### 📜 Ancien contenu:\n\`\`\`\n${oldContent}\n\`\`\`\n\n`;
+            
+            // Nouveau contenu
+            const newContent = newMessage.content.length > 800 
+                ? newMessage.content.substring(0, 797) + '...' 
+                : newMessage.content || '*Contenu vide*';
+            content += `### 📝 Nouveau contenu:\n\`\`\`\n${newContent}\n\`\`\``;
+            
+            const componentMessage = {
+                flags: 32768,
+                components: [{
+                    type: 17,
+                    components: [{
+                        type: 10,
+                        content: content
+                    }]
+                }]
+            };
+            
+            await logChannel.send(componentMessage);
         } catch (error) {
             console.error('Erreur lors du log de modification de message:', error);
         }
