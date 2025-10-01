@@ -121,8 +121,13 @@ module.exports = {
         const type = interaction.options.getString('type');
         const enabled = interaction.options.getBoolean('enabled');
 
-        guild.logs.types[type] = enabled;
-        await guild.save();
+        // Correction du bug: s'assurer que le type est valide avant de l'assigner
+        if (guild.logs.types.hasOwnProperty(type)) {
+            guild.logs.types[type] = enabled;
+            await guild.save();
+        } else {
+            throw new Error(`Type de log invalide: ${type}`);
+        }
 
         const typeNames = {
             voice: '🔊 Voice (Vocal)',
