@@ -139,9 +139,42 @@
             "error": "❌ Une erreur est survenue lors de la configuration."
         },
         "ask": {
-            "description": "Pose une question à l'IA (Premium)",
-            "error": "❌ Cette commande nécessite un abonnement Premium.",
-            "thinking": "🤔 Réflexion en cours..."
+            "description": "Poser une question à l'IA",
+            "premium_required": "❌ Cette commande nécessite un abonnement Premium.",
+            "premium_required_title": "💎 Premium Requis",
+            "error": "❌ Une erreur est survenue lors du traitement de votre question.",
+            "error_title": "❌ Erreur IA"
+        },
+        "userinfo": {
+            "description": "Afficher les informations d'un utilisateur",
+            "title": "👤 Informations de {user}",
+            "user_not_in_server": "❌ Cet utilisateur n'est pas dans ce serveur.",
+            "fields": {
+                "id": "🆔 ID",
+                "created_at": "📅 Compte créé",
+                "joined_at": "📥 A rejoint le serveur",
+                "nickname": "📝 Surnom",
+                "roles": "🎭 Rôles ({count})",
+                "highest_role": "👑 Rôle le plus élevé",
+                "permissions": "🔐 Permissions clés",
+                "status": "🟢 Statut",
+                "activity": "🎮 Activité",
+                "boost_since": "💎 Boost depuis",
+                "avatar": "🖼️ Avatar"
+            },
+            "status": {
+                "online": "🟢 En ligne",
+                "idle": "🟡 Absent",
+                "dnd": "🔴 Ne pas déranger",
+                "offline": "⚫ Hors ligne"
+            },
+            "no_nickname": "Aucun",
+            "no_roles": "Aucun rôle",
+            "no_activity": "Aucune activité",
+            "not_boosting": "N'améliore pas le serveur",
+            "permissions_admin": "Administrateur",
+            "permissions_mod": "Modérateur",
+            "permissions_member": "Membre"
         },
         "help": {
             "main_title": "📚 Aide - Yako Bot",

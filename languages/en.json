@@ -161,9 +161,42 @@
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
         "ask": {
-            "description": "Ask a question to AI (Premium)",
-            "error": "❌ This command requires a Premium subscription.",
-            "thinking": "🤔 Thinking..."
+            "description": "Ask a question to AI",
+            "premium_required": "❌ This command requires a Premium subscription.",
+            "premium_required_title": "💎 Premium Required",
+            "error": "❌ An error occurred while processing your question.",
+            "error_title": "❌ AI Error"
+        },
+        "userinfo": {
+            "description": "Display user information",
+            "title": "👤 {user} Information",
+            "user_not_in_server": "❌ This user is not in this server.",
+            "fields": {
+                "id": "🆔 ID",
+                "created_at": "📅 Account created",
+                "joined_at": "📥 Joined server",
+                "nickname": "📝 Nickname",
+                "roles": "🎭 Roles ({count})",
+                "highest_role": "👑 Highest role",
+                "permissions": "🔐 Key permissions",
+                "status": "🟢 Status",
+                "activity": "🎮 Activity",
+                "boost_since": "💎 Boosting since",
+                "avatar": "🖼️ Avatar"
+            },
+            "status": {
+                "online": "🟢 Online",
+                "idle": "🟡 Idle",
+                "dnd": "🔴 Do not disturb",
+                "offline": "⚫ Offline"
+            },
+            "no_nickname": "None",
+            "no_roles": "No roles",
+            "no_activity": "No activity",
+            "not_boosting": "Not boosting",
+            "permissions_admin": "Administrator",
+            "permissions_mod": "Moderator",
+            "permissions_member": "Member"
         }
     },
     "ping": {

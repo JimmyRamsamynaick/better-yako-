@@ -348,6 +348,151 @@ class BotEmbeds {
         };
     }
 
+    // ===== EMBEDS POUR LA COMMANDE USERINFO =====
+
+    /**
+     * Embed pour les informations d'un utilisateur
+     */
+    static createUserInfoEmbed(user, member, guildId = null, lang = 'fr') {
+        const title = LanguageManager.get(lang, 'commands.userinfo.title', { user: user.tag }) || `👤 ${user.tag} Information`;
+        
+        // Informations de base
+        const userInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.id') || '🆔 ID'}:** ${user.id}
+**${LanguageManager.get(lang, 'commands.userinfo.fields.created_at') || '📅 Account created'}:** <t:${Math.floor(user.createdTimestamp / 1000)}:D> (<t:${Math.floor(user.createdTimestamp / 1000)}:R>)`;
+
+        let memberInfo = '';
+        if (member) {
+            // Informations du membre dans le serveur
+            const joinedAt = member.joinedTimestamp ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:D> (<t:${Math.floor(member.joinedTimestamp / 1000)}:R>)` : (LanguageManager.get(lang, 'commands.userinfo.no_data') || 'Unknown');
+            const nickname = member.nickname || LanguageManager.get(lang, 'commands.userinfo.no_nickname') || 'None';
+            
+            memberInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.joined_at') || '📥 Joined server'}:** ${joinedAt}
+**${LanguageManager.get(lang, 'commands.userinfo.fields.nickname') || '📝 Nickname'}:** ${nickname}`;
+
+            // Rôles
+            const roles = member.roles.cache
+                .filter(role => role.id !== member.guild.id) // Exclure @everyone
+                .sort((a, b) => b.position - a.position)
+                .map(role => `<@&${role.id}>`)
+                .slice(0, 10); // Limiter à 10 rôles pour éviter les messages trop longs
+
+            const roleCount = member.roles.cache.size - 1; // -1 pour exclure @everyone
+            const rolesText = roles.length > 0 ? roles.join(', ') : LanguageManager.get(lang, 'commands.userinfo.no_roles') || 'No roles';
+            const rolesTitle = LanguageManager.get(lang, 'commands.userinfo.fields.roles', { count: roleCount }) || `🎭 Roles (${roleCount})`;
+            
+            memberInfo += `\n**${rolesTitle}:** ${rolesText}`;
+
+            // Rôle le plus élevé
+            const highestRole = member.roles.highest;
+            if (highestRole && highestRole.id !== member.guild.id) {
+                memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.highest_role') || '👑 Highest role'}:** <@&${highestRole.id}>`;
+            }
+
+            // Permissions clés
+            let permissions = [];
+            if (member.permissions.has('Administrator')) {
+                permissions.push(LanguageManager.get(lang, 'commands.userinfo.permissions_admin') || 'Administrator');
+            } else {
+                if (member.permissions.has('ManageGuild') || member.permissions.has('ManageChannels') || member.permissions.has('ManageRoles') || member.permissions.has('BanMembers') || member.permissions.has('KickMembers')) {
+                    permissions.push(LanguageManager.get(lang, 'commands.userinfo.permissions_mod') || 'Moderator');
+                } else {
+                    permissions.push(LanguageManager.get(lang, 'commands.userinfo.permissions_member') || 'Member');
+                }
+            }
+            memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.permissions') || '🔐 Key permissions'}:** ${permissions.join(', ')}`;
+
+            // Statut
+            const presence = member.presence;
+            let status = LanguageManager.get(lang, 'commands.userinfo.status.offline') || '⚫ Offline';
+            if (presence) {
+                switch (presence.status) {
+                    case 'online':
+                        status = LanguageManager.get(lang, 'commands.userinfo.status.online') || '🟢 Online';
+                        break;
+                    case 'idle':
+                        status = LanguageManager.get(lang, 'commands.userinfo.status.idle') || '🟡 Idle';
+                        break;
+                    case 'dnd':
+                        status = LanguageManager.get(lang, 'commands.userinfo.status.dnd') || '🔴 Do not disturb';
+                        break;
+                }
+            }
+            memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.status') || '🟢 Status'}:** ${status}`;
+
+            // Activité
+            if (presence && presence.activities && presence.activities.length > 0) {
+                const activity = presence.activities[0];
+                let activityText = activity.name;
+                if (activity.details) activityText += ` - ${activity.details}`;
+                memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.activity') || '🎮 Activity'}:** ${activityText}`;
+            } else {
+                memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.activity') || '🎮 Activity'}:** ${LanguageManager.get(lang, 'commands.userinfo.no_activity') || 'No activity'}`;
+            }
+
+            // Boost depuis
+            if (member.premiumSince) {
+                memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.boost_since') || '💎 Boosting since'}:** <t:${Math.floor(member.premiumSinceTimestamp / 1000)}:D>`;
+            } else {
+                memberInfo += `\n**${LanguageManager.get(lang, 'commands.userinfo.fields.boost_since') || '💎 Boosting since'}:** ${LanguageManager.get(lang, 'commands.userinfo.not_boosting') || 'Not boosting'}`;
+            }
+        }
+
+        // Avatar
+        const avatarUrl = user.displayAvatarURL({ dynamic: true, size: 1024 });
+        const avatarInfo = `**${LanguageManager.get(lang, 'commands.userinfo.fields.avatar') || '🖼️ Avatar'}:** [${LanguageManager.get(lang, 'commands.userinfo.fields.avatar') || 'Avatar'}](${avatarUrl})`;
+
+        // Utiliser le format ComponentsV3
+        const components = [
+            {
+                type: 10,
+                content: `## ${title}`
+            },
+            {
+                type: 14,
+                divider: true,
+                spacing: 2
+            },
+            {
+                type: 10,
+                content: userInfo
+            }
+        ];
+
+        if (memberInfo) {
+            components.push(
+                {
+                    type: 14,
+                    divider: true,
+                    spacing: 2
+                },
+                {
+                    type: 10,
+                    content: memberInfo
+                }
+            );
+        }
+
+        components.push(
+            {
+                type: 14,
+                divider: true,
+                spacing: 2
+            },
+            {
+                type: 10,
+                content: avatarInfo
+            }
+        );
+
+        return {
+            components: [{
+                type: 17,
+                components: components
+            }],
+            flags: 32768
+        };
+    }
+
     // ===== EMBEDS POUR LA COMMANDE ASK =====
 
     /**
