@@ -100,7 +100,7 @@
         },
         "setupmute": {
             "description": "Configurer le système de mute",
-            "success": "✅ Système de mute configuré avec succès !\n**Rôle :** {role}\n**Salons configurés :** {channels}",
+            "success": "✅ Système de mute configuré avec succès !",
             "error": "❌ Une erreur s'est produite lors de la configuration."
         },
         "help": {

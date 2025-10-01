@@ -87,6 +87,22 @@ module.exports = {
         }
 
         try {
+            // Vérifier d'abord si l'utilisateur est déjà banni
+            try {
+                const bannedUser = await interaction.guild.bans.fetch(user.id);
+                if (bannedUser) {
+                    console.log('❌ [BAN] Utilisateur déjà banni:', user.tag);
+                    const alreadyBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_already_banned');
+                    return await interaction.reply({
+                        ...alreadyBannedMessage,
+                        ephemeral: true
+                    });
+                }
+            } catch (banCheckError) {
+                // Si l'utilisateur n'est pas banni, continuer normalement
+                console.log('🔍 [BAN] Utilisateur non banni, procédure normale');
+            }
+
             console.log('🔍 [BAN] Récupération du membre...');
             const member = await interaction.guild.members.fetch(user.id);
             console.log('✅ [BAN] Membre récupéré:', member.user.tag);
@@ -95,7 +111,7 @@ module.exports = {
             if (member.roles.highest.position >= interaction.member.roles.highest.position) {
                 console.log('❌ [BAN] Hiérarchie insuffisante');
                 const hierarchyMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_hierarchy', { user: user.toString() });
-                return interaction.reply({
+                return await interaction.reply({
                     ...hierarchyMessage,
                     ephemeral: true
                 });
@@ -105,7 +121,7 @@ module.exports = {
             if (!member.bannable) {
                 console.log('❌ [BAN] Membre non bannable (permissions bot insuffisantes)');
                 const botPermMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_bot_permissions');
-                return interaction.reply({
+                return await interaction.reply({
                     ...botPermMessage,
                     ephemeral: true
                 });
@@ -116,11 +132,14 @@ module.exports = {
             console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
 
             console.log('🔍 [BAN] Envoi de la réponse de succès...');
-            const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.ban.success', {
+            // Récupérer le message traduit avec les placeholders remplacés
+            const translatedMessage = LanguageManager.get(lang, 'commands.ban.success', {
                 executor: interaction.user.toString(),
                 user: user.toString(),
                 reason: reason
             });
+            
+            const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.ban.success_title', translatedMessage);
             await interaction.reply(successMessage);
             console.log('✅ [BAN] Réponse envoyée avec succès');
 
@@ -137,24 +156,6 @@ module.exports = {
             // Vérifier si l'interaction n'a pas déjà été répondue
             if (!interaction.replied && !interaction.deferred) {
                 try {
-                    // Vérifier si l'utilisateur est déjà banni
-                    if (error.code === 10026 || error.message.includes('Unknown Member')) {
-                        // Vérifier si l'utilisateur est dans la liste des bannis
-                        try {
-                            const bannedUser = await interaction.guild.bans.fetch(user.id);
-                            if (bannedUser) {
-                                console.log('❌ [BAN] Utilisateur déjà banni:', user.tag);
-                                const alreadyBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error_already_banned');
-                                return await interaction.reply({
-                                    ...alreadyBannedMessage,
-                                    ephemeral: true
-                                });
-                            }
-                        } catch (banCheckError) {
-                            // Si on ne peut pas vérifier les bans, continuer avec l'erreur générale
-                        }
-                    }
-                    
                     const errorMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.ban.error');
                     await interaction.reply({
                         ...errorMessage,

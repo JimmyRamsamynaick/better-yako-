@@ -66,13 +66,17 @@ module.exports = {
                 { upsert: true }
             );
 
+            // Récupérer la langue du serveur
+            const guildData = await Guild.findOne({ guildId: interaction.guild.id });
+            const lang = guildData?.language || 'fr';
+            
+            // Récupérer le message sans placeholders
+            const successMessage = LanguageManager.get(lang, 'commands.setupmute.success');
+            
             const successResponse = await ComponentsV3.successEmbed(
                 interaction.guild.id,
                 'commands.setupmute.success',
-                {
-                    role: muteRole.toString(),
-                    channels: channelCount
-                }
+                successMessage
             );
             
             await interaction.editReply(successResponse);

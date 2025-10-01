@@ -79,31 +79,18 @@ module.exports = {
         try {
             const bannedUser = await interaction.guild.bans.fetch(userId);
             
-            if (!bannedUser) {
-                if (!interaction.replied && !interaction.deferred) {
-                     try {
-                         const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
-                         return await interaction.reply({
-                             ...notBannedMessage,
-                             ephemeral: true
-                         });
-                     } catch (replyError) {
-                         console.error('Erreur lors de la réponse d\'interaction (not banned):', replyError);
-                         return;
-                     }
-                 }
-                 return;
-            }
-
             await interaction.guild.members.unban(userId, reason);
 
             if (!interaction.replied && !interaction.deferred) {
                 try {
-                    const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success', {
+                    // Récupérer le message traduit avec les placeholders remplacés
+                    const translatedMessage = LanguageManager.get(lang, 'commands.unban.success', {
                         executor: interaction.user.toString(),
                         user: bannedUser.user.toString(),
                         reason: reason
                     });
+                    
+                    const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.unban.success_title', translatedMessage);
                     await interaction.reply(successMessage);
                 } catch (replyError) {
                     console.error('Erreur lors de la réponse d\'interaction (success):', replyError);
@@ -112,6 +99,23 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
+            
+            // Gérer spécifiquement l'erreur "Unknown Ban"
+            if (error.code === 10026) {
+                if (!interaction.replied && !interaction.deferred) {
+                    try {
+                        const notBannedMessage = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.unban.error_not_banned');
+                        return await interaction.reply({
+                            ...notBannedMessage,
+                            ephemeral: true
+                        });
+                    } catch (replyError) {
+                        console.error('Erreur lors de la réponse d\'interaction (not banned):', replyError);
+                        return;
+                    }
+                }
+                return;
+            }
             
             if (!interaction.replied && !interaction.deferred) {
                 try {

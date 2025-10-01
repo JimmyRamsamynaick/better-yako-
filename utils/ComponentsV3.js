@@ -235,18 +235,18 @@ class ComponentsV3 {
     }
 
     /**
-     * Crée un message de succès
+     * Créer un embed de succès avec titre personnalisé
      * @param {string} guildId - ID du serveur
-     * @param {string} successKey - Clé de traduction pour le succès
-     * @param {Object} placeholders - Variables pour les traductions
+     * @param {string} titleKey - Clé de traduction pour le titre
+     * @param {string} message - Message de succès déjà formaté
      * @returns {Object} Message au format components
      */
-    static async successEmbed(guildId, successKey, placeholders = {}) {
+    static async successEmbed(guildId, titleKey, message) {
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: guildId });
         const lang = guildData?.language || 'fr';
         
-        const successMessage = LanguageManager.get(lang, successKey, placeholders);
+        const title = LanguageManager.get(lang, titleKey) || '✅ Succès';
         
         return {
             flags: 32768,
@@ -255,7 +255,7 @@ class ComponentsV3 {
                 components: [
                     {
                         type: 10,
-                        content: `## ✅ Succès\n\n${successMessage}`
+                        content: `## ${title}\n\n${message}`
                     }
                 ]
             }]

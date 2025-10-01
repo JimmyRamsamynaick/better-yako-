@@ -233,22 +233,21 @@ class BotEmbeds {
      */
     static createPingEmbed(latency, apiLatency, guildId = null, lang = 'fr') {
         const title = LanguageManager.get(lang, 'commands.ping.title') || '🏓 Pong!';
-        const message = LanguageManager.get(lang, 'commands.ping.description', {
-            latency: latency,
-            apiLatency: apiLatency || 'N/A'
-        }) || `**Latence du bot:** ${latency}ms\n**Latence de l'API:** ${apiLatency || 'N/A'}ms`;
-        const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Latence mesurée en temps réel';
+        const botLatencyText = LanguageManager.get(lang, 'commands.ping.details', {
+            latency: latency
+        }) || `**Latence du bot:** ${latency}ms`;
+        const apiLatencyText = `**Latence de l'API:** ${apiLatency ? `${apiLatency}ms` : 'N/A'}`;
+        const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Performance du bot';
         
         return {
-            embeds: [{
-                title: title,
-                description: message,
-                color: 0x00ff00,
-                footer: {
-                    text: footer
-                },
-                timestamp: new Date().toISOString()
-            }]
+            components: [{
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${botLatencyText}\n${apiLatencyText}\n\n*${footer}*`
+                }]
+            }],
+            flags: 32768
         };
     }
 
@@ -320,7 +319,7 @@ class BotEmbeds {
 **${lang === 'en' ? 'Verification level' : 'Niveau de vérification'}:** ${verificationLevelName}
 **${lang === 'en' ? 'Features' : 'Fonctionnalités'}:** ${guild.features.join(', ') || (lang === 'en' ? 'None' : 'Aucune')}`;
 
-        const footer = LanguageManager.get(lang, 'commands.serverinfo.footer') || 'Statistiques du serveur';
+        const footer = LanguageManager.get(lang, 'serverinfo.footer') || 'Statistiques du serveur';
 
         // Utiliser le format ComponentsV3
         return {

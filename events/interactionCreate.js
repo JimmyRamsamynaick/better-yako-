@@ -46,16 +46,19 @@ module.exports = {
         try {
             await command.execute(interaction);
         } catch (error) {
-            console.error(error);
+            console.error('Erreur lors de l\'exécution de la commande:', error);
             
             // Vérifier si l'interaction n'a pas déjà été traitée
             if (!interaction.replied && !interaction.deferred) {
-                const errorEmbed = BotEmbeds.createCommandErrorEmbed();
                 try {
+                    const errorEmbed = BotEmbeds.createCommandErrorEmbed();
                     await interaction.reply({ ...errorEmbed, ephemeral: true });
                 } catch (replyError) {
-                    console.error('Erreur lors de la réponse d\'erreur:', replyError);
+                    console.error('Impossible de répondre à l\'interaction:', replyError.message);
+                    // Ne pas essayer de répondre à nouveau si l'interaction a expiré ou est invalide
                 }
+            } else {
+                console.log('Interaction déjà traitée, pas de réponse d\'erreur envoyée');
             }
         }
     }

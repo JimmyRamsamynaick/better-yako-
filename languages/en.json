@@ -166,7 +166,7 @@
         "setupmute": {
             "description": "Configure the mute system",
             "no_permission": "❌ You don't have permission to manage roles.",
-            "success": "✅ Mute system configured successfully!\n**Role:** {role}\n**Channels configured:** {channels}",
+            "success": "✅ Mute system configured successfully!",
             "error": "❌ An error occurred during configuration."
         },
         "help": {

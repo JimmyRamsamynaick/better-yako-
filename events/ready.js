@@ -3,7 +3,7 @@ const { ActivityType } = require('discord.js');
 const Guild = require('../models/Guild');
 
 module.exports = {
-    name: 'ready',
+    name: 'clientReady',
     once: true,
     async execute(client) {
         console.log(`✅ ${client.user.tag} est en ligne !`);

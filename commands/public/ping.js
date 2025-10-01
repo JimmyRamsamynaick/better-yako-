@@ -13,30 +13,36 @@ module.exports = {
         }),
     
     async execute(interaction) {
-        // Récupérer la langue du serveur
-        const guildData = await Guild.findOne({ guildId: interaction.guild.id });
-        const lang = guildData?.language || 'fr';
+        try {
+            // Récupérer la langue du serveur
+            const guildData = await Guild.findOne({ guildId: interaction.guild.id });
+            const lang = guildData?.language || 'fr';
 
-        // On n'utilise plus la latence de l'API
-        
-        const sent = await interaction.reply({ 
-            content: '⏳ Calculating ping...', 
-            fetchReply: true 
-        });
-        
-        const latency = sent.createdTimestamp - interaction.createdTimestamp;
-        const apiLatency = interaction.client.ws.ping;
-        
-        const pingEmbed = BotEmbeds.createPingEmbed(
-            latency,
-            apiLatency, // Maintenant on passe la vraie latence de l'API
-            interaction.guild.id,
-            lang
-        );
-        
-        await interaction.editReply({ 
-            content: null, // Supprimer le contenu précédent
-            ...pingEmbed 
-        });
+            const sent = await interaction.reply({ 
+                content: '⏳ Calculating ping...', 
+                fetchReply: true 
+            });
+            
+            const latency = sent.createdTimestamp - interaction.createdTimestamp;
+            const apiLatency = interaction.client.ws.ping;
+            
+            const pingEmbed = BotEmbeds.createPingEmbed(
+                latency,
+                apiLatency,
+                interaction.guild.id,
+                lang
+            );
+            
+            await interaction.editReply({ 
+                content: null,
+                ...pingEmbed
+            });
+        } catch (error) {
+            console.error('Erreur dans la commande ping:', error);
+            await interaction.editReply({ 
+                content: '❌ Une erreur est survenue lors du calcul de la latence.',
+                components: []
+            });
+        }
     }
 };

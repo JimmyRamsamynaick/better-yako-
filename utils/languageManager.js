@@ -50,7 +50,14 @@ class LanguageManager {
         if (typeof value === 'string') {
             // Remplacer les placeholders
             for (const [placeholder, replacement] of Object.entries(replacements)) {
-                value = value.replace(new RegExp(`{${placeholder}}`, 'g'), replacement);
+                // Vérifier que le placeholder n'est pas vide ou ne contient que des chiffres
+                if (placeholder && typeof placeholder === 'string' && placeholder.length > 0) {
+                    // Utiliser une approche plus simple sans regex pour éviter les erreurs
+                    const placeholderPattern = `{${placeholder}}`;
+                    while (value.includes(placeholderPattern)) {
+                        value = value.replace(placeholderPattern, replacement);
+                    }
+                }
             }
         }
 
