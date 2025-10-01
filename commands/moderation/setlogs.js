@@ -116,7 +116,7 @@ module.exports = {
     async execute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
             const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.no_permission');
-            return interaction.reply({ ...errorResponse, ephemeral: true });
+            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
         }
 
         const subcommand = interaction.options.getSubcommand();
@@ -158,7 +158,7 @@ module.exports = {
         } catch (error) {
             console.error('Erreur setlogs:', error);
             const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.error');
-            await interaction.reply({ ...errorResponse, ephemeral: true });
+            await interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
         }
     },
 
@@ -224,7 +224,7 @@ module.exports = {
                 'commands.setlogs.invalid_types',
                 { types: invalidTypes.join(', '), validTypes: validTypesTranslated }
             );
-            return interaction.reply({ ...errorResponse, ephemeral: true });
+            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
         }
 
         // Initialiser le tableau channels s'il n'existe pas
@@ -302,7 +302,7 @@ module.exports = {
                 interaction.guild.id,
                 'commands.setlogs.no_channels_configured'
             );
-            return interaction.reply({ ...errorResponse, ephemeral: true });
+            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
         }
 
         const channelIndex = guild.logs.channels.findIndex(ch => ch.channelId === channel.id);
@@ -313,7 +313,7 @@ module.exports = {
                 'commands.setlogs.channel_not_found',
                 { channel: channel.toString() }
             );
-            return interaction.reply({ ...errorResponse, ephemeral: true });
+            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
         }
 
         guild.logs.channels.splice(channelIndex, 1);

@@ -25,6 +25,8 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     
     async execute(interaction) {
+        await interaction.deferReply();
+        
         const language = interaction.options.getString('language');
 
         // Récupérer la langue actuelle du serveur
@@ -33,7 +35,7 @@ module.exports = {
 
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
             const errorResponse = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, currentLang);
-            return interaction.reply({ ...errorResponse, ephemeral: true, flags: MessageFlags.IsComponentsV2 });
+            return interaction.editReply({ ...errorResponse, flags: MessageFlags.IsComponentsV2 });
         }
 
         try {
@@ -43,14 +45,14 @@ module.exports = {
                 { upsert: true }
             );
 
-            await interaction.reply({ 
+            await interaction.editReply({ 
                 components : [BotEmbeds.createSetlangSuccessEmbed(language, interaction.guild.id, language)],
                 flags: MessageFlags.IsComponentsV2 });
 
         } catch (error) {
             console.error(error);
             const errorResponse = BotEmbeds.createSetlangErrorEmbed(error, interaction.guild.id, currentLang);
-            await interaction.reply({ ...errorResponse, ephemeral: true, flags: MessageFlags.IsComponentsV2 });
+            await interaction.editReply({ ...errorResponse, flags: MessageFlags.IsComponentsV2 });
         }
     }
 };

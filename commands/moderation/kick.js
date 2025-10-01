@@ -48,61 +48,47 @@ module.exports = {
             return interaction.reply({ ...errorEmbed, ephemeral: true });
         }
 
-        if (user.id === interaction.user.id) {
-            const errorEmbed = BotEmbeds.createGenericErrorEmbed(
-                BotEmbeds.getLanguageManager().get(lang, 'commands.kick.error_self') || 'Vous ne pouvez pas vous expulser vous-même',
-                interaction.guild.id
-            );
-            return interaction.reply({ ...errorEmbed, ephemeral: true });
+        if (!user) {
+            const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.kick.error_user_not_found');
+            return interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
         }
 
-        if (user.id === interaction.client.user.id) {
-            const errorEmbed = BotEmbeds.createGenericErrorEmbed(
-                BotEmbeds.getLanguageManager().get(lang, 'commands.kick.error_bot') || 'Je ne peux pas m\'expulser moi-même',
-                interaction.guild.id
-            );
-            return interaction.reply({ ...errorEmbed, ephemeral: true });
+        if (user.id === interaction.user.id) {
+            const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.kick.error_self');
+            return interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
         }
 
         try {
             const member = await interaction.guild.members.fetch(user.id);
             
             if (member.roles.highest.position >= interaction.member.roles.highest.position) {
-                const errorEmbed = BotEmbeds.createGenericErrorEmbed(
-                    BotEmbeds.getLanguageManager().get(lang, 'commands.kick.error_hierarchy') || 'Vous ne pouvez pas expulser ce membre (rôle supérieur ou égal)',
-                    interaction.guild.id
-                );
-                return interaction.reply({ ...errorEmbed, ephemeral: true });
+                const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.kick.error_hierarchy', { user: user.toString() });
+                return interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
             }
 
             if (!member.kickable) {
-                const errorEmbed = BotEmbeds.createKickUserNotKickableEmbed(user, interaction.guild.id, lang);
-                return interaction.reply({ ...errorEmbed, ephemeral: true });
+                const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.kick.error_not_kickable', { user: user.toString() });
+                return interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
             }
 
-            await member.kick(finalReason);
+            await member.kick(reason);
 
-            const successEmbed = BotEmbeds.createKickSuccessEmbed(
-                user,
-                finalReason,
-                interaction.guild.id,
-                interaction.user,
-                lang
-            );
+            const successMessage = LanguageManager.get(lang, 'commands.kick.success', {
+                executor: interaction.user.toString(),
+                user: user.toString(),
+                reason: reason
+            });
             
+            const successEmbed = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.kick.success_title', successMessage);
             await interaction.reply(successEmbed);
 
         } catch (error) {
-            console.error(error);
             if (error.code === 10007) {
-                const errorEmbed = BotEmbeds.createKickUserNotFoundEmbed(interaction.guild.id, lang);
-                await interaction.reply({ ...errorEmbed, ephemeral: true });
+                const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.kick.error_user_not_found');
+                await interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
             } else {
-                const errorEmbed = BotEmbeds.createGenericErrorEmbed(
-                    BotEmbeds.getLanguageManager().get(lang, 'commands.kick.error') || 'Une erreur est survenue lors de l\'expulsion',
-                    interaction.guild.id
-                );
-                await interaction.reply({ ...errorEmbed, ephemeral: true });
+                const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.kick.error_generic');
+                await interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
             }
         }
     }

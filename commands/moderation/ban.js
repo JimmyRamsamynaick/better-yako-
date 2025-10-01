@@ -88,8 +88,33 @@ module.exports = {
         try {
 
             console.log('🔍 [BAN] Récupération du membre...');
-            const member = await interaction.guild.members.fetch(user.id);
-            console.log('✅ [BAN] Membre récupéré:', member.user.tag);
+            let member;
+            try {
+                member = await interaction.guild.members.fetch(user.id);
+                console.log('✅ [BAN] Membre récupéré:', member.user.tag);
+            } catch (fetchError) {
+                if (fetchError.code === 10007) {
+                    // L'utilisateur n'est plus sur le serveur, on peut quand même le bannir
+                    console.log('⚠️ [BAN] Utilisateur non présent sur le serveur, bannissement direct');
+                    console.log('🔍 [BAN] Tentative de bannissement avec deleteMessageSeconds:', days * 24 * 60 * 60);
+                    await interaction.guild.members.ban(user.id, { reason, deleteMessageSeconds: days * 24 * 60 * 60 });
+                    console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
+
+                    console.log('🔍 [BAN] Envoi de la réponse de succès...');
+                    const translatedMessage = LanguageManager.get(lang, 'commands.ban.success', {
+                        executor: interaction.user.toString(),
+                        user: user.toString(),
+                        reason: reason
+                    });
+                    
+                    const successMessage = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.ban.success_title', translatedMessage);
+                    await interaction.editReply(successMessage);
+                    console.log('✅ [BAN] Réponse envoyée avec succès');
+                    return;
+                } else {
+                    throw fetchError;
+                }
+            }
             
             console.log('🔍 [BAN] Vérification hiérarchie - Membre:', member.roles.highest.position, '| Exécuteur:', interaction.member.roles.highest.position);
             if (member.roles.highest.position >= interaction.member.roles.highest.position) {

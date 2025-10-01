@@ -46,7 +46,7 @@ module.exports = {
             const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
                 ...noPermEmbed,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -55,7 +55,7 @@ module.exports = {
             const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
             return interaction.reply({
                 ...botNoPermEmbed,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -184,7 +184,7 @@ module.exports = {
             const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang, interaction.user, deleted);
             
             // Envoyer la réponse avec le fichier .txt si disponible
-            const replyOptions = { ...successEmbed, ephemeral: true };
+            const replyOptions = { ...successEmbed, flags: MessageFlags.Ephemeral };
             if (attachment) {
                 replyOptions.files = [attachment];
             }
@@ -196,7 +196,7 @@ module.exports = {
             const errorMsg = LanguageManager.get(lang, 'clear.error');
             if (!interaction.replied && !interaction.deferred) {
                 const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
-                await interaction.reply({ ...errorEmbed, ephemeral: true });
+                await interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
             }
         }
     }
