@@ -6,7 +6,10 @@
     "commands": {
         "ping": {
             "description": "Affiche la latence du bot",
-            "response": "🏓 Pong! Latence: {latency}ms"
+            "response": "🏓 Pong! Latence: {latency}ms",
+            "title": "🏓 Pong!",
+            "footer": "Performance du bot",
+            "description": "**Latence du bot:** {latency}ms\n**Latence de l'API:** {apiLatency}ms"
         },
 
         "serverinfo": {
