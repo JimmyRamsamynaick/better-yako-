@@ -135,8 +135,9 @@ module.exports = {
             }
 
             console.log('🔍 [BAN] Tentative de bannissement avec deleteMessageSeconds:', days * 24 * 60 * 60);
+            console.log('🔍 [BAN] ID utilisateur à bannir:', user.id);
             await interaction.guild.bans.create(user.id, { reason, deleteMessageSeconds: days * 24 * 60 * 60 });
-            console.log('✅ [BAN] Bannissement réussi pour:', user.tag);
+            console.log('✅ [BAN] Bannissement réussi pour:', user.tag, '| ID:', user.id);
 
             console.log('🔍 [BAN] Envoi de la réponse de succès...');
             // Récupérer le message traduit avec les placeholders remplacés

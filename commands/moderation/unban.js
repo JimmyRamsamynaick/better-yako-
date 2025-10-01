@@ -72,22 +72,25 @@ module.exports = {
         }
 
         try {
+            console.log('🔍 [UNBAN] ID utilisateur à débannir:', userId);
             // Vérifier d'abord si l'utilisateur est banni avec un petit délai pour la synchronisation
             let isBanned = false;
             let fetchAttempts = 0;
-            const maxAttempts = 3;
+            const maxAttempts = 5; // Augmenter à 5 tentatives
             
             while (fetchAttempts < maxAttempts && !isBanned) {
                 try {
+                    console.log(`🔍 [UNBAN] Tentative ${fetchAttempts + 1}/${maxAttempts} - Recherche du ban pour l'ID: ${userId}`);
                     await interaction.guild.bans.fetch(userId);
                     isBanned = true;
                     console.log(`✅ [UNBAN] Utilisateur ${userId} trouvé dans les bans`);
                 } catch (fetchError) {
                     fetchAttempts++;
+                    console.log(`❌ [UNBAN] Erreur tentative ${fetchAttempts}:`, fetchError.code, fetchError.message);
                     if (fetchError.code === 10026) {
                         if (fetchAttempts < maxAttempts) {
-                            console.log(`🔍 [UNBAN] Tentative ${fetchAttempts}/${maxAttempts} - Ban non trouvé, attente...`);
-                            await new Promise(resolve => setTimeout(resolve, 1000)); // Attendre 1 seconde
+                            console.log(`🔍 [UNBAN] Tentative ${fetchAttempts}/${maxAttempts} - Ban non trouvé, attente de 2 secondes...`);
+                            await new Promise(resolve => setTimeout(resolve, 2000)); // Augmenter à 2 secondes
                             continue;
                         }
                         // L'utilisateur n'est vraiment pas banni après toutes les tentatives
