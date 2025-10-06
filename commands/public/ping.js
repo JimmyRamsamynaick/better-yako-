@@ -7,9 +7,10 @@ const LanguageManager = require('../../utils/languageManager');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
-        .setDescription(LanguageManager.get('fr', 'commands.ping.description') || 'Vérifier la latence du bot')
+        .setDescription(LanguageManager.get('en', 'commands.ping.description') || 'Shows bot latency')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.ping.description') || 'Check bot latency'
+            'en-US': LanguageManager.get('en', 'commands.ping.description') || 'Shows bot latency',
+            'fr': LanguageManager.get('fr', 'commands.ping.description') || 'Affiche la latence du bot'
         }),
     
     async execute(interaction) {

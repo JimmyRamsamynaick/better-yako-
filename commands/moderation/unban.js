@@ -9,20 +9,20 @@ module.exports = {
         .setName('unban')
         .setDescription(LanguageManager.get('fr', 'commands.unban.description') || 'Débannir un utilisateur')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.unban.description') || 'Unban a user'
+            'en-US': LanguageManager.get('en', 'commands.unban.description') || 'Unban a user'
         })
         .addStringOption(option =>
             option.setName('userid')
                 .setDescription(LanguageManager.get('fr', 'commands.unban.userid_option') || 'ID de l\'utilisateur à débannir')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.unban.userid_option') || 'ID of the user to unban'
+                    'en-US': LanguageManager.get('en', 'commands.unban.userid_option') || 'ID of the user to unban'
                 })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.unban.reason_option') || 'Raison du débannissement')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.unban.reason_option') || 'Reason for the unban'
+                    'en-US': LanguageManager.get('en', 'commands.unban.reason_option') || 'Reason for the unban'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),

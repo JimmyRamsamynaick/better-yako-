@@ -16,7 +16,24 @@
         "details": "Détails",
         "yes": "Oui",
         "no": "Non",
-        "none": "Aucun"
+        "none": "Aucun",
+        "attachments": "Pièces jointes",
+        "enabled": "Activé",
+        "disabled": "Désactivé",
+        "unlimited": "Illimité",
+        "unknown": "Inconnu",
+        "muted": "Sourdine activée",
+        "unmuted": "Sourdine désactivée",
+        "deafened": "Assourdi",
+        "undeafened": "Non assourdi",
+        "channel_types": {
+            "text": "Texte",
+            "voice": "Vocal",
+            "category": "Catégorie",
+            "announcements": "Annonces",
+            "stage": "Scène",
+            "forum": "Forum"
+        }
     },
     "welcome": {
         "title": "👋 Merci de m'avoir ajouté !",
@@ -28,7 +45,8 @@
             "response": "🏓 Pong! Latence: {latency}ms",
             "title": "🏓 Pong!",
             "footer": "Performance du bot",
-            "details": "**Latence du bot:** {latency}ms"
+            "details": "**Latence du bot:** {latency}ms",
+            "api_latency_label": "Latence de l'API"
         },
         "serverinfo": {
             "description": "Affiche les informations du serveur",
@@ -42,6 +60,9 @@
         },
         "ban": {
             "description": "Bannir un membre du serveur",
+            "user_option": "Le membre à bannir",
+            "reason_option": "Raison du bannissement",
+            "days_option": "Nombre de jours de messages à supprimer (0-7)",
             "success_title": "✅ Utilisateur banni",
             "success": "{executor} a banni {user} pour {reason}",
             "error_title": "❌ Erreur de bannissement",
@@ -55,6 +76,8 @@
         },
         "kick": {
             "description": "Expulser un membre du serveur",
+            "user_option": "Le membre à expulser",
+            "reason_option": "Raison de l'expulsion",
             "success_title": "✅ Utilisateur expulsé",
             "success": "{executor} a expulsé {user} pour {reason}",
             "error": "Une erreur est survenue lors de l'expulsion",
@@ -97,6 +120,8 @@
         },
         "clear": {
             "description": "Supprimer des messages en masse",
+            "amount_option": "Nombre de messages à supprimer (1-100)",
+            "user_option": "Supprimer uniquement les messages de cet utilisateur",
             "success_title": "✅ Messages supprimés",
             "success": "{user} a supprimé {count} message(s)",
             "success_user": "{user} a supprimé {count} message(s) de {target}",
@@ -321,8 +346,111 @@
                     "icon": "Icône du serveur"
                 }
             }
+        },
+        "messages": {
+            "deleted": {
+                "title": "🗑️ Message supprimé",
+                "fields": {
+                    "author": "Auteur",
+                    "channel": "Canal",
+                    "date": "Date",
+                    "content_title": "📝 Contenu du message",
+                    "attachments_title": "📎 Pièces jointes"
+                }
+            },
+            "bulk_deleted": {
+                "title": "🗑️ Messages supprimés en masse",
+                "description": "**Canal :** {channel}\n**Nombre de messages :** {count}\n**Date :** {date}\n\nUn fichier `.txt` listant les messages supprimés sera envoyé ci-dessous et sera automatiquement supprimé après 24h.",
+                "file": {
+                    "title": "=== MESSAGES SUPPRIMÉS ===",
+                    "empty_content": "(aucun contenu)"
+                }
+            }
+        },
+        "channels": {
+            "created": {
+                "title_base": "Canal créé",
+                "fields": {
+                    "channel": "📍 Canal",
+                    "type": "🏷️ Type",
+                    "position": "📍 Position",
+                    "category": "📁 Catégorie",
+                    "topic": "📋 Sujet",
+                    "audio_bitrate": "🎵 Débit audio",
+                    "user_limit": "👥 Limite d'utilisateurs",
+                    "nsfw": "🔞 NSFW",
+                    "rate_limit": "⏱️ Limite de débit"
+                }
+            },
+            "deleted": {
+                "title_base": "Canal supprimé",
+                "fields": {
+                    "channel": "📍 Canal",
+                    "type": "🏷️ Type",
+                    "position": "📍 Position",
+                    "category": "📁 Catégorie",
+                    "topic": "📋 Sujet",
+                    "audio_bitrate": "🎵 Débit audio",
+                    "user_limit": "👥 Limite d'utilisateurs",
+                    "nsfw": "🔞 NSFW",
+                    "rate_limit": "⏱️ Limite de débit"
+                }
+            },
+            "updated": {
+                "title_base": "Canal modifié",
+                "fields": {
+                    "channel": "📍 Canal"
+                },
+                "changes": {
+                    "name": "📝 Nom",
+                    "topic": "📋 Sujet",
+                    "position": "📍 Position",
+                    "category": "📁 Catégorie",
+                    "perms_added": "✅ Permissions ajoutées pour",
+                    "perms_removed": "❌ Permissions supprimées pour",
+                    "perms_modified": "🔄 Permissions modifiées pour",
+                    "audio_bitrate": "🎵 Débit audio",
+                    "user_limit": "👥 Limite d'utilisateurs",
+                    "nsfw": "🔞 NSFW",
+                    "rate_limit": "⏱️ Limite de débit"
+                }
+            }
+        },
+        "voice": {
+            "join": { "title": "🔊 Utilisateur a rejoint un salon vocal" },
+            "leave": { "title": "🔇 Utilisateur a quitté un salon vocal" },
+            "switch": { "title": "🔄 Utilisateur a changé de salon vocal" },
+            "mute_micro": {
+                "title_muted": "🎤 Utilisateur mis en sourdine (micro)",
+                "title_unmuted": "🎤 Utilisateur retiré de sourdine (micro)"
+            },
+            "deaf": {
+                "title_deafened": "🎧 Utilisateur assourdi (casque)",
+                "title_undeafened": "🎧 Utilisateur non assourdi (casque)"
+            },
+            "self_mute": {
+                "title_on": "🎤 Utilisateur s'est mis en sourdine",
+                "title_off": "🎤 Utilisateur s'est retiré de sourdine",
+                "action_on": "Sourdine activée",
+                "action_off": "Sourdine désactivée"
+            },
+            "self_deaf": {
+                "title_on": "🎧 Utilisateur s'est assourdi",
+                "title_off": "🎧 Utilisateur n'est plus assourdi",
+                "action_on": "Assourdi",
+                "action_off": "Non assourdi"
+            },
+            "fields": {
+                "user": "👤 Utilisateur",
+                "channel": "📍 Canal",
+                "old_channel": "📍 Ancien canal",
+                "new_channel": "📍 Nouveau canal",
+                "state": "État",
+                "action": "Action"
+            }
         }
     },
+    
     "logs": {
         "voice_join": "🔊 {user} a rejoint le salon vocal {channel}",
         "voice_leave": "🔇 {user} a quitté le salon vocal {channel}",

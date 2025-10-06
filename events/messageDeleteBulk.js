@@ -1,6 +1,7 @@
 // events/messageDeleteBulk.js
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'messageDeleteBulk',
@@ -33,23 +34,34 @@ module.exports = {
             }
             if (!logChannel) return;
             
-            // Construire le contenu du fichier texte listant les messages supprimés
+            const lang = guildData.language || 'fr';
+
+            // Construire le contenu du fichier texte listant les messages supprimés (i18n)
             const sorted = Array.from(messages.values()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
-            let txt = `Messages supprimés en masse\n`;
-            txt += `Serveur: ${firstMessage.guild.name} (ID: ${firstMessage.guild.id})\n`;
-            txt += `Canal: #${firstMessage.channel?.name || 'inconnu'} (ID: ${firstMessage.channel?.id || 'inconnu'})\n`;
-            txt += `Date: ${new Date().toISOString()}\n`;
-            txt += `Nombre de messages: ${sorted.length}\n`;
+            const fileTitle = LanguageManager.get(lang, 'events.messages.bulk_deleted.file.title') || '=== MESSAGES SUPPRIMÉS ===';
+            const serverLabel = LanguageManager.get(lang, 'common.server') || 'Serveur';
+            const channelLabel = LanguageManager.get(lang, 'common.channel') || 'Canal';
+            const dateLabel = LanguageManager.get(lang, 'common.date') || 'Date';
+            const messageCountLabel = LanguageManager.get(lang, 'common.message_count') || 'Nombre de messages';
+            const unknownLabel = LanguageManager.get(lang, 'common.unknown') || 'Inconnu';
+            const attachmentsLabel = LanguageManager.get(lang, 'common.attachments') || 'Pièces jointes';
+            const emptyContentLabel = LanguageManager.get(lang, 'events.messages.bulk_deleted.file.empty_content') || '(contenu vide)';
+
+            let txt = `${fileTitle}\n`;
+            txt += `${serverLabel}: ${firstMessage.guild.name} (ID: ${firstMessage.guild.id})\n`;
+            txt += `${channelLabel}: #${firstMessage.channel?.name || unknownLabel} (ID: ${firstMessage.channel?.id || unknownLabel})\n`;
+            txt += `${dateLabel}: ${new Date().toISOString()}\n`;
+            txt += `${messageCountLabel}: ${sorted.length}\n`;
             txt += `----------------------------------------\n\n`;
             for (const m of sorted) {
-                const authorTag = m.author ? `${m.author.tag}` : 'Inconnu';
-                const authorId = m.author ? m.author.id : 'Inconnu';
-                const ts = m.createdTimestamp ? new Date(m.createdTimestamp).toISOString() : 'Inconnu';
+                const authorTag = m.author ? `${m.author.tag}` : unknownLabel;
+                const authorId = m.author ? m.author.id : unknownLabel;
+                const ts = m.createdTimestamp ? new Date(m.createdTimestamp).toISOString() : unknownLabel;
                 const content = (m.content || '').replace(/\r?\n/g, '\n');
                 txt += `[${ts}] ${authorTag} (ID: ${authorId}) - Message ID: ${m.id}\n`;
-                txt += content ? `${content}\n` : '(contenu vide)\n';
+                txt += content ? `${content}\n` : `${emptyContentLabel}\n`;
                 if (m.attachments && m.attachments.size > 0) {
-                    txt += `Pièces jointes (${m.attachments.size}):\n`;
+                    txt += `${attachmentsLabel} (${m.attachments.size}):\n`;
                     m.attachments.forEach(att => {
                         txt += `- ${att.name || 'fichier'}: ${att.url}\n`;
                     });
@@ -61,11 +73,18 @@ module.exports = {
             const fileName = `deleted-messages-${firstMessage.guild.id}-${firstMessage.channel?.id || 'unknown'}-${timestampName}.txt`;
             const txtAttachment = new AttachmentBuilder(Buffer.from(txt, 'utf8'), { name: fileName });
 
-            // Créer l'embed pour les messages supprimés en masse (format de base)
+            // Créer l'embed pour les messages supprimés en masse (i18n)
+            const bulkTitle = LanguageManager.get(lang, 'events.messages.bulk_deleted.title') || '🗑️ Messages supprimés en masse';
+            const bulkDescription = LanguageManager.get(lang, 'events.messages.bulk_deleted.description', {
+                channel: firstMessage.channel.toString(),
+                count: messages.size,
+                date: new Date().toLocaleString(lang === 'en' ? 'en-US' : 'fr-FR')
+            }) || `**Canal:** ${firstMessage.channel.toString()}\n**Nombre de messages:** ${messages.size}\n**Date:** ${new Date().toLocaleString()}\n\nUn fichier \`.txt\` listant les messages supprimés sera envoyé ci-dessous et supprimé automatiquement après 24h.`;
+
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ Messages supprimés en masse')
+                .setTitle(bulkTitle)
                 .setColor('#FF0000')
-                .setDescription(`**Canal:** ${firstMessage.channel.toString()}\n**Nombre de messages:** ${messages.size}\n**Date:** ${new Date().toLocaleString()}\n\nUn fichier \`.txt\` listant les messages supprimés sera envoyé ci-dessous et supprimé automatiquement après 24h.`)
+                .setDescription(bulkDescription)
                 .setTimestamp();
 
             // Envoyer l'embed dans le canal de logs (conservé)

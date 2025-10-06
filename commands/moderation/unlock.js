@@ -9,13 +9,13 @@ module.exports = {
         .setName('unlock')
         .setDescription(LanguageManager.get('fr', 'commands.unlock.description') || 'Déverrouiller un salon')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.unlock.description') || 'Unlock a channel'
+            'en-US': LanguageManager.get('en', 'commands.unlock.description') || 'Unlock a channel'
         })
         .addChannelOption(option =>
             option.setName('channel')
                 .setDescription(LanguageManager.get('fr', 'commands.unlock.channel_option') || 'Le salon à déverrouiller')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.unlock.channel_option') || 'The channel to unlock'
+                    'en-US': LanguageManager.get('en', 'commands.unlock.channel_option') || 'The channel to unlock'
                 })
                 .addChannelTypes(ChannelType.GuildText, ChannelType.GuildVoice)
                 .setRequired(false))
@@ -23,7 +23,7 @@ module.exports = {
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.unlock.reason_option') || 'Raison du déverrouillage')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.unlock.reason_option') || 'Reason for the unlock'
+                    'en-US': LanguageManager.get('en', 'commands.unlock.reason_option') || 'Reason for the unlock'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),

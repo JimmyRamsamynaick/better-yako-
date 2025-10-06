@@ -9,27 +9,27 @@ module.exports = {
         .setName('ban')
         .setDescription(LanguageManager.get('fr', 'commands.ban.description') || 'Bannir un membre du serveur')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.ban.description') || 'Ban a member from the server'
+            'en-US': LanguageManager.get('en', 'commands.ban.description') || 'Ban a member from the server'
         })
         .addUserOption(option =>
             option.setName('user')
                 .setDescription(LanguageManager.get('fr', 'commands.ban.user_option') || 'Le membre à bannir')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.ban.user_option') || 'The member to ban'
+                    'en-US': LanguageManager.get('en', 'commands.ban.user_option') || 'The member to ban'
                 })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.ban.reason_option') || 'Raison du bannissement')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.ban.reason_option') || 'Reason for the ban'
+                    'en-US': LanguageManager.get('en', 'commands.ban.reason_option') || 'Reason for the ban'
                 })
                 .setRequired(false))
         .addIntegerOption(option =>
             option.setName('days')
                 .setDescription(LanguageManager.get('fr', 'commands.ban.days_option') || 'Nombre de jours de messages à supprimer (0-7)')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.ban.days_option') || 'Number of days of messages to delete (0-7)'
+                    'en-US': LanguageManager.get('en', 'commands.ban.days_option') || 'Number of days of messages to delete (0-7)'
                 })
                 .setMinValue(0)
                 .setMaxValue(7)

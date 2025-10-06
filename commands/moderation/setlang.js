@@ -9,13 +9,13 @@ module.exports = {
         .setName('setlang')
         .setDescription(LanguageManager.get('fr', 'commands.setlang.description') || 'Changer la langue du bot')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.setlang.description') || 'Change bot language'
+            'en-US': LanguageManager.get('en', 'commands.setlang.description') || 'Change bot language'
         })
         .addStringOption(option =>
             option.setName('language')
                 .setDescription(LanguageManager.get('fr', 'commands.setlang.language_option') || 'Langue à utiliser')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.setlang.language_option') || 'Language to use'
+                    'en-US': LanguageManager.get('en', 'commands.setlang.language_option') || 'Language to use'
                 })
                 .addChoices(
                     { name: 'Français', value: 'fr' },

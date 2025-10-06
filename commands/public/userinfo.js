@@ -9,13 +9,13 @@ module.exports = {
         .setName('userinfo')
         .setDescription(LanguageManager.get('fr', 'commands.userinfo.description') || 'Afficher les informations d\'un utilisateur')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.userinfo.description') || 'Show user information'
+            'en-US': LanguageManager.get('en', 'commands.userinfo.description') || 'Show user information'
         })
         .addUserOption(option =>
             option.setName('user')
                 .setDescription(LanguageManager.get('fr', 'commands.userinfo.user_option') || 'L\'utilisateur dont vous voulez voir les informations')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.userinfo.user_option') || 'The user whose information you want to see'
+                    'en-US': LanguageManager.get('en', 'commands.userinfo.user_option') || 'The user whose information you want to see'
                 })
                 .setRequired(false)),
     

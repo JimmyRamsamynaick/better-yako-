@@ -10,13 +10,13 @@ module.exports = {
         .setName('ask')
         .setDescription(LanguageManager.get('fr', 'commands.ask.description') || 'Poser une question à l\'IA')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.ask.description') || 'Ask a question to the AI'
+            'en-US': LanguageManager.get('en', 'commands.ask.description') || 'Ask a question to the AI'
         })
         .addStringOption(option =>
             option.setName('message')
                 .setDescription(LanguageManager.get('fr', 'commands.ask.message_option') || 'Votre question')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.ask.message_option') || 'Your question'
+                    'en-US': LanguageManager.get('en', 'commands.ask.message_option') || 'Your question'
                 })
                 .setRequired(true)
                 .setMaxLength(500)),

@@ -10,20 +10,20 @@ module.exports = {
         .setName('unmute')
         .setDescription(LanguageManager.get('fr', 'commands.unmute.description') || 'Rendre la parole à un membre')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.unmute.description') || 'Unmute a member'
+            'en-US': LanguageManager.get('en', 'commands.unmute.description') || 'Unmute a member'
         })
         .addUserOption(option =>
             option.setName('user')
                 .setDescription(LanguageManager.get('fr', 'commands.unmute.user_option') || 'Le membre à qui rendre la parole')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.unmute.user_option') || 'The member to unmute'
+                    'en-US': LanguageManager.get('en', 'commands.unmute.user_option') || 'The member to unmute'
                 })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.unmute.reason_option') || 'Raison du unmute')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.unmute.reason_option') || 'Reason for the unmute'
+                    'en-US': LanguageManager.get('en', 'commands.unmute.reason_option') || 'Reason for the unmute'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),

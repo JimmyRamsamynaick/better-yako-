@@ -11,13 +11,13 @@ module.exports = {
         .setName('clear')
         .setDescription(LanguageManager.get('fr', 'commands.clear.description') || 'Supprimer des messages')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.clear.description') || 'Delete messages'
+            'en-US': LanguageManager.get('en', 'commands.clear.description') || 'Delete messages'
         })
         .addIntegerOption(option =>
             option.setName('amount')
                 .setDescription(LanguageManager.get('fr', 'commands.clear.amount_option') || 'Nombre de messages à supprimer (1-100)')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.clear.amount_option') || 'Number of messages to delete (1-100)'
+                    'en-US': LanguageManager.get('en', 'commands.clear.amount_option') || 'Number of messages to delete (1-100)'
                 })
                 .setMinValue(1)
                 .setMaxValue(100)
@@ -26,7 +26,7 @@ module.exports = {
             option.setName('user')
                 .setDescription(LanguageManager.get('fr', 'commands.clear.user_option') || 'Supprimer seulement les messages de cet utilisateur')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.clear.user_option') || 'Delete only messages from this user'
+                    'en-US': LanguageManager.get('en', 'commands.clear.user_option') || 'Delete only messages from this user'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),

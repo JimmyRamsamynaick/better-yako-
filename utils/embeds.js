@@ -236,7 +236,8 @@ class BotEmbeds {
         const botLatencyText = LanguageManager.get(lang, 'commands.ping.details', {
             latency: latency
         }) || `**Latence du bot:** ${latency}ms`;
-        const apiLatencyText = `**Latence de l'API:** ${apiLatency ? `${apiLatency}ms` : 'N/A'}`;
+        const apiLatencyLabel = LanguageManager.get(lang, 'commands.ping.api_latency_label') || (lang === 'en' ? 'API Latency' : "Latence de l'API");
+        const apiLatencyText = `**${apiLatencyLabel}:** ${apiLatency ? `${apiLatency}ms` : 'N/A'}`;
         const footer = LanguageManager.get(lang, 'commands.ping.footer') || 'Performance du bot';
         
         return {

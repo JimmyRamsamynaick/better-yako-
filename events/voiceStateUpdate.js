@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'voiceStateUpdate',
@@ -21,17 +22,19 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
+
             const member = newState.member || oldState.member;
             if (!member) return;
 
             // Rejoindre un canal vocal
             if (!oldState.channel && newState.channel) {
                 const embed = new EmbedBuilder()
-                    .setTitle('🔊 Utilisateur rejoint un canal vocal')
+                    .setTitle(LanguageManager.get(lang, 'events.voice.join.title') || '🔊 Utilisateur rejoint un canal vocal')
                     .setColor(0x00FF00)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Canal', value: `${newState.channel}`, inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal', value: `${newState.channel}`, inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });
@@ -46,11 +49,11 @@ module.exports = {
             // Quitter un canal vocal
             if (oldState.channel && !newState.channel) {
                 const embed = new EmbedBuilder()
-                    .setTitle('🔇 Utilisateur quitte un canal vocal')
+                    .setTitle(LanguageManager.get(lang, 'events.voice.leave.title') || '🔇 Utilisateur quitte un canal vocal')
                     .setColor(0xFF0000)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Canal', value: `${oldState.channel}`, inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal', value: `${oldState.channel}`, inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });
@@ -65,12 +68,12 @@ module.exports = {
             // Changer de canal vocal
             if (oldState.channel && newState.channel && oldState.channel.id !== newState.channel.id) {
                 const embed = new EmbedBuilder()
-                    .setTitle('🔄 Utilisateur change de canal vocal')
+                    .setTitle(LanguageManager.get(lang, 'events.voice.switch.title') || '🔄 Utilisateur change de canal vocal')
                     .setColor(0xFFA500)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Ancien canal', value: `${oldState.channel}`, inline: true },
-                        { name: '📍 Nouveau canal', value: `${newState.channel}`, inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.old_channel') || '📍 Ancien canal', value: `${oldState.channel}`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.new_channel') || '📍 Nouveau canal', value: `${newState.channel}`, inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });
@@ -85,12 +88,12 @@ module.exports = {
             // Mute/Demute micro
             if (oldState.mute !== newState.mute) {
                 const embed = new EmbedBuilder()
-                    .setTitle(newState.mute ? '🎤 Utilisateur muté (micro)' : '🎤 Utilisateur démuté (micro)')
+                    .setTitle(newState.mute ? (LanguageManager.get(lang, 'events.voice.mute_micro.title_muted') || '🎤 Utilisateur muté (micro)') : (LanguageManager.get(lang, 'events.voice.mute_micro.title_unmuted') || '🎤 Utilisateur démuté (micro)'))
                     .setColor(newState.mute ? 0xFF0000 : 0x00FF00)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
-                        { name: '🎤 État', value: newState.mute ? 'Muté' : 'Démuté', inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.state') || '🎤 État', value: newState.mute ? (LanguageManager.get(lang, 'common.muted') || 'Muté') : (LanguageManager.get(lang, 'common.unmuted') || 'Démuté'), inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });
@@ -105,12 +108,12 @@ module.exports = {
             // Mute/Demute casque
             if (oldState.deaf !== newState.deaf) {
                 const embed = new EmbedBuilder()
-                    .setTitle(newState.deaf ? '🎧 Utilisateur sourdé (casque)' : '🎧 Utilisateur désourdé (casque)')
+                    .setTitle(newState.deaf ? (LanguageManager.get(lang, 'events.voice.deaf.title_deafened') || '🎧 Utilisateur sourdé (casque)') : (LanguageManager.get(lang, 'events.voice.deaf.title_undeafened') || '🎧 Utilisateur désourdé (casque)'))
                     .setColor(newState.deaf ? 0xFF0000 : 0x00FF00)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
-                        { name: '🎧 État', value: newState.deaf ? 'Sourdé' : 'Désourdé', inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.state') || '🎧 État', value: newState.deaf ? (LanguageManager.get(lang, 'common.deafened') || 'Sourdé') : (LanguageManager.get(lang, 'common.undeafened') || 'Désourdé'), inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });
@@ -125,12 +128,12 @@ module.exports = {
             // Self mute/demute
             if (oldState.selfMute !== newState.selfMute) {
                 const embed = new EmbedBuilder()
-                    .setTitle(newState.selfMute ? '🎤 Utilisateur s\'est muté' : '🎤 Utilisateur s\'est démuté')
+                    .setTitle(newState.selfMute ? (LanguageManager.get(lang, 'events.voice.self_mute.title_on') || '🎤 Utilisateur s\'est muté') : (LanguageManager.get(lang, 'events.voice.self_mute.title_off') || '🎤 Utilisateur s\'est démuté'))
                     .setColor(newState.selfMute ? 0xFF0000 : 0x00FF00)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
-                        { name: '🎤 Action', value: newState.selfMute ? 'S\'est muté' : 'S\'est démuté', inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.action') || '🎤 Action', value: newState.selfMute ? (LanguageManager.get(lang, 'events.voice.self_mute.action_on') || 'S\'est muté') : (LanguageManager.get(lang, 'events.voice.self_mute.action_off') || 'S\'est démuté'), inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });
@@ -145,12 +148,12 @@ module.exports = {
             // Self deaf/undeaf
             if (oldState.selfDeaf !== newState.selfDeaf) {
                 const embed = new EmbedBuilder()
-                    .setTitle(newState.selfDeaf ? '🎧 Utilisateur s\'est sourdé' : '🎧 Utilisateur s\'est désourdé')
+                    .setTitle(newState.selfDeaf ? (LanguageManager.get(lang, 'events.voice.self_deaf.title_on') || '🎧 Utilisateur s\'est sourdé') : (LanguageManager.get(lang, 'events.voice.self_deaf.title_off') || '🎧 Utilisateur s\'est désourdé'))
                     .setColor(newState.selfDeaf ? 0xFF0000 : 0x00FF00)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                        { name: '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
-                        { name: '🎧 Action', value: newState.selfDeaf ? 'S\'est sourdé' : 'S\'est désourdé', inline: true }
+                        { name: LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal', value: `${newState.channel || oldState.channel}`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.voice.fields.action') || '🎧 Action', value: newState.selfDeaf ? (LanguageManager.get(lang, 'events.voice.self_deaf.action_on') || 'S\'est sourdé') : (LanguageManager.get(lang, 'events.voice.self_deaf.action_off') || 'S\'est désourdé'), inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${member.user.id}` });

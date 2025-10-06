@@ -11,27 +11,27 @@ module.exports = {
         .setName('mute')
         .setDescription(LanguageManager.get('fr', 'commands.mute.description') || 'Rendre muet un membre')
         .setDescriptionLocalizations({
-            'EnglishUS': LanguageManager.get('en', 'commands.mute.description') || 'Mute a member'
+            'en-US': LanguageManager.get('en', 'commands.mute.description') || 'Mute a member'
         })
         .addUserOption(option =>
             option.setName('user')
                 .setDescription(LanguageManager.get('fr', 'commands.mute.user_option') || 'Le membre à rendre muet')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.mute.user_option') || 'The member to mute'
+                    'en-US': LanguageManager.get('en', 'commands.mute.user_option') || 'The member to mute'
                 })
                 .setRequired(true))
         .addStringOption(option =>
             option.setName('duration')
                 .setDescription(LanguageManager.get('fr', 'commands.mute.duration_option') || 'Durée du mute (ex: 10m, 1h, 1d)')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.mute.duration_option') || 'Duration of the mute (ex: 10m, 1h, 1d)'
+                    'en-US': LanguageManager.get('en', 'commands.mute.duration_option') || 'Duration of the mute (ex: 10m, 1h, 1d)'
                 })
                 .setRequired(false))
         .addStringOption(option =>
             option.setName('reason')
                 .setDescription(LanguageManager.get('fr', 'commands.mute.reason_option') || 'Raison du mute')
                 .setDescriptionLocalizations({
-                    'EnglishUS': LanguageManager.get('en', 'commands.mute.reason_option') || 'Reason for the mute'
+                    'en-US': LanguageManager.get('en', 'commands.mute.reason_option') || 'Reason for the mute'
                 })
                 .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),

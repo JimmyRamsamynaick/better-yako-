@@ -31,23 +31,33 @@ module.exports = {
             }
             if (!logChannel) return;
             
-            // Créer le message avec le format components
-            let content = `## 🗑️ Message supprimé\n\n`;
-            content += `**Auteur:** ${message.author.toString()} (${message.author.tag})\n`;
-            content += `**Canal:** ${message.channel.toString()}\n`;
-            content += `**Date:** <t:${Math.floor(Date.now() / 1000)}:F>\n\n`;
+            const lang = guildData.language || 'fr';
+
+            // Créer le message avec le format components (i18n)
+            const title = LanguageManager.get(lang, 'events.messages.deleted.title') || '🗑️ Message supprimé';
+            const authorLabel = LanguageManager.get(lang, 'events.messages.deleted.fields.author') || 'Auteur';
+            const channelLabel = LanguageManager.get(lang, 'events.messages.deleted.fields.channel') || 'Canal';
+            const dateLabel = LanguageManager.get(lang, 'events.messages.deleted.fields.date') || 'Date';
+            const contentTitle = LanguageManager.get(lang, 'events.messages.deleted.fields.content_title') || '📝 Contenu du message';
+            const attachmentsTitle = LanguageManager.get(lang, 'events.messages.deleted.fields.attachments_title') || '📎 Pièces jointes';
+            const attachmentsLabel = LanguageManager.get(lang, 'common.attachments') || 'Pièces jointes';
+
+            let content = `## ${title}\n\n`;
+            content += `**${authorLabel}:** ${message.author.toString()} (${message.author.tag})\n`;
+            content += `**${channelLabel}:** ${message.channel.toString()}\n`;
+            content += `**${dateLabel}:** <t:${Math.floor(Date.now() / 1000)}:F>\n\n`;
             
             // Ajouter le contenu du message s'il existe
             if (message.content) {
                 const messageContent = message.content.length > 1000 
                     ? message.content.substring(0, 997) + '...' 
                     : message.content;
-                content += `### 📝 Contenu du message:\n\`\`\`\n${messageContent}\n\`\`\`\n`;
+                content += `### ${contentTitle}:\n\`\`\`\n${messageContent}\n\`\`\`\n`;
             }
             
             // Ajouter les pièces jointes s'il y en a
             if (message.attachments.size > 0) {
-                content += `### 📎 Pièces jointes (${message.attachments.size}):\n`;
+                content += `### ${attachmentsTitle} (${message.attachments.size}):\n`;
                 message.attachments.forEach(attachment => {
                     content += `• [${attachment.name}](${attachment.url})\n`;
                 });

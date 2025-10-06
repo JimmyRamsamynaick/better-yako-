@@ -16,7 +16,24 @@
         "details": "Details",
         "yes": "Yes",
         "no": "No",
-        "none": "None"
+        "none": "None",
+        "attachments": "Attachments",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "unlimited": "Unlimited",
+        "unknown": "Unknown",
+        "muted": "Muted",
+        "unmuted": "Unmuted",
+        "deafened": "Deafened",
+        "undeafened": "Undeafened",
+        "channel_types": {
+            "text": "Text",
+            "voice": "Voice",
+            "category": "Category",
+            "announcements": "News",
+            "stage": "Stage",
+            "forum": "Forum"
+        }
     },
     "welcome": {
         "title": "👋 Thanks for adding me!",
@@ -28,7 +45,8 @@
             "response": "🏓 Pong! Latency: {latency}ms",
             "title": "🏓 Pong!",
             "footer": "Bot performance",
-            "details": "**Bot Latency:** {latency}ms"
+            "details": "**Bot Latency:** {latency}ms",
+            "api_latency_label": "API Latency"
         },
 
 
@@ -43,6 +61,9 @@
         },
         "ban": {
             "description": "Ban a member from the server",
+            "user_option": "The member to ban",
+            "reason_option": "Reason for the ban",
+            "days_option": "Number of days of messages to delete (0-7)",
             "success_title": "✅ User banned",
             "success": "{executor} banned {user} for {reason}",
             "error_title": "❌ Ban error",
@@ -57,6 +78,8 @@
         },
         "kick": {
             "description": "Kick a member from the server",
+            "user_option": "The member to kick",
+            "reason_option": "Reason for the kick",
             "success_title": "✅ User kicked",
             "success": "{executor} kicked {user} for {reason}",
             "error": "An error occurred while kicking",
@@ -99,6 +122,8 @@
         },
         "clear": {
             "description": "Bulk delete messages",
+            "amount_option": "Number of messages to delete (1-100)",
+            "user_option": "Delete only messages from this user",
             "success_title": "✅ Messages deleted",
             "success": "{user} cleared {count} message(s)",
             "success_user": "{user} cleared {count} message(s) from {target}",
@@ -114,6 +139,15 @@
         },
         "setlogs": {
             "description": "Configure server logs",
+            "disable_description": "Disable logs",
+            "config_description": "Configure log types",
+            "setchannel_description": "Configure a specific channel for a log type",
+            "removechannel_description": "Remove a specific log channel",
+            "type_option": "Log type to configure",
+            "enabled_option": "Enable or disable this log type",
+            "setchannel_channel_option": "Channel for this log type",
+            "types_option": "Log types for this channel (comma separated)",
+            "removechannel_channel_option": "Channel to remove from logs",
             "no_permission": "❌ You don't have permission to manage the server.",
             "error": "❌ An error occurred while configuring logs.",
             "enabled_success": "✅ Logs enabled in {channel}\n\n**Active log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
@@ -160,6 +194,8 @@
         },
         "lock": {
             "description": "Lock a channel",
+            "channel_option": "The channel to lock",
+            "reason_option": "Reason for the lock",
             "success_title": "🔒 Channel locked",
             "success": "{executor} locked {channel} for {reason}",
             "no_permission": "❌ You don't have permission to manage channels.",
@@ -167,6 +203,8 @@
         },
         "unlock": {
             "description": "Unlock a channel",
+            "channel_option": "The channel to unlock",
+            "reason_option": "Reason for the unlock",
             "success_title": "🔓 Channel unlocked",
             "success": "{executor} unlocked {channel} for {reason}",
             "no_permission": "❌ You don't have permission to manage channels.",
@@ -174,6 +212,8 @@
         },
         "unban": {
             "description": "Unban a user from the server",
+            "userid_option": "User ID to unban",
+            "reason_option": "Reason for the unban",
             "success_title": "✅ User unbanned",
             "success": "{executor} unbanned {user} for {reason}",
             "error_title": "❌ Unban error",
@@ -189,6 +229,8 @@
             "error": "❌ An error occurred during configuration."
         },
         "help": {
+            "description": "Show commands list",
+            "category_option": "Commands category",
             "main_title": "📚 Help - Yako Bot",
             "main_description": "Here is the list of all available commands. Select a category from the dropdown menu below to see details.\n\n**Available categories:**\n🛡️ **Moderation** - Server management commands\n🌍 **Public** - Commands accessible to everyone\n⭐ **Premium** - Exclusive premium commands",
             "select_placeholder": "Choose a help category",
@@ -324,6 +366,108 @@
                     "icon": "Server icon"
                 }
             }
+        },
+        "messages": {
+            "deleted": {
+                "title": "🗑️ Message deleted",
+                "fields": {
+                    "author": "Author",
+                    "channel": "Channel",
+                    "date": "Date",
+                    "content_title": "📝 Message content",
+                    "attachments_title": "📎 Attachments"
+                }
+            },
+            "bulk_deleted": {
+                "title": "🗑️ Bulk deleted messages",
+                "description": "**Channel:** {channel}\n**Message count:** {count}\n**Date:** {date}\n\nA `.txt` file listing deleted messages will be sent below and auto-deleted after 24h.",
+                "file": {
+                    "title": "=== DELETED MESSAGES ===",
+                    "empty_content": "(empty content)"
+                }
+            }
+        },
+        "channels": {
+            "created": {
+                "title_base": "Channel created",
+                "fields": {
+                    "channel": "📍 Channel",
+                    "type": "🏷️ Type",
+                    "position": "📍 Position",
+                    "category": "📁 Category",
+                    "topic": "📋 Topic",
+                    "audio_bitrate": "🎵 Audio bitrate",
+                    "user_limit": "👥 User limit",
+                    "nsfw": "🔞 NSFW",
+                    "rate_limit": "⏱️ Rate limit"
+                }
+            },
+            "deleted": {
+                "title_base": "Channel deleted",
+                "fields": {
+                    "channel": "📍 Channel",
+                    "type": "🏷️ Type",
+                    "position": "📍 Position",
+                    "category": "📁 Category",
+                    "topic": "📋 Topic",
+                    "audio_bitrate": "🎵 Audio bitrate",
+                    "user_limit": "👥 User limit",
+                    "nsfw": "🔞 NSFW",
+                    "rate_limit": "⏱️ Rate limit"
+                }
+            },
+            "updated": {
+                "title_base": "Channel updated",
+                "fields": {
+                    "channel": "📍 Channel"
+                },
+                "changes": {
+                    "name": "📝 Name",
+                    "topic": "📋 Topic",
+                    "position": "📍 Position",
+                    "category": "📁 Category",
+                    "perms_added": "✅ Permissions added for",
+                    "perms_removed": "❌ Permissions removed for",
+                    "perms_modified": "🔄 Permissions modified for",
+                    "audio_bitrate": "🎵 Audio bitrate",
+                    "user_limit": "👥 User limit",
+                    "nsfw": "🔞 NSFW",
+                    "rate_limit": "⏱️ Rate limit"
+                }
+            }
+        },
+        "voice": {
+            "join": { "title": "🔊 User joined a voice channel" },
+            "leave": { "title": "🔇 User left a voice channel" },
+            "switch": { "title": "🔄 User switched voice channels" },
+            "mute_micro": {
+                "title_muted": "🎤 User muted (microphone)",
+                "title_unmuted": "🎤 User unmuted (microphone)"
+            },
+            "deaf": {
+                "title_deafened": "🎧 User deafened (headset)",
+                "title_undeafened": "🎧 User undeafened (headset)"
+            },
+            "self_mute": {
+                "title_on": "🎤 User self-muted",
+                "title_off": "🎤 User self-unmuted",
+                "action_on": "Self-muted",
+                "action_off": "Self-unmuted"
+            },
+            "self_deaf": {
+                "title_on": "🎧 User self-deafened",
+                "title_off": "🎧 User self-undeafened",
+                "action_on": "Self-deafened",
+                "action_off": "Self-undeafened"
+            },
+            "fields": {
+                "user": "👤 User",
+                "channel": "📍 Channel",
+                "old_channel": "📍 Old channel",
+                "new_channel": "📍 New channel",
+                "state": "State",
+                "action": "Action"
+            }
         }
     },
     "logs": {
@@ -353,4 +497,5 @@
         "channel_unlock": "🔓 Channel {channel} unlocked",
         "channel_unlock_details": "**Channel:** {channel}\n**Moderator:** {moderator}\n**Reason:** {reason}"
     }
+    
 }
