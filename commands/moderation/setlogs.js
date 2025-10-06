@@ -1,7 +1,6 @@
 // commands/moderation/setlogs.js
-const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType, EmbedBuilder } = require('discord.js');
 const Guild = require('../../models/Guild');
-const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const LanguageManager = require('../../utils/languageManager');
 
 module.exports = {
@@ -115,8 +114,11 @@ module.exports = {
     
     async execute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.no_permission');
-            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
+            const lang = (await Guild.findOne({ guildId: interaction.guild.id }))?.language || 'fr';
+            return interaction.reply({
+                content: LanguageManager.get(lang, 'commands.setlogs.no_permission'),
+                ephemeral: true
+            });
         }
 
         const subcommand = interaction.options.getSubcommand();
@@ -157,8 +159,11 @@ module.exports = {
             }
         } catch (error) {
             console.error('Erreur setlogs:', error);
-            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.error');
-            await interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
+            const lang = guild?.language || 'fr';
+            await interaction.reply({
+                content: LanguageManager.get(lang, 'commands.setlogs.error'),
+                ephemeral: true
+            });
         }
     },
 
@@ -179,28 +184,23 @@ module.exports = {
         
         await guild.save();
 
-        const successResponse = await ComponentsV3.successEmbed(
-            interaction.guild.id, 
-            'commands.setlogs.enabled_success',
-            {
+        await interaction.reply({
+            content: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.enabled_success', {
                 channel: channel.toString(),
                 voice: guild.logs.types.voice ? '✅' : '❌',
                 message: guild.logs.types.message ? '✅' : '❌',
                 channels: guild.logs.types.channels ? '✅' : '❌',
                 roles: guild.logs.types.roles ? '✅' : '❌',
                 server: guild.logs.types.server ? '✅' : '❌'
-            },
-            guild.language
-        );
-        
-        await interaction.reply(successResponse);
+            }),
+            ephemeral: true
+        });
     },
 
     async handleSetChannel(interaction, guild) {
         const channel = interaction.options.getChannel('channel');
         const typesString = interaction.options.getString('types');
         
-        const LanguageManager = require('../../utils/languageManager');
         const lang = guild.language || 'en';
         
         // Valider les types fournis
@@ -219,12 +219,13 @@ module.exports = {
             
             const validTypesTranslated = validTypes.map(type => typeNames[type]).join(', ');
             
-            const errorResponse = await ComponentsV3.errorEmbed(
-                interaction.guild.id, 
-                'commands.setlogs.invalid_types',
-                { types: invalidTypes.join(', '), validTypes: validTypesTranslated }
-            );
-            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
+            return interaction.reply({
+                content: LanguageManager.get(lang, 'commands.setlogs.invalid_types', {
+                    types: invalidTypes.join(', '),
+                    validTypes: validTypesTranslated
+                }),
+                ephemeral: true
+            });
         }
 
         // Initialiser le tableau channels s'il n'existe pas
@@ -282,38 +283,34 @@ module.exports = {
 
         const enabledTypes = requestedTypes.map(type => typeNames[type]).join(', ');
 
-        const successResponse = await ComponentsV3.successEmbed(
-            interaction.guild.id,
-            'commands.setlogs.channel_configured',
-            {
+        await interaction.reply({
+            content: LanguageManager.get(lang, 'commands.setlogs.channel_configured', {
                 channel: channel.toString(),
                 types: enabledTypes
-            }
-        );
-
-        await interaction.reply(successResponse);
+            }),
+            ephemeral: true
+        });
     },
 
     async handleRemoveChannel(interaction, guild) {
         const channel = interaction.options.getChannel('channel');
 
         if (!guild.logs.channels || guild.logs.channels.length === 0) {
-            const errorResponse = await ComponentsV3.errorEmbed(
-                interaction.guild.id,
-                'commands.setlogs.no_channels_configured'
-            );
-            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
+            const lang = guild.language || 'fr';
+            return interaction.reply({
+                content: LanguageManager.get(lang, 'commands.setlogs.no_channels_configured'),
+                ephemeral: true
+            });
         }
 
         const channelIndex = guild.logs.channels.findIndex(ch => ch.channelId === channel.id);
         
         if (channelIndex === -1) {
-            const errorResponse = await ComponentsV3.errorEmbed(
-                interaction.guild.id,
-                'commands.setlogs.channel_not_found',
-                { channel: channel.toString() }
-            );
-            return interaction.reply({ ...errorResponse, flags: MessageFlags.Ephemeral });
+            const lang = guild.language || 'fr';
+            return interaction.reply({
+                content: LanguageManager.get(lang, 'commands.setlogs.channel_not_found', { channel: channel.toString() }),
+                ephemeral: true
+            });
         }
 
         guild.logs.channels.splice(channelIndex, 1);
@@ -329,13 +326,11 @@ module.exports = {
 
         await guild.save();
 
-        const successResponse = await ComponentsV3.successEmbed(
-            interaction.guild.id,
-            'commands.setlogs.channel_removed',
-            { channel: channel.toString() }
-        );
-
-        await interaction.reply(successResponse);
+        const lang = guild.language || 'fr';
+        await interaction.reply({
+            content: LanguageManager.get(lang, 'commands.setlogs.channel_removed', { channel: channel.toString() }),
+            ephemeral: true
+        });
     },
 
     async handleDisable(interaction, guild) {
@@ -353,8 +348,10 @@ module.exports = {
         
         await guild.save();
 
-        const successResponse = await ComponentsV3.successEmbed(interaction.guild.id, 'commands.setlogs.disabled_success', {}, guild.language);
-        await interaction.reply(successResponse);
+        await interaction.reply({
+            content: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.disabled_success'),
+            ephemeral: true
+        });
     },
 
     async handleConfig(interaction, guild) {
@@ -380,29 +377,24 @@ module.exports = {
         }
 
         const typeNames = {
-            voice: '🔊 Voice (Vocal)',
-            message: '💬 Message',
-            channels: '📁 Channel (Salon)',
-            roles: '🎭 Role (Rôle)',
-            server: '⚙️ Server (Serveur)'
+            voice: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.types.voice'),
+            message: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.types.message'),
+            channels: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.types.channels'),
+            roles: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.types.roles'),
+            server: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.types.server')
         };
 
-        const successResponse = await ComponentsV3.successEmbed(
-            interaction.guild.id, 
-            'commands.setlogs.config_success',
-            {
+        await interaction.reply({
+            content: LanguageManager.get(guild.language || 'fr', 'commands.setlogs.config_success', {
                 type: typeNames[type],
                 status: enabled ? '✅' : '❌'
-            },
-            guild.language
-        );
-        
-        await interaction.reply(successResponse);
+            }),
+            ephemeral: true
+        });
     },
 
     async handleStatus(interaction, guild) {
-        const { EmbedBuilder } = require('discord.js');
-        const LanguageManager = require('../../utils/languageManager');
+        const lang = guild.language || 'fr';
         
         // S'assurer que tous les utilisateurs ont des warnings comme tableau et non comme nombre
         if (guild.users && guild.users.length > 0) {
@@ -415,7 +407,7 @@ module.exports = {
         }
         
         const embed = new EmbedBuilder()
-            .setTitle(LanguageManager.get(guild.language || 'fr', 'commands.setlogs.status_title'))
+            .setTitle(LanguageManager.get(lang, 'commands.setlogs.status_title'))
             .setColor(guild.logs.enabled ? 0x00ff00 : 0xff0000)
             .setTimestamp();
 
@@ -466,6 +458,6 @@ module.exports = {
             });
         }
 
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed], ephemeral: true });
     }
 };

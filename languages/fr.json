@@ -204,6 +204,7 @@
             "no_permission": "❌ Vous n'avez pas la permission de gérer le serveur.",
             "error": "❌ Une erreur est survenue lors de la configuration des logs.",
             "disabled_success": "✅ Logs désactivés pour ce serveur.",
+            "enabled_success": "✅ Logs activés dans {channel}\n\n**Types de logs actifs :**\n🔊 Vocal : {voice}\n💬 Message : {message}\n📁 Salons : {channels}\n🎭 Rôles : {roles}\n⚙️ Serveur : {server}",
             "config_success": "✅ Type de log **{type}** {status}.",
             "status_title": "📊 Configuration des Logs",
             "status_description": "Affiche la configuration actuelle des logs",
@@ -211,7 +212,9 @@
             "channel_set_success": "✅ Canal {channel} configuré pour les types: {types}",
             "channel_removed_success": "✅ Canal {channel} supprimé des logs",
             "channel_configured": "✅ Canal {channel} configuré pour les types de logs: {types}",
-            "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs."
+            "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs.",
+            "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
+            "channel_removed": "✅ Canal {channel} supprimé de la configuration des logs."
         },
         "setlang": {
             "description": "Changer la langue du bot",
