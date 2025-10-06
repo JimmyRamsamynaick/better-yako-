@@ -106,6 +106,10 @@ module.exports = {
         const subcommand = interaction.options.getSubcommand();
 
         try {
+            // Déférer la réponse pour éviter l'expiration et répondre ensuite via editReply
+            try {
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+            } catch (_) {}
             // Correction: Utiliser updateMany pour corriger les warnings avant de récupérer les données
             await Guild.updateMany(
                 { guildId: interaction.guild.id, "users.warnings": { $type: "number" } },
@@ -139,7 +143,11 @@ module.exports = {
         } catch (error) {
             console.error('Erreur setlogs:', error);
             const errorEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.error');
-            await interaction.reply(errorEmbed);
+            if (!interaction.deferred && !interaction.replied) {
+                await interaction.reply(errorEmbed);
+            } else {
+                try { await interaction.editReply(errorEmbed); } catch (_) {}
+            }
         }
     },
 
@@ -151,9 +159,40 @@ module.exports = {
         
         const lang = guild.language || 'fr';
         
-        // Valider les types fournis
+        // Valider les types fournis (support des alias FR/EN et accents)
         const validTypes = ['voice', 'message', 'channels', 'roles', 'server'];
-        const requestedTypes = typesString.split(',').map(t => t.trim().toLowerCase());
+        const normalize = (s) => s
+            .trim()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, ''); // retirer les accents
+
+        const aliasMap = {
+            // EN (canonique)
+            voice: 'voice',
+            message: 'message',
+            channel: 'channels',
+            channels: 'channels',
+            role: 'roles',
+            roles: 'roles',
+            server: 'server',
+            // FR
+            vocal: 'voice',
+            voix: 'voice',
+            messages: 'message',
+            salon: 'channels',
+            salons: 'channels',
+            role: 'roles', // déjà ci-dessus, conservé
+            roles: 'roles', // déjà ci-dessus, conservé
+            // avec accents normalisés
+            "role": 'roles', // role (sans accent)
+            "roles": 'roles',
+            "role": 'roles',
+            "serveur": 'server'
+        };
+
+        const rawTokens = typesString.split(',').map(normalize).filter(t => t.length > 0);
+        const requestedTypes = rawTokens.map(t => aliasMap[t] || t);
         const invalidTypes = requestedTypes.filter(type => !validTypes.includes(type));
         
         if (invalidTypes.length > 0) {
@@ -171,13 +210,22 @@ module.exports = {
                 types: invalidTypes.join(', '),
                 validTypes: validTypesTranslated
             });
-            return interaction.reply(errEmbed);
+            return interaction.editReply(errEmbed);
         }
 
         // Initialiser le tableau channels s'il n'existe pas
         if (!guild.logs.channels) {
             guild.logs.channels = [];
         }
+
+        // Avant d'activer sur ce canal, désactiver ces types sur tous les autres canaux
+        guild.logs.channels.forEach(ch => {
+            if (ch.channelId !== channel.id) {
+                requestedTypes.forEach(type => {
+                    if (typeof ch.types[type] !== 'undefined') ch.types[type] = false;
+                });
+            }
+        });
 
         // Vérifier si le canal existe déjà
         const existingChannelIndex = guild.logs.channels.findIndex(ch => ch.channelId === channel.id);
@@ -242,7 +290,7 @@ module.exports = {
             types: enabledTypes
         });
         const configuredEmbed = await ComponentsV3.successEmbed(interaction.guild.id, 'common.success', configuredMsg);
-        await interaction.reply(configuredEmbed);
+        await interaction.editReply(configuredEmbed);
     },
 
     async handleRemoveChannel(interaction, guild) {
@@ -251,7 +299,7 @@ module.exports = {
         if (!guild.logs.channels || guild.logs.channels.length === 0) {
             const lang = guild.language || 'fr';
             const errEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.no_channels_configured');
-            return interaction.reply(errEmbed);
+            return interaction.editReply(errEmbed);
         }
 
         const channelIndex = guild.logs.channels.findIndex(ch => ch.channelId === channel.id);
@@ -259,7 +307,7 @@ module.exports = {
         if (channelIndex === -1) {
             const lang = guild.language || 'fr';
             const errEmbed = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.setlogs.channel_not_found', { channel: channel.toString() });
-            return interaction.reply(errEmbed);
+            return interaction.editReply(errEmbed);
         }
 
         guild.logs.channels.splice(channelIndex, 1);
@@ -278,7 +326,7 @@ module.exports = {
         const lang = guild.language || 'fr';
         const removedMsg = LanguageManager.get(lang, 'commands.setlogs.channel_removed', { channel: channel.toString() });
         const removedEmbed = await ComponentsV3.successEmbed(interaction.guild.id, 'common.success', removedMsg);
-        await interaction.reply(removedEmbed);
+        await interaction.editReply(removedEmbed);
     },
 
     async handleDisable(interaction, guild) {
@@ -298,7 +346,7 @@ module.exports = {
 
         const disabledMsg = LanguageManager.get(guild.language || 'fr', 'commands.setlogs.disabled_success');
         const disabledEmbed = await ComponentsV3.successEmbed(interaction.guild.id, 'common.success', disabledMsg);
-        await interaction.reply(disabledEmbed);
+        await interaction.editReply(disabledEmbed);
     },
 
     async handleConfig(interaction, guild) {
@@ -336,7 +384,7 @@ module.exports = {
             status: enabled ? '✅' : '❌'
         });
         const configEmbed = await ComponentsV3.successEmbed(interaction.guild.id, 'common.success', configMsg);
-        await interaction.reply(configEmbed);
+        await interaction.editReply(configEmbed);
     },
 
     async handleStatus(interaction, guild) {
@@ -415,10 +463,10 @@ module.exports = {
                 { type: 'text', content }
             ],
             addDividers: true,
-            ephemeral: true
+            // L'éphémère est géré via deferReply(flags: Ephemeral)
         });
 
-        await interaction.reply({
+        await interaction.editReply({
             ...statusPayload,
             flags: MessageFlags.IsComponentsV2
         });
