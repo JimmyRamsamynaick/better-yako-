@@ -341,6 +341,22 @@ module.exports = {
 
     async handleStatus(interaction, guild) {
         const lang = guild.language || 'fr';
+
+        // Sécuriser la structure des logs pour éviter les erreurs
+        if (!guild.logs) {
+            guild.logs = {
+                enabled: false,
+                channelId: null,
+                types: { voice: false, message: false, channels: false, roles: false, server: false },
+                channels: []
+            };
+        }
+        if (!guild.logs.types) {
+            guild.logs.types = { voice: false, message: false, channels: false, roles: false, server: false };
+        }
+        if (!Array.isArray(guild.logs.channels)) {
+            guild.logs.channels = [];
+        }
         
         // S'assurer que tous les utilisateurs ont des warnings comme tableau et non comme nombre
         if (guild.users && guild.users.length > 0) {
