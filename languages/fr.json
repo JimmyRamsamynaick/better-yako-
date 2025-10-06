@@ -209,6 +209,13 @@
             "status_title": "📊 Configuration des Logs",
             "status_description": "Affiche la configuration actuelle des logs",
             "invalid_types": "❌ Types de logs invalides. Types disponibles: {validTypes}",
+            "types": {
+                "voice": "🔊 Vocal",
+                "message": "💬 Message",
+                "channels": "📁 Salons",
+                "roles": "🎭 Rôles",
+                "server": "⚙️ Serveur"
+            },
             "channel_set_success": "✅ Canal {channel} configuré pour les types: {types}",
             "channel_removed_success": "✅ Canal {channel} supprimé des logs",
             "channel_configured": "✅ Canal {channel} configuré pour les types de logs: {types}",

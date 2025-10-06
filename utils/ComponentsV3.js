@@ -19,7 +19,7 @@ class ComponentsV3 {
      * @param {boolean} options.addDividers - Ajouter des séparateurs (défaut: true)
      * @returns {Object} Embed au format components
      */
-    static createEmbed(options) {
+    static async createEmbed(options) {
         const {
             guildId,
             imageUrl,
@@ -34,6 +34,19 @@ class ComponentsV3 {
             footerPlaceholders = {},
             addDividers = true
         } = options;
+
+        // Déterminer la langue du serveur si possible
+        let lang = 'fr';
+        if (guildId) {
+            try {
+                const guildData = await Guild.findOne({ guildId });
+                if (guildData && guildData.language) {
+                    lang = guildData.language;
+                }
+            } catch (_) {
+                // garder 'fr' par défaut en cas d'erreur
+            }
+        }
 
         const components = [];
 
@@ -51,7 +64,7 @@ class ComponentsV3 {
 
         // Ajouter le titre si fourni
         if (titleKey) {
-            const title = LanguageManager.get('fr', titleKey, titlePlaceholders);
+            const title = LanguageManager.get(lang, titleKey, titlePlaceholders);
             components.push({
                 type: 10,
                 content: title
@@ -69,7 +82,7 @@ class ComponentsV3 {
 
         // Ajouter le contenu principal si fourni
         if (contentKey) {
-            const content = LanguageManager.get('fr', contentKey, contentPlaceholders);
+            const content = LanguageManager.get(lang, contentKey, contentPlaceholders);
             components.push({
                 type: 10,
                 content: content
@@ -85,7 +98,7 @@ class ComponentsV3 {
                 });
             } else if (item.type === 'text') {
                 const text = item.key ? 
-                    LanguageManager.get('fr', item.key, item.placeholders || {}) : 
+                    LanguageManager.get(lang, item.key, item.placeholders || {}) : 
                     item.content;
                 components.push({
                     type: 10,
@@ -108,17 +121,17 @@ class ComponentsV3 {
                     type: 3,
                     custom_id: menu.customId,
                     placeholder: menu.placeholderKey ? 
-                        LanguageManager.get('fr', menu.placeholderKey) : 
+                        LanguageManager.get(lang, menu.placeholderKey) : 
                         menu.placeholder,
                     min_values: menu.minValues || 0,
                     max_values: menu.maxValues || 1,
                     options: menu.options.map(option => ({
                         label: option.labelKey ? 
-                            LanguageManager.get('fr', option.labelKey) : 
+                            LanguageManager.get(lang, option.labelKey) : 
                             option.label,
                         value: option.value,
                         description: option.descriptionKey ? 
-                            LanguageManager.get('fr', option.descriptionKey) : 
+                            LanguageManager.get(lang, option.descriptionKey) : 
                             option.description,
                         emoji: option.emoji
                     }))
@@ -133,7 +146,7 @@ class ComponentsV3 {
                 const rowButtons = buttons.slice(i, i + 5).map(button => ({
                     type: 2,
                     label: button.labelKey ? 
-                        LanguageManager.get('fr', button.labelKey) : 
+                        LanguageManager.get(lang, button.labelKey) : 
                         button.label,
                     style: button.style || 1,
                     custom_id: button.customId,
@@ -160,7 +173,7 @@ class ComponentsV3 {
 
         // Ajouter le footer si fourni
         if (footerKey) {
-            const footer = LanguageManager.get('fr', footerKey, footerPlaceholders);
+            const footer = LanguageManager.get(lang, footerKey, footerPlaceholders);
             components.push({
                 type: 10,
                 content: `-# ${footer}`
@@ -219,7 +232,8 @@ class ComponentsV3 {
         const lang = guildData?.language || 'fr';
         
         const errorMessage = LanguageManager.get(lang, errorKey, placeholders);
-        
+        const errorLabel = lang === 'en' ? 'Error' : 'Erreur';
+
         return {
             flags: 32768,
             components: [{
@@ -227,7 +241,7 @@ class ComponentsV3 {
                 components: [
                     {
                         type: 10,
-                        content: `## ❌ Erreur\n\n${errorMessage}`
+                        content: `## ❌ ${errorLabel}\n\n${errorMessage}`
                     }
                 ]
             }]
@@ -246,7 +260,9 @@ class ComponentsV3 {
         const guildData = await Guild.findOne({ guildId: guildId });
         const lang = guildData?.language || 'fr';
         
-        const title = LanguageManager.get(lang, titleKey) || '✅ Succès';
+        const rawTitle = LanguageManager.get(lang, titleKey);
+        const fallbackTitle = lang === 'en' ? '✅ Success' : '✅ Succès';
+        const title = (typeof rawTitle === 'string' && !rawTitle.startsWith('[MISSING:')) ? rawTitle : fallbackTitle;
         
         return {
             flags: 32768,
@@ -275,6 +291,7 @@ class ComponentsV3 {
         const lang = guildData?.language || 'fr';
         
         const warningMessage = LanguageManager.get(lang, warningKey, placeholders);
+        const warningLabel = lang === 'en' ? 'Warning' : 'Avertissement';
         
         return {
             flags: 32768,
@@ -283,7 +300,7 @@ class ComponentsV3 {
                 components: [
                     {
                         type: 10,
-                        content: `## ⚠️ Avertissement\n\n${warningMessage}`
+                        content: `## ⚠️ ${warningLabel}\n\n${warningMessage}`
                     }
                 ]
             }]
