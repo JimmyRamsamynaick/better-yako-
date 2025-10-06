@@ -45,8 +45,14 @@ module.exports = {
         const duration = interaction.options.getString('duration');
         const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
 
-        // Vérifier les permissions de l'utilisateur
-        if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        // Vérifier les permissions de l'utilisateur avec overrides de rôles
+        const hasModerate = interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers);
+        const hasManageRoles = interaction.member.permissions.has(PermissionFlagsBits.ManageRoles);
+        const hasRoleOverride = interaction.member.roles.cache.some(r => {
+            const n = r.name?.toLowerCase?.() || '';
+            return n === 'perm-mute' || n === 'staff';
+        });
+        if (!hasModerate && !hasManageRoles && !hasRoleOverride) {
             const noPermMessage = LanguageManager.get(lang, 'errors.no_permission') || '❌ Vous n\'avez pas la permission d\'utiliser cette commande.';
             return await interaction.reply({ content: noPermMessage, ephemeral: true });
         }

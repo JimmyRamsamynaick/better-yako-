@@ -1,5 +1,5 @@
 // events/interactionCreate.js
-const { Collection } = require('discord.js');
+const { Collection, MessageFlags } = require('discord.js');
 const BotEmbeds = require('../utils/embeds');
 const helpCommand = require('../commands/public/help');
 
@@ -14,6 +14,8 @@ module.exports = {
                 return;
             }
         }
+
+        // Suppression du support des boutons/modals tempvoice
         
         if (!interaction.isChatInputCommand()) return;
 
@@ -44,21 +46,34 @@ module.exports = {
         setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
         try {
+            console.log('[Handler] Before execute:', { deferred: interaction.deferred, replied: interaction.replied, cmd: command.data.name });
+            // Laisser chaque commande gérer son propre acquittement (deferReply)
             await command.execute(interaction);
         } catch (error) {
             console.error('Erreur lors de l\'exécution de la commande:', error);
-            
-            // Vérifier si l'interaction n'a pas déjà été traitée
-            if (!interaction.replied && !interaction.deferred) {
+            const errorEmbed = BotEmbeds.createCommandErrorEmbed();
+
+            // Si la commande a déjà acquitté ou répondu, éviter le doublon
+            if (interaction.deferred || interaction.replied) {
+                console.warn('[Handler] Interaction déjà acquittée, on évite le message d\'erreur global.');
+                return;
+            }
+
+            // Sinon, tenter une réponse éphémère puis basculer sur editReply/followUp si nécessaire
+            try {
+                await interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
+            } catch (replyError) {
+                console.error('Réponse directe impossible, tentative editReply:', replyError.message);
                 try {
-                    const errorEmbed = BotEmbeds.createCommandErrorEmbed();
-                    await interaction.reply({ ...errorEmbed, ephemeral: true });
-                } catch (replyError) {
-                    console.error('Impossible de répondre à l\'interaction:', replyError.message);
-                    // Ne pas essayer de répondre à nouveau si l'interaction a expiré ou est invalide
+                    await interaction.editReply({ ...errorEmbed });
+                } catch (editError) {
+                    console.error('Impossible d\'envoyer l\'erreur via editReply:', editError.message);
+                    try {
+                        await interaction.followUp({ ...errorEmbed, flags: MessageFlags.Ephemeral });
+                    } catch (followError) {
+                        console.error('Échec du followUp pour l\'erreur:', followError.message);
+                    }
                 }
-            } else {
-                console.log('Interaction déjà traitée, pas de réponse d\'erreur envoyée');
             }
         }
     }

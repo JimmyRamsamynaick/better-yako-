@@ -67,6 +67,7 @@ const guildSchema = new Schema({
             channels: { type: Boolean, default: true }
         }
     },
+    // tempVoice supprimé
     users: [userSchema],
     premium: {
         type: Boolean,

@@ -265,13 +265,69 @@
             "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
             "channel_removed": "✅ Canal {channel} supprimé de la configuration des logs."
         },
-        "setlang": {
+    "setlang": {
             "description": "Changer la langue du bot",
             "language_option": "Langue à utiliser",
             "success": "✅ Langue du bot changée en **{language}**.",
             "success_title": "✅ Langue modifiée",
             "error": "❌ Une erreur est survenue lors du changement de langue.",
             "error_title": "❌ Erreur de changement de langue"
+        }
+    },
+    "tempvoice": {
+        "description": "Configurer les salons vocaux temporaires",
+        "addhub_description": "Créer ou modifier un salon hub",
+        "removehub_description": "Supprimer un salon hub",
+        "setcategory_description": "Définir la catégorie pour les salons temporaires",
+        "defaults_description": "Configurer les valeurs par défaut",
+        "roles_description": "Gérer les rôles autorisés/interdits pour l'embed",
+        "embed_description": "Activer/Désactiver l'embed de configuration",
+
+        "hub_channel_option": "Salon vocal hub",
+        "category_option": "Catégorie des salons temporaires",
+        "text_channel_option": "Salon texte lié à l'embed",
+        "name_template_option": "Modèle de nom (ex: {username} • {count})",
+        "limit_option": "Limite d'utilisateurs (0-99)",
+        "permanent_option": "Permanent par défaut",
+        "allow_option": "Autoriser le rôle",
+        "deny_option": "Interdire le rôle",
+        "role_option": "Rôle à gérer",
+        "embed_enabled_option": "Activer l'embed",
+
+        "buttons": {
+            "rename": "Renommer",
+            "limit": "Définir la limite",
+            "permanent": "Basculer permanent"
+        },
+
+        "config_title": "⚙️ Configuration du salon temporaire",
+        "config_content": "Utilisez les boutons ci-dessous pour gérer votre salon temporaire.",
+        "config_footer": "Les changements sont appliqués instantanément.",
+
+        "msg": {
+            "hub_created": "✅ Hub configuré: {channel}",
+            "hub_removed": "✅ Hub supprimé: {channel}",
+            "category_set": "✅ Catégorie des salons temporaires: {category}",
+            "text_channel_set": "✅ Salon texte lié: {channel}",
+            "defaults_set": "✅ Valeurs par défaut mises à jour",
+            "role_allowed_added": "✅ Rôle autorisé ajouté: {role}",
+            "role_denied_added": "✅ Rôle interdit ajouté: {role}",
+            "role_allowed_removed": "✅ Rôle autorisé retiré: {role}",
+            "role_denied_removed": "✅ Rôle interdit retiré: {role}",
+            "embed_enabled": "✅ Embed de configuration activé",
+            "embed_disabled": "✅ Embed de configuration désactivé",
+            "channel_created": "✅ Salon temporaire créé: {channel}",
+            "channel_deleted": "🗑️ Salon temporaire supprimé: {channel}"
+        },
+
+        "errors": {
+            "no_category": "❌ Aucune catégorie configurée pour les salons temporaires.",
+            "not_hub": "❌ Ce salon n'est pas un hub.",
+            "not_authorized": "❌ Vous n'avez pas l'autorisation d'utiliser l'embed.",
+            "invalid_limit": "❌ Limite invalide (0-99).",
+            "not_found": "❌ Élément introuvable.",
+            "no_text_channel": "❌ Aucun salon texte lié n'est configuré.",
+            "no_temp_channel": "❌ Ce salon n'est pas géré par le système temporaire."
         }
     },
     "ping": {

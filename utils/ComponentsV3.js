@@ -6,6 +6,7 @@ class ComponentsV3 {
      * Crée un embed avec le nouveau format components
      * @param {Object} options - Options pour l'embed
      * @param {string} options.guildId - ID du serveur pour la langue
+     * @param {string} options.langOverride - Forcer une langue spécifique (optionnel)
      * @param {string} options.imageUrl - URL de l'image d'en-tête (optionnel)
      * @param {string} options.titleKey - Clé de traduction pour le titre
      * @param {Object} options.titlePlaceholders - Variables pour le titre (optionnel)
@@ -33,12 +34,15 @@ class ComponentsV3 {
             footerKey,
             footerPlaceholders = {},
             addDividers = true,
-            ephemeral = true
+            ephemeral = true,
+            langOverride
         } = options;
 
         // Déterminer la langue du serveur si possible
         let lang = 'fr';
-        if (guildId) {
+        if (langOverride && LanguageManager.isLanguageSupported(langOverride)) {
+            lang = langOverride;
+        } else if (guildId) {
             try {
                 const guildData = await Guild.findOne({ guildId });
                 if (guildData && guildData.language) {
@@ -181,6 +185,33 @@ class ComponentsV3 {
             });
         }
 
+        // Si non-éphémère, retourner un embed classique compatible avec les messages publics
+        if (!ephemeral) {
+            const embed = {};
+            if (imageUrl) embed.image = { url: imageUrl };
+            if (titleKey) embed.title = LanguageManager.get(lang, titleKey, titlePlaceholders);
+
+            const descriptionParts = [];
+            if (contentKey) {
+                descriptionParts.push(LanguageManager.get(lang, contentKey, contentPlaceholders));
+            }
+            additionalContent.forEach(item => {
+                if (typeof item === 'string') {
+                    descriptionParts.push(item);
+                } else if (item.type === 'text') {
+                    const text = item.key ? 
+                        LanguageManager.get(lang, item.key, item.placeholders || {}) : 
+                        item.content;
+                    descriptionParts.push(text);
+                }
+            });
+            if (descriptionParts.length > 0) embed.description = descriptionParts.join('\n');
+            if (footerKey) embed.footer = { text: LanguageManager.get(lang, footerKey, footerPlaceholders) };
+
+            return { embeds: [embed] };
+        }
+
+        // Éphémère: utiliser Components V3 (type 17)
         const payload = {
             components: [{
                 type: 17,
@@ -203,10 +234,15 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static async infoEmbed(guildId, titleKey, contentKey, placeholders = {}, ephemeral = true) {
+    static async infoEmbed(guildId, titleKey, contentKey, placeholders = {}, ephemeral = true, langOverride = null) {
         // Récupérer la langue du serveur
-        const guildData = await Guild.findOne({ guildId: guildId });
-        const lang = guildData?.language || 'fr';
+        let lang = 'fr';
+        if (langOverride && LanguageManager.isLanguageSupported(langOverride)) {
+            lang = langOverride;
+        } else {
+            const guildData = await Guild.findOne({ guildId: guildId });
+            lang = guildData?.language || 'fr';
+        }
         
         const title = LanguageManager.get(lang, titleKey, placeholders);
         const content = LanguageManager.get(lang, contentKey, placeholders);
@@ -233,10 +269,15 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static async errorEmbed(guildId, errorKey, placeholders = {}, ephemeral = true) {
+    static async errorEmbed(guildId, errorKey, placeholders = {}, ephemeral = true, langOverride = null) {
         // Récupérer la langue du serveur
-        const guildData = await Guild.findOne({ guildId: guildId });
-        const lang = guildData?.language || 'fr';
+        let lang = 'fr';
+        if (langOverride && LanguageManager.isLanguageSupported(langOverride)) {
+            lang = langOverride;
+        } else {
+            const guildData = await Guild.findOne({ guildId: guildId });
+            lang = guildData?.language || 'fr';
+        }
         
         const errorMessage = LanguageManager.get(lang, errorKey, placeholders);
         const errorLabel = lang === 'en' ? 'Error' : 'Erreur';
@@ -263,10 +304,15 @@ class ComponentsV3 {
      * @param {string} message - Message de succès déjà formaté
      * @returns {Object} Message au format components
      */
-    static async successEmbed(guildId, titleKey, message, ephemeral = true) {
+    static async successEmbed(guildId, titleKey, message, ephemeral = true, langOverride = null) {
         // Récupérer la langue du serveur
-        const guildData = await Guild.findOne({ guildId: guildId });
-        const lang = guildData?.language || 'fr';
+        let lang = 'fr';
+        if (langOverride && LanguageManager.isLanguageSupported(langOverride)) {
+            lang = langOverride;
+        } else {
+            const guildData = await Guild.findOne({ guildId: guildId });
+            lang = guildData?.language || 'fr';
+        }
         
         const rawTitle = LanguageManager.get(lang, titleKey);
         const fallbackTitle = lang === 'en' ? '✅ Success' : '✅ Succès';
@@ -294,10 +340,15 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static async warningEmbed(guildId, warningKey, placeholders = {}, ephemeral = true) {
+    static async warningEmbed(guildId, warningKey, placeholders = {}, ephemeral = true, langOverride = null) {
         // Récupérer la langue du serveur
-        const guildData = await Guild.findOne({ guildId: guildId });
-        const lang = guildData?.language || 'fr';
+        let lang = 'fr';
+        if (langOverride && LanguageManager.isLanguageSupported(langOverride)) {
+            lang = langOverride;
+        } else {
+            const guildData = await Guild.findOne({ guildId: guildId });
+            lang = guildData?.language || 'fr';
+        }
         
         const warningMessage = LanguageManager.get(lang, warningKey, placeholders);
         const warningLabel = lang === 'en' ? 'Warning' : 'Avertissement';
