@@ -416,41 +416,45 @@ module.exports = {
             });
         }
         
-        const header = `**${guild.logs.enabled ? '✅ Activé' : '❌ Désactivé'}**`;
+        const header = `**${guild.logs.enabled 
+            ? LanguageManager.get(lang, 'commands.setlogs.status.enabled_label') 
+            : LanguageManager.get(lang, 'commands.setlogs.status.disabled_label')}**`;
 
         const parts = [];
-        parts.push(`**État global:** ${header}`);
+        parts.push(`**${LanguageManager.get(lang, 'commands.setlogs.status.global_state')}** ${header}`);
 
         if (guild.logs.channelId) {
-            parts.push(`**Canal principal:** <#${guild.logs.channelId}>`);
+            parts.push(`**${LanguageManager.get(lang, 'commands.setlogs.status.main_channel')}** <#${guild.logs.channelId}>`);
         }
 
-        parts.push('**Types de logs globaux:**');
-        parts.push(`🔊 Voice: ${guild.logs.types.voice ? '✅' : '❌'}`);
-        parts.push(`💬 Message: ${guild.logs.types.message ? '✅' : '❌'}`);
-        parts.push(`📁 Channels: ${guild.logs.types.channels ? '✅' : '❌'}`);
-        parts.push(`🎭 Roles: ${guild.logs.types.roles ? '✅' : '❌'}`);
-        parts.push(`⚙️ Server: ${guild.logs.types.server ? '✅' : '❌'}`);
+        parts.push(`**${LanguageManager.get(lang, 'commands.setlogs.status.global_types')}**`);
+        parts.push(`${LanguageManager.get(lang, 'commands.setlogs.types.voice')}: ${guild.logs.types.voice ? '✅' : '❌'}`);
+        parts.push(`${LanguageManager.get(lang, 'commands.setlogs.types.message')}: ${guild.logs.types.message ? '✅' : '❌'}`);
+        parts.push(`${LanguageManager.get(lang, 'commands.setlogs.types.channels')}: ${guild.logs.types.channels ? '✅' : '❌'}`);
+        parts.push(`${LanguageManager.get(lang, 'commands.setlogs.types.roles')}: ${guild.logs.types.roles ? '✅' : '❌'}`);
+        parts.push(`${LanguageManager.get(lang, 'commands.setlogs.types.server')}: ${guild.logs.types.server ? '✅' : '❌'}`);
 
         parts.push('');
         if (guild.logs.channels && guild.logs.channels.length > 0) {
-            parts.push('**Canaux spécifiques configurés:**');
+            parts.push(`**${LanguageManager.get(lang, 'commands.setlogs.status.configured_channels')}**`);
             guild.logs.channels.forEach((logChannel, index) => {
                 const channel = interaction.guild.channels.cache.get(logChannel.channelId);
-                const channelName = channel ? `<#${logChannel.channelId}>` : `Canal supprimé (${logChannel.channelId})`;
+                const channelName = channel 
+                    ? `<#${logChannel.channelId}>` 
+                    : `${LanguageManager.get(lang, 'commands.setlogs.status.deleted_channel', { id: logChannel.channelId })}`;
                 parts.push(`\n**${index + 1}.** ${channelName}`);
-                parts.push(`   🔊 Voice: ${logChannel.types.voice ? '✅' : '❌'}  💬 Message: ${logChannel.types.message ? '✅' : '❌'}  📁 Channels: ${logChannel.types.channels ? '✅' : '❌'}`);
-                parts.push(`   🎭 Roles: ${logChannel.types.roles ? '✅' : '❌'}  ⚙️ Server: ${logChannel.types.server ? '✅' : '❌'}`);
+                parts.push(`   ${LanguageManager.get(lang, 'commands.setlogs.types.voice')}: ${logChannel.types.voice ? '✅' : '❌'}  ${LanguageManager.get(lang, 'commands.setlogs.types.message')}: ${logChannel.types.message ? '✅' : '❌'}  ${LanguageManager.get(lang, 'commands.setlogs.types.channels')}: ${logChannel.types.channels ? '✅' : '❌'}`);
+                parts.push(`   ${LanguageManager.get(lang, 'commands.setlogs.types.roles')}: ${logChannel.types.roles ? '✅' : '❌'}  ${LanguageManager.get(lang, 'commands.setlogs.types.server')}: ${logChannel.types.server ? '✅' : '❌'}`);
             });
         } else {
-            parts.push('**Canaux spécifiques:** Aucun configuré');
+            parts.push(`**${LanguageManager.get(lang, 'commands.setlogs.status.no_specific_channels')}**`);
         }
 
         parts.push('');
-        parts.push('**Commandes utiles:**');
-        parts.push('• `/setlogs setchannel` - Configurer un canal spécifique');
-        parts.push('• `/setlogs config` - Modifier les types de logs globaux');
-        parts.push('• `/setlogs removechannel` - Supprimer un canal spécifique');
+        parts.push(`**${LanguageManager.get(lang, 'commands.setlogs.status.useful_commands')}**`);
+        parts.push(LanguageManager.get(lang, 'commands.setlogs.status.cmd_setchannel'));
+        parts.push(LanguageManager.get(lang, 'commands.setlogs.status.cmd_config'));
+        parts.push(LanguageManager.get(lang, 'commands.setlogs.status.cmd_removechannel'));
 
         const content = parts.join('\n');
         const titleKey = 'commands.setlogs.status_title';

@@ -211,6 +211,20 @@
             "config_success": "✅ Type de log **{type}** {status}.",
             "status_title": "📊 Configuration des Logs",
             "status_description": "Affiche la configuration actuelle des logs",
+            "status": {
+                "global_state": "État global:",
+                "main_channel": "Canal principal:",
+                "global_types": "Types de logs globaux:",
+                "configured_channels": "Canaux spécifiques configurés:",
+                "no_specific_channels": "Canaux spécifiques: Aucun configuré",
+                "useful_commands": "Commandes utiles:",
+                "cmd_setchannel": "• `/setlogs setchannel` - Configurer un canal spécifique",
+                "cmd_config": "• `/setlogs config` - Modifier les types de logs globaux",
+                "cmd_removechannel": "• `/setlogs removechannel` - Supprimer un canal spécifique",
+                "enabled_label": "✅ Activé",
+                "disabled_label": "❌ Désactivé",
+                "deleted_channel": "Canal supprimé ({id})"
+            },
             "invalid_types": "❌ Types de logs invalides. Types disponibles: {validTypes}",
             "types": {
                 "voice": "🔊 Vocal",
