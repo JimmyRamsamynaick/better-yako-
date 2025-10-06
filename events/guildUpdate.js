@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'guildUpdate',
@@ -21,22 +22,23 @@ module.exports = {
             }
             if (!logChannel) return;
 
+            const lang = guildData.language || 'fr';
             const changes = [];
 
             if (oldGuild.name !== newGuild.name) {
-                changes.push({ name: '📝 Nom du serveur', value: `\`${oldGuild.name}\` → \`${newGuild.name}\``, inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.server.updated.fields.name'), value: `\`${oldGuild.name}\` → \`${newGuild.name}\``, inline: false });
             }
 
             if (oldGuild.icon !== newGuild.icon) {
-                const oldIcon = oldGuild.iconURL({ size: 128 }) || '*Aucune*';
-                const newIcon = newGuild.iconURL({ size: 128 }) || '*Aucune*';
-                changes.push({ name: '🖼️ Icône', value: `${oldIcon} → ${newIcon}`, inline: false });
+                const oldIcon = oldGuild.iconURL({ size: 128 }) || LanguageManager.get(lang, 'common.none');
+                const newIcon = newGuild.iconURL({ size: 128 }) || LanguageManager.get(lang, 'common.none');
+                changes.push({ name: LanguageManager.get(lang, 'events.server.updated.fields.icon'), value: `${oldIcon} → ${newIcon}`, inline: false });
             }
 
             if (changes.length === 0) return; // Rien à signaler
 
             const embed = new EmbedBuilder()
-                .setTitle('⚙️ Serveur modifié')
+                .setTitle(LanguageManager.get(lang, 'events.server.updated.title'))
                 .setColor(0x5865F2)
                 .addFields(...changes)
                 .setTimestamp()

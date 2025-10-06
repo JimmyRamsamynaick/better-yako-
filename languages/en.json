@@ -13,7 +13,10 @@
         "message_count": "Message count",
         "targeted_user": "Targeted user",
         "error": "Error",
-        "details": "Details"
+        "details": "Details",
+        "yes": "Yes",
+        "no": "No",
+        "none": "None"
     },
     "welcome": {
         "title": "👋 Thanks for adding me!",
@@ -264,6 +267,49 @@
         "cooldown": {
             "title": "⏰ Cooldown",
             "message": "You must wait {timeLeft} seconds before using this command again."
+        }
+    },
+    "events": {
+        "roles": {
+            "created": {
+                "title": "🎭 New role created",
+                "fields": {
+                    "role": "Role",
+                    "color": "Color",
+                    "position": "Position",
+                    "mentionable": "Mentionable"
+                }
+            },
+            "deleted": {
+                "title": "🎭 Role deleted",
+                "fields": {
+                    "role": "Role",
+                    "color": "Color",
+                    "position": "Position"
+                }
+            },
+            "updated": {
+                "title": "🎭 Role updated",
+                "fields": {
+                    "role": "Role",
+                    "name": "Name",
+                    "color": "Color",
+                    "hoist": "Hoist",
+                    "mentionable": "Mentionable",
+                    "position": "Position",
+                    "perms_added": "Permissions added",
+                    "perms_removed": "Permissions removed"
+                }
+            }
+        },
+        "server": {
+            "updated": {
+                "title": "⚙️ Server updated",
+                "fields": {
+                    "name": "Server name",
+                    "icon": "Server icon"
+                }
+            }
         }
     },
     "logs": {

@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'roleUpdate',
@@ -20,22 +21,23 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
             const changes = [];
 
             if (oldRole.name !== newRole.name) {
-                changes.push({ name: '📝 Nom', value: `\`${oldRole.name}\` → \`${newRole.name}\``, inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.name'), value: `\`${oldRole.name}\` → \`${newRole.name}\``, inline: false });
             }
             if (oldRole.hexColor !== newRole.hexColor) {
-                changes.push({ name: '🎨 Couleur', value: `${oldRole.hexColor} → ${newRole.hexColor}`, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.color'), value: `${oldRole.hexColor} → ${newRole.hexColor}`, inline: true });
             }
             if (oldRole.hoist !== newRole.hoist) {
-                changes.push({ name: '📌 Afficher séparément', value: `${oldRole.hoist ? 'Oui' : 'Non'} → ${newRole.hoist ? 'Oui' : 'Non'}`, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.hoist'), value: `${oldRole.hoist ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')} → ${newRole.hoist ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')}`, inline: true });
             }
             if (oldRole.mentionable !== newRole.mentionable) {
-                changes.push({ name: '🔖 Mentionnable', value: `${oldRole.mentionable ? 'Oui' : 'Non'} → ${newRole.mentionable ? 'Oui' : 'Non'}`, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.mentionable'), value: `${oldRole.mentionable ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')} → ${newRole.mentionable ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')}`, inline: true });
             }
             if (oldRole.position !== newRole.position) {
-                changes.push({ name: '📍 Position', value: `\`${oldRole.position}\` → \`${newRole.position}\``, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.position'), value: `\`${oldRole.position}\` → \`${newRole.position}\``, inline: true });
             }
 
             const oldPerms = oldRole.permissions.toArray();
@@ -44,19 +46,19 @@ module.exports = {
             const removedPerms = oldPerms.filter(p => !newPerms.includes(p));
 
             if (addedPerms.length > 0) {
-                changes.push({ name: '✅ Permissions ajoutées', value: addedPerms.join(', '), inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.perms_added'), value: addedPerms.join(', '), inline: false });
             }
             if (removedPerms.length > 0) {
-                changes.push({ name: '❌ Permissions supprimées', value: removedPerms.join(', '), inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.perms_removed'), value: removedPerms.join(', '), inline: false });
             }
 
             if (changes.length === 0) return;
 
             const embed = new EmbedBuilder()
-                .setTitle('🎭 Rôle modifié')
+                .setTitle(LanguageManager.get(lang, 'events.roles.updated.title'))
                 .setColor(0xFFA500)
                 .addFields(
-                    { name: '🎭 Rôle', value: `<@&${newRole.id}> (\`${newRole.name}\`)`, inline: false },
+                    { name: LanguageManager.get(lang, 'events.roles.updated.fields.role'), value: `<@&${newRole.id}> (\`${newRole.name}\`)`, inline: false },
                     ...changes
                 )
                 .setTimestamp()

@@ -13,7 +13,10 @@
         "message_count": "Nombre de messages",
         "targeted_user": "Utilisateur ciblé",
         "error": "Erreur",
-        "details": "Détails"
+        "details": "Détails",
+        "yes": "Oui",
+        "no": "Non",
+        "none": "Aucun"
     },
     "welcome": {
         "title": "👋 Merci de m'avoir ajouté !",
@@ -261,6 +264,49 @@
         "cooldown": {
             "title": "⏰ Cooldown",
             "message": "Vous devez attendre {timeLeft} secondes avant de réutiliser cette commande."
+        }
+    },
+    "events": {
+        "roles": {
+            "created": {
+                "title": "🎭 Nouveau rôle créé",
+                "fields": {
+                    "role": "Rôle",
+                    "color": "Couleur",
+                    "position": "Position",
+                    "mentionable": "Mentionnable"
+                }
+            },
+            "deleted": {
+                "title": "🎭 Rôle supprimé",
+                "fields": {
+                    "role": "Rôle",
+                    "color": "Couleur",
+                    "position": "Position"
+                }
+            },
+            "updated": {
+                "title": "🎭 Rôle mis à jour",
+                "fields": {
+                    "role": "Rôle",
+                    "name": "Nom",
+                    "color": "Couleur",
+                    "hoist": "Affiché séparément",
+                    "mentionable": "Mentionnable",
+                    "position": "Position",
+                    "perms_added": "Permissions ajoutées",
+                    "perms_removed": "Permissions retirées"
+                }
+            }
+        },
+        "server": {
+            "updated": {
+                "title": "⚙️ Serveur mis à jour",
+                "fields": {
+                    "name": "Nom du serveur",
+                    "icon": "Icône du serveur"
+                }
+            }
         }
     },
     "logs": {

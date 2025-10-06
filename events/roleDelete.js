@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'roleDelete',
@@ -20,13 +21,14 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
             const embed = new EmbedBuilder()
-                .setTitle('🎭 Rôle supprimé')
+                .setTitle(LanguageManager.get(lang, 'events.roles.deleted.title'))
                 .setColor(0xFF0000)
                 .addFields(
-                    { name: '🎭 Rôle', value: `\`${role.name}\``, inline: false },
-                    { name: '🎨 Couleur', value: role.hexColor || '#000000', inline: true },
-                    { name: '📍 Ancienne position', value: `${role.position}`, inline: true }
+                    { name: LanguageManager.get(lang, 'events.roles.deleted.fields.role'), value: `\`${role.name}\``, inline: false },
+                    { name: LanguageManager.get(lang, 'events.roles.deleted.fields.color'), value: role.hexColor || '#000000', inline: true },
+                    { name: LanguageManager.get(lang, 'events.roles.deleted.fields.position'), value: `${role.position}`, inline: true }
                 )
                 .setTimestamp()
                 .setFooter({ text: `ID: ${role.id}` });

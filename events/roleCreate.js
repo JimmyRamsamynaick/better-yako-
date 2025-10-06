@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'roleCreate',
@@ -20,14 +21,15 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
             const embed = new EmbedBuilder()
-                .setTitle('🎭 Rôle créé')
+                .setTitle(LanguageManager.get(lang, 'events.roles.created.title'))
                 .setColor(0x00FF00)
                 .addFields(
-                    { name: '🎭 Rôle', value: `<@&${role.id}> (\`${role.name}\`)`, inline: false },
-                    { name: '🎨 Couleur', value: role.hexColor || '#000000', inline: true },
-                    { name: '📍 Position', value: `${role.position}`, inline: true },
-                    { name: '🔖 Mentionnable', value: role.mentionable ? '✅ Oui' : '❌ Non', inline: true },
+                    { name: LanguageManager.get(lang, 'events.roles.created.fields.role'), value: `<@&${role.id}> (\`${role.name}\`)`, inline: false },
+                    { name: LanguageManager.get(lang, 'events.roles.created.fields.color'), value: role.hexColor || '#000000', inline: true },
+                    { name: LanguageManager.get(lang, 'events.roles.created.fields.position'), value: `${role.position}`, inline: true },
+                    { name: LanguageManager.get(lang, 'events.roles.created.fields.mentionable'), value: role.mentionable ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no'), inline: true },
                 )
                 .setTimestamp()
                 .setFooter({ text: `ID: ${role.id}` });
