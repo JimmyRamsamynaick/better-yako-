@@ -1,5 +1,5 @@
 // commands/moderation/setlogs.js
-const { SlashCommandBuilder, PermissionFlagsBits, ChannelType, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType, EmbedBuilder, MessageFlags } = require('discord.js');
 const Guild = require('../../models/Guild');
 const LanguageManager = require('../../utils/languageManager');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
@@ -359,13 +359,13 @@ module.exports = {
         }
         
         // S'assurer que tous les utilisateurs ont des warnings comme tableau et non comme nombre
+        // Note: Ne pas enregistrer ici; la commande status ne doit pas modifier la base.
         if (guild.users && guild.users.length > 0) {
             guild.users.forEach(user => {
                 if (typeof user.warnings === 'number') {
                     user.warnings = [];
                 }
             });
-            await guild.save();
         }
         
         const header = `**${guild.logs.enabled ? '✅ Activé' : '❌ Désactivé'}**`;
@@ -405,13 +405,22 @@ module.exports = {
         parts.push('• `/setlogs removechannel` - Supprimer un canal spécifique');
 
         const content = parts.join('\n');
-        const statusEmbed = await ComponentsV3.createEmbed({
+        const titleKey = 'commands.setlogs.status_title';
+
+        // Répondre avec Components V3 (message public, sans composants interactifs)
+        const statusPayload = await ComponentsV3.createEmbed({
             guildId: interaction.guild.id,
-            titleKey: 'commands.setlogs.status_title',
-            additionalContent: [content],
-            ephemeral: false
+            titleKey,
+            additionalContent: [
+                { type: 'text', content }
+            ],
+            addDividers: true,
+            ephemeral: true
         });
 
-        await interaction.reply(statusEmbed);
+        await interaction.reply({
+            ...statusPayload,
+            flags: MessageFlags.IsComponentsV2
+        });
     }
 };

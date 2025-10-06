@@ -16,10 +16,19 @@ module.exports = {
             if (!guildData) return;
             
             // Vérifier si les logs sont activés et si le type de log 'message' est activé
-            if (!guildData.logs.enabled || !guildData.logs.channelId || !guildData.logs.types.message) return;
+            if (!guildData.logs.enabled || !guildData.logs.types.message) return;
             
-            // Récupérer le canal de logs
-            const logChannel = message.guild.channels.cache.get(guildData.logs.channelId);
+            // Récupérer le canal de logs pour les messages (priorité au canal spécifique, sinon canal global)
+            let logChannel = null;
+            if (Array.isArray(guildData.logs.channels) && guildData.logs.channels.length > 0) {
+                const messageLogChannel = guildData.logs.channels.find(ch => ch.types && ch.types.message);
+                if (messageLogChannel) {
+                    logChannel = message.guild.channels.cache.get(messageLogChannel.channelId);
+                }
+            }
+            if (!logChannel && guildData.logs.channelId) {
+                logChannel = message.guild.channels.cache.get(guildData.logs.channelId);
+            }
             if (!logChannel) return;
             
             // Créer le message avec le format components

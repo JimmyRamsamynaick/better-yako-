@@ -35,7 +35,13 @@ module.exports = {
         const amount = interaction.options.getInteger('amount');
         const targetUser = interaction.options.getUser('user');
 
-        // Pas de defer pour éviter l'erreur Unknown interaction
+        // Déférer la réponse pour éviter l'expiration de l'interaction (10062)
+        // Utiliser les flags pour l'éphemère (au lieu de "ephemeral" déprécié)
+        try {
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        } catch (e) {
+            // Si déjà déféré ou répondu, ignorer
+        }
 
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
@@ -44,13 +50,13 @@ module.exports = {
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
             const noPermMessage = LanguageManager.get(lang, 'errors.no_permission') || '❌ Vous n\'avez pas la permission d\'utiliser cette commande.';
-            return interaction.reply({ content: noPermMessage, flags: MessageFlags.Ephemeral });
+            return interaction.editReply({ content: noPermMessage });
         }
 
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
             const botNoPermMessage = LanguageManager.get(lang, 'errors.bot_no_permission') || '❌ Le bot n\'a pas les permissions nécessaires.';
-            return interaction.reply({ content: botNoPermMessage, flags: MessageFlags.Ephemeral });
+            return interaction.editReply({ content: botNoPermMessage });
         }
 
         try {
@@ -66,7 +72,7 @@ module.exports = {
                     const errorMsg = LanguageManager.get(lang, 'commands.clear.no_messages_found', {
                         user: targetUser.username
                     }) || `Aucun message trouvé pour ${targetUser.username} dans les 100 derniers messages.`;
-                    return interaction.reply({ content: `❌ ${errorMsg}`, flags: MessageFlags.Ephemeral });
+                    return interaction.editReply({ content: `❌ ${errorMsg}` });
                 }
             } else {
                 // Prendre les X derniers messages
@@ -125,31 +131,9 @@ module.exports = {
                         txtContent += `\n${'-'.repeat(30)}\n\n`;
                     });
 
-                    // Créer le fichier temporaire
+                    // Créer l'attachment directement depuis le buffer
                     const fileName = `messages_supprimes_${interaction.guild.id}_${Date.now()}.txt`;
-                    const tempDir = path.join(__dirname, '../../temp');
-                    
-                    // Créer le dossier temp s'il n'existe pas
-                    if (!fs.existsSync(tempDir)) {
-                        fs.mkdirSync(tempDir, { recursive: true });
-                    }
-                    
-                    const filePath = path.join(tempDir, fileName);
-                    fs.writeFileSync(filePath, txtContent, 'utf8');
-
-                    // Créer l'attachment
-                    attachment = new AttachmentBuilder(filePath, { name: fileName });
-
-                    // Programmer la suppression du fichier après 5 minutes
-                    setTimeout(() => {
-                        try {
-                            if (fs.existsSync(filePath)) {
-                                fs.unlinkSync(filePath);
-                            }
-                        } catch (err) {
-                            console.error('Erreur lors de la suppression du fichier temporaire:', err);
-                        }
-                    }, 5 * 60 * 1000); // 5 minutes
+                    attachment = new AttachmentBuilder(Buffer.from(txtContent, 'utf8'), { name: fileName });
 
                 } catch (fileError) {
                     console.error('Erreur lors de la création du fichier .txt:', fileError);
@@ -172,18 +156,24 @@ module.exports = {
             }
 
             // Envoyer la réponse simple, éphemère, avec fichier si disponible
-            const replyOptions = { content: `✅ ${successMsg}`, flags: MessageFlags.Ephemeral };
+            const replyOptions = { content: `✅ ${successMsg}` };
             if (attachment) {
                 replyOptions.files = [attachment];
             }
-            await interaction.reply(replyOptions);
+            await interaction.editReply(replyOptions);
+
+            // Ne pas envoyer le fichier au salon de logs pour revenir au comportement de base
 
         } catch (error) {
             console.error('Erreur lors de la suppression des messages:', error);
             const errorMsg = LanguageManager.get(lang, 'commands.clear.error') || 'Une erreur est survenue lors de la suppression des messages';
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ content: `❌ ${errorMsg}`, flags: MessageFlags.Ephemeral });
+            } else {
+                try {
+                    await interaction.editReply({ content: `❌ ${errorMsg}` });
+                } catch (_) {}
             }
-        }
+    }
     }
 };
