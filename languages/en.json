@@ -11,7 +11,9 @@
         "server": "Server",
         "channel": "Channel",
         "message_count": "Message count",
-        "targeted_user": "Targeted user"
+        "targeted_user": "Targeted user",
+        "error": "Error",
+        "details": "Details"
     },
     "welcome": {
         "title": "👋 Thanks for adding me!",

@@ -11,7 +11,9 @@
         "server": "Serveur",
         "channel": "Canal",
         "message_count": "Nombre de messages",
-        "targeted_user": "Utilisateur ciblé"
+        "targeted_user": "Utilisateur ciblé",
+        "error": "Erreur",
+        "details": "Détails"
     },
     "welcome": {
         "title": "👋 Merci de m'avoir ajouté !",
@@ -101,6 +103,7 @@
         "setupmute": {
             "description": "Configurer le système de mute",
             "success": "✅ Système de mute configuré avec succès !",
+            "no_permission": "❌ Vous n'avez pas la permission de gérer les rôles.",
             "error": "❌ Une erreur s'est produite lors de la configuration."
         },
         "help": {

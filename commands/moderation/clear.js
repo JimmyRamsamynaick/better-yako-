@@ -43,20 +43,14 @@ module.exports = {
 
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-            const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
-            return interaction.reply({
-                ...noPermEmbed,
-                flags: MessageFlags.Ephemeral
-            });
+            const noPermMessage = LanguageManager.get(lang, 'errors.no_permission') || '❌ Vous n\'avez pas la permission d\'utiliser cette commande.';
+            return interaction.reply({ content: noPermMessage, flags: MessageFlags.Ephemeral });
         }
 
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageMessages)) {
-            const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
-            return interaction.reply({
-                ...botNoPermEmbed,
-                flags: MessageFlags.Ephemeral
-            });
+            const botNoPermMessage = LanguageManager.get(lang, 'errors.bot_no_permission') || '❌ Le bot n\'a pas les permissions nécessaires.';
+            return interaction.reply({ content: botNoPermMessage, flags: MessageFlags.Ephemeral });
         }
 
         try {
@@ -69,14 +63,10 @@ module.exports = {
                 messagesToDelete = messages.filter(msg => msg.author.id === targetUser.id).first(amount);
                 
                 if (messagesToDelete.size === 0) {
-                    const errorMsg = LanguageManager.get(lang, 'clear.no_messages_found', {
+                    const errorMsg = LanguageManager.get(lang, 'commands.clear.no_messages_found', {
                         user: targetUser.username
-                    });
-                    const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
-                    return interaction.reply({
-                        ...errorEmbed,
-                        ephemeral: true
-                    });
+                    }) || `Aucun message trouvé pour ${targetUser.username} dans les 100 derniers messages.`;
+                    return interaction.reply({ content: `❌ ${errorMsg}`, flags: MessageFlags.Ephemeral });
                 }
             } else {
                 // Prendre les X derniers messages
@@ -169,34 +159,30 @@ module.exports = {
             // Message de succès avec traduction
             let successMsg;
             if (targetUser) {
-                successMsg = LanguageManager.get(lang, 'clear.success_user', {
+                successMsg = LanguageManager.get(lang, 'commands.clear.success_user', {
                     user: interaction.user.toString(),
                     count: deleted.size,
                     target: targetUser.toString()
-                });
+                }) || `${interaction.user.toString()} a supprimé ${deleted.size} message(s) de ${targetUser.toString()}`;
             } else {
-                successMsg = LanguageManager.get(lang, 'clear.success', {
+                successMsg = LanguageManager.get(lang, 'commands.clear.success', {
                     user: interaction.user.toString(),
                     count: deleted.size
-                });
+                }) || `${interaction.user.toString()} a supprimé ${deleted.size} message(s)`;
             }
 
-            const successEmbed = BotEmbeds.createClearSuccessEmbed(deleted.size, targetUser, interaction.guild.id, lang, interaction.user, deleted);
-            
-            // Envoyer la réponse avec le fichier .txt si disponible
-            const replyOptions = { ...successEmbed, flags: MessageFlags.Ephemeral };
+            // Envoyer la réponse simple, éphemère, avec fichier si disponible
+            const replyOptions = { content: `✅ ${successMsg}`, flags: MessageFlags.Ephemeral };
             if (attachment) {
                 replyOptions.files = [attachment];
             }
-            
             await interaction.reply(replyOptions);
 
         } catch (error) {
             console.error('Erreur lors de la suppression des messages:', error);
-            const errorMsg = LanguageManager.get(lang, 'clear.error');
+            const errorMsg = LanguageManager.get(lang, 'commands.clear.error') || 'Une erreur est survenue lors de la suppression des messages';
             if (!interaction.replied && !interaction.deferred) {
-                const errorEmbed = BotEmbeds.createGenericErrorEmbed(errorMsg, interaction.guild.id);
-                await interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
+                await interaction.reply({ content: `❌ ${errorMsg}`, flags: MessageFlags.Ephemeral });
             }
         }
     }
