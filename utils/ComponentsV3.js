@@ -32,7 +32,8 @@ class ComponentsV3 {
             selectMenus = [],
             footerKey,
             footerPlaceholders = {},
-            addDividers = true
+            addDividers = true,
+            ephemeral = true
         } = options;
 
         // Déterminer la langue du serveur si possible
@@ -180,13 +181,18 @@ class ComponentsV3 {
             });
         }
 
-        return {
-            flags: 32768,
+        const payload = {
             components: [{
                 type: 17,
                 components: components
             }]
         };
+
+        if (ephemeral) {
+            payload.flags = 32768;
+        }
+
+        return payload;
     }
 
     /**
@@ -197,7 +203,7 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static async infoEmbed(guildId, titleKey, contentKey, placeholders = {}) {
+    static async infoEmbed(guildId, titleKey, contentKey, placeholders = {}, ephemeral = true) {
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: guildId });
         const lang = guildData?.language || 'fr';
@@ -205,8 +211,7 @@ class ComponentsV3 {
         const title = LanguageManager.get(lang, titleKey, placeholders);
         const content = LanguageManager.get(lang, contentKey, placeholders);
         
-        return {
-            flags: 32768,
+        const payload = {
             components: [{
                 type: 17,
                 components: [
@@ -217,6 +222,8 @@ class ComponentsV3 {
                 ]
             }]
         };
+        if (ephemeral) payload.flags = 32768;
+        return payload;
     }
 
     /**
@@ -226,7 +233,7 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static async errorEmbed(guildId, errorKey, placeholders = {}) {
+    static async errorEmbed(guildId, errorKey, placeholders = {}, ephemeral = true) {
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: guildId });
         const lang = guildData?.language || 'fr';
@@ -234,8 +241,7 @@ class ComponentsV3 {
         const errorMessage = LanguageManager.get(lang, errorKey, placeholders);
         const errorLabel = lang === 'en' ? 'Error' : 'Erreur';
 
-        return {
-            flags: 32768,
+        const payload = {
             components: [{
                 type: 17,
                 components: [
@@ -246,6 +252,8 @@ class ComponentsV3 {
                 ]
             }]
         };
+        if (ephemeral) payload.flags = 32768;
+        return payload;
     }
 
     /**
@@ -255,7 +263,7 @@ class ComponentsV3 {
      * @param {string} message - Message de succès déjà formaté
      * @returns {Object} Message au format components
      */
-    static async successEmbed(guildId, titleKey, message) {
+    static async successEmbed(guildId, titleKey, message, ephemeral = true) {
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: guildId });
         const lang = guildData?.language || 'fr';
@@ -264,8 +272,7 @@ class ComponentsV3 {
         const fallbackTitle = lang === 'en' ? '✅ Success' : '✅ Succès';
         const title = (typeof rawTitle === 'string' && !rawTitle.startsWith('[MISSING:')) ? rawTitle : fallbackTitle;
         
-        return {
-            flags: 32768,
+        const payload = {
             components: [{
                 type: 17,
                 components: [
@@ -276,6 +283,8 @@ class ComponentsV3 {
                 ]
             }]
         };
+        if (ephemeral) payload.flags = 32768;
+        return payload;
     }
 
     /**
@@ -285,7 +294,7 @@ class ComponentsV3 {
      * @param {Object} placeholders - Variables pour les traductions
      * @returns {Object} Message au format components
      */
-    static async warningEmbed(guildId, warningKey, placeholders = {}) {
+    static async warningEmbed(guildId, warningKey, placeholders = {}, ephemeral = true) {
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: guildId });
         const lang = guildData?.language || 'fr';
@@ -293,8 +302,7 @@ class ComponentsV3 {
         const warningMessage = LanguageManager.get(lang, warningKey, placeholders);
         const warningLabel = lang === 'en' ? 'Warning' : 'Avertissement';
         
-        return {
-            flags: 32768,
+        const payload = {
             components: [{
                 type: 17,
                 components: [
@@ -305,6 +313,8 @@ class ComponentsV3 {
                 ]
             }]
         };
+        if (ephemeral) payload.flags = 32768;
+        return payload;
     }
 }
 
