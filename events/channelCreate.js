@@ -7,7 +7,34 @@ module.exports = {
     async execute(channel) {
         try {
             const guild = await Guild.findOne({ guildId: channel.guild.id });
-            if (!guild || !guild.logs.enabled || !guild.logs.types.channels) return;
+            if (!guild) return;
+
+            // Appliquer automatiquement les permissions du rôle Muted sur les nouveaux salons
+            if (guild.muteRole) {
+                try {
+                    const muteRole = channel.guild.roles.cache.get(guild.muteRole);
+                    if (muteRole && channel.permissionOverwrites) {
+                        if (channel.isTextBased()) {
+                            await channel.permissionOverwrites.edit(muteRole, {
+                                SendMessages: false,
+                                AddReactions: false,
+                                CreatePublicThreads: false,
+                                CreatePrivateThreads: false,
+                                SendMessagesInThreads: false
+                            });
+                        } else if (channel.isVoiceBased()) {
+                            await channel.permissionOverwrites.edit(muteRole, {
+                                Speak: false,
+                                Stream: false
+                            });
+                        }
+                    }
+                } catch (permError) {
+                    console.error(`Erreur application permissions Muted sur ${channel.name}:`, permError.message);
+                }
+            }
+
+            if (!guild.logs.enabled || !guild.logs.types.channels) return;
 
             // Vérifier s'il y a un canal configuré pour les logs de canaux
             let logChannel = null;

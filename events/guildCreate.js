@@ -1,6 +1,7 @@
 const Guild = require('../models/Guild');
 const BotEmbeds = require('../utils/embeds');
 const LanguageManager = require('../utils/languageManager');
+const { ActivityType } = require('discord.js');
 
 // Fonction pour détecter la langue du serveur
 function detectServerLanguage(guild) {
@@ -52,6 +53,20 @@ module.exports = {
 
         if (channel) {
             channel.send({ embeds: [welcomeEmbed] });
+        }
+
+        // Mettre à jour la présence pour refléter le nouveau nombre de serveurs
+        try {
+            client.user.setPresence({
+                activities: [{
+                    name: `🛡️ ${client.guilds.cache.size} serveurs protégés`,
+                    type: ActivityType.Streaming,
+                    url: 'https://www.twitch.tv/jimmy_9708'
+                }],
+                status: 'dnd'
+            });
+        } catch (err) {
+            console.error('Erreur mise à jour présence (guildCreate):', err);
         }
     }
 };

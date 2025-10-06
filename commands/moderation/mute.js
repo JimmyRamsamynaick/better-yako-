@@ -37,6 +37,8 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
     
     async execute(interaction) {
+        // Ne pas différer tout de suite: répondre immédiatement aux validations rapides
+
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
         const lang = guildData?.language || 'fr';
@@ -44,6 +46,8 @@ module.exports = {
         const user = interaction.options.getUser('user');
         const duration = interaction.options.getString('duration');
         const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
+
+        // deferReply déjà effectué plus haut
 
         // Vérifier les permissions de l'utilisateur avec overrides de rôles
         const hasModerate = interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers);
@@ -53,38 +57,79 @@ module.exports = {
             return n === 'perm-mute' || n === 'staff';
         });
         if (!hasModerate && !hasManageRoles && !hasRoleOverride) {
-            const noPermMessage = LanguageManager.get(lang, 'errors.no_permission') || '❌ Vous n\'avez pas la permission d\'utiliser cette commande.';
-            return await interaction.reply({ content: noPermMessage, ephemeral: true });
+            const payload = await ComponentsV3.errorEmbed(
+                interaction.guild.id,
+                'errors.no_permission',
+                {},
+                false
+            );
+            return interaction.reply(payload);
         }
 
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-            const botNoPermMessage = LanguageManager.get(lang, 'errors.bot_no_permission') || '❌ Le bot n\'a pas les permissions nécessaires.';
-            return await interaction.reply({ content: botNoPermMessage, ephemeral: true });
+            const payload = await ComponentsV3.errorEmbed(
+                interaction.guild.id,
+                'errors.bot_no_permission',
+                {},
+                false
+            );
+            return interaction.reply(payload);
         }
 
         if (user.id === interaction.user.id) {
-            const selfMuteMessage = LanguageManager.get(lang, 'commands.mute.error_self') || 'Vous ne pouvez pas vous mute vous-même.';
-            return await interaction.reply({ content: `❌ ${selfMuteMessage}`, ephemeral: true });
+            const payload = await ComponentsV3.errorEmbed(
+                interaction.guild.id,
+                'commands.mute.error_self',
+                {},
+                false
+            );
+            return interaction.reply(payload);
         }
 
         try {
             const member = await interaction.guild.members.fetch(user.id);
 
             if (!guildData?.muteRole) {
-                const noSetupMessage = LanguageManager.get(lang, 'commands.mute.error_no_setup') || 'Le système de mute n\'est pas configuré. Utilisez `/setupmute` d\'abord.';
-                return await interaction.reply({ content: `❌ ${noSetupMessage}`, ephemeral: true });
+                const payload = await ComponentsV3.errorEmbed(
+                    interaction.guild.id,
+                    'commands.mute.error_no_setup',
+                    {},
+                    false
+                );
+                return interaction.reply(payload);
             }
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
             if (!muteRole) {
-                const noRoleMessage = LanguageManager.get(lang, 'commands.mute.error_role_not_found') || 'Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`.';
-                return await interaction.reply({ content: `❌ ${noRoleMessage}`, ephemeral: true });
+                const payload = await ComponentsV3.errorEmbed(
+                    interaction.guild.id,
+                    'commands.mute.error_role_not_found',
+                    {},
+                    false
+                );
+                return interaction.reply(payload);
             }
 
-            if (member.roles.cache.has(muteRole.id)) {
-                const alreadyMutedMessage = LanguageManager.get(lang, 'commands.mute.error_already_muted') || 'Ce membre est déjà rendu muet.';
-                return await interaction.reply({ content: `❌ ${alreadyMutedMessage}`, ephemeral: true });
+            // Vérifier état role + DB pour éviter contradictions
+            const memberHasMutedRole = member.roles.cache.has(muteRole.id);
+            const userDoc = guildData?.users?.find?.(u => u.userId === user.id);
+            const dbMuted = Boolean(userDoc?.muted);
+            console.log('[Mute Diagnostic]', { userId: user.id, muteRoleId: muteRole.id, memberHasMutedRole, dbMuted });
+
+            if (memberHasMutedRole || dbMuted) {
+                const payload = await ComponentsV3.errorEmbed(
+                    interaction.guild.id,
+                    'commands.mute.error_already_muted',
+                    {},
+                    false
+                );
+                return interaction.reply(payload);
+            }
+
+            // À partir d'ici, on peut différer pour exécuter les actions (rôle + DB)
+            if (!interaction.deferred && !interaction.replied) {
+                await interaction.deferReply({ ephemeral: false });
             }
 
             let muteUntil = null;
@@ -93,14 +138,62 @@ module.exports = {
             if (duration) {
                 const parsedDuration = ms(duration);
                 if (!parsedDuration || parsedDuration > ms('28d')) {
-                    const invalidDurationMessage = LanguageManager.get(lang, 'commands.mute.error_invalid_duration') || 'Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours).';
-                    return await interaction.reply({ content: `❌ ${invalidDurationMessage}`, ephemeral: true });
+                    const payload = await ComponentsV3.errorEmbed(
+                        interaction.guild.id,
+                        'commands.mute.error_invalid_duration',
+                        {},
+                        false
+                    );
+                    return await interaction.editReply(payload);
                 }
                 muteUntil = new Date(Date.now() + parsedDuration);
                 durationText = duration;
-            }
 
-            await member.roles.add(muteRole, reason);
+                // Utiliser le timeout Discord pour bloquer écriture/voix sans dépendre des overrides
+                try {
+                    await member.timeout(parsedDuration, reason || 'Mute via commande');
+                } catch (e) {
+                    console.warn('Échec du timeout, on bascule sur le rôle Muted:', e?.message);
+                    await member.roles.add(muteRole, reason);
+                }
+            } else {
+                // Permanent: rôle Muted
+                await member.roles.add(muteRole, reason);
+
+                // Si l'utilisateur peut encore écrire ici, appliquer un deny ciblé sur le salon courant
+                try {
+                    const canStillSend = interaction.channel?.permissionsFor(member)?.has(PermissionFlagsBits.SendMessages);
+                    const hasAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
+                    const botHasModerate = interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers);
+                    if (canStillSend) {
+                        await interaction.channel.permissionOverwrites.edit(muteRole, {
+                            SendMessages: false,
+                            AddReactions: false,
+                            SendMessagesInThreads: false
+                        });
+                    }
+                    // Si admin ou encore permissif, basculer sur un timeout long (28j)
+                    if (hasAdmin || interaction.channel?.permissionsFor(member)?.has(PermissionFlagsBits.SendMessages)) {
+                        try {
+                            await member.timeout(ms('28d'), reason || 'Mute (fallback timeout)');
+                        } catch (e) {
+                            console.warn('Échec du fallback timeout:', e?.message);
+                            // Message explicite si admin et que le bot ne peut pas timeout
+                            if (hasAdmin && !botHasModerate) {
+                                const payload = await ComponentsV3.errorEmbed(
+                                    interaction.guild.id,
+                                    'commands.mute.error_bot_missing_moderate',
+                                    {},
+                                    false
+                                );
+                                try { await interaction.followUp(payload); } catch (_) {}
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Impossible d\'appliquer le deny sur le salon courant:', e?.message);
+                }
+            }
 
             // Sauvegarder en base dans Guild.users
             await Guild.findOneAndUpdate(
@@ -117,7 +210,7 @@ module.exports = {
                     $push: {
                         users: {
                             userId: user.id,
-                            warnings: 0,
+                            warnings: [],
                             muted: true,
                             mutedUntil: muteUntil
                         }
@@ -132,18 +225,29 @@ module.exports = {
                 reason: reason,
                 duration: durationText
             }) || `${interaction.user.toString()} a mute ${user.toString()} pour ${reason} (durée: ${durationText})`;
+            const successPayload = await ComponentsV3.successEmbed(
+                interaction.guild.id,
+                'commands.mute.success_title',
+                successMessage,
+                false
+            );
+            await interaction.editReply(successPayload);
 
-            await interaction.reply({ content: successMessage, ephemeral: true });
-
-            // Auto-unmute si durée définie
+            // Auto-unmute si durée définie (retire timeout et rôle si présent)
             if (muteUntil) {
                 setTimeout(async () => {
                     try {
                         const guildDoc = await Guild.findOne({ guildId: interaction.guild.id });
                         const userDoc = guildDoc?.users?.find(u => u.userId === user.id);
-                        
-                        if (userDoc?.muted && member.roles.cache.has(muteRole.id)) {
-                            await member.roles.remove(muteRole, 'Fin du mute automatique');
+
+                        if (userDoc?.muted) {
+                            try {
+                                await member.timeout(null, 'Fin du mute automatique');
+                            } catch (_) {}
+                            if (member.roles.cache.has(muteRole.id)) {
+                                await member.roles.remove(muteRole, 'Fin du mute automatique');
+                            }
+
                             await Guild.findOneAndUpdate(
                                 { guildId: interaction.guild.id, 'users.userId': user.id },
                                 { 
@@ -154,7 +258,7 @@ module.exports = {
                                 }
                             );
 
-                            // Envoyer notification directe à l'utilisateur
+                            // Notifications
                             try {
                                 const languageManager = require('../../utils/languageManager');
                                 const guildLang = guildDoc?.language || 'fr';
@@ -164,10 +268,8 @@ module.exports = {
                                 console.log('Impossible d\'envoyer un MP à l\'utilisateur:', error.message);
                             }
 
-                            // Envoyer notification dans les logs
                             const logChannels = guildDoc?.logChannels || {};
                             const logChannel = logChannels.message || guildDoc?.logChannel;
-                            
                             if (logChannel) {
                                 const channel = interaction.guild.channels.cache.get(logChannel);
                                 if (channel) {
@@ -186,10 +288,19 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            if (!interaction.replied && !interaction.deferred) {
-                const errorMessage = LanguageManager.get(lang, 'commands.mute.error') || 'Une erreur est survenue lors du mute.';
-                await interaction.reply({ content: `❌ ${errorMessage}`, ephemeral: true });
-            }
+            try {
+                const payload = await ComponentsV3.errorEmbed(
+                    interaction.guild.id,
+                    'commands.mute.error',
+                    {},
+                    false
+                );
+                if (interaction.deferred || interaction.replied) {
+                    await interaction.editReply(payload);
+                } else {
+                    await interaction.reply(payload);
+                }
+            } catch (_) {}
         }
     }
 };

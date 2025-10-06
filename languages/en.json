@@ -39,6 +39,10 @@
         "title": "👋 Thanks for adding me!",
         "description": "Hello! I'm your new moderation bot.\n\n**Main commands:**\n• `/help` - See all commands\n• `/setupmute` - Configure moderation\n• `/setlogs` - Configure logs\n\nTo get started, use `/help`!\n\n*Servers: {serverCount}*"
     },
+    "errors": {
+        "no_permission": "❌ You don't have permission to use this command.",
+        "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action."
+    },
     "commands": {
         "ping": {
             "description": "Shows bot latency",

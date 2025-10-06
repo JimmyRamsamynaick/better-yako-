@@ -247,6 +247,17 @@ class ComponentsV3 {
         const title = LanguageManager.get(lang, titleKey, placeholders);
         const content = LanguageManager.get(lang, contentKey, placeholders);
         
+        // Non-éphémère: embed classique
+        if (!ephemeral) {
+            return {
+                embeds: [{
+                    title: `ℹ️ ${title}`,
+                    description: content
+                }]
+            };
+        }
+
+        // Éphémère: Components V3
         const payload = {
             components: [{
                 type: 17,
@@ -258,7 +269,7 @@ class ComponentsV3 {
                 ]
             }]
         };
-        if (ephemeral) payload.flags = 32768;
+        payload.flags = 32768;
         return payload;
     }
 
@@ -282,6 +293,16 @@ class ComponentsV3 {
         const errorMessage = LanguageManager.get(lang, errorKey, placeholders);
         const errorLabel = lang === 'en' ? 'Error' : 'Erreur';
 
+        // Non-éphémère: embed classique
+        if (!ephemeral) {
+            return {
+                embeds: [{
+                    title: `❌ ${errorLabel}`,
+                    description: errorMessage
+                }]
+            };
+        }
+
         const payload = {
             components: [{
                 type: 17,
@@ -293,7 +314,7 @@ class ComponentsV3 {
                 ]
             }]
         };
-        if (ephemeral) payload.flags = 32768;
+        payload.flags = 32768;
         return payload;
     }
 
@@ -318,6 +339,16 @@ class ComponentsV3 {
         const fallbackTitle = lang === 'en' ? '✅ Success' : '✅ Succès';
         const title = (typeof rawTitle === 'string' && !rawTitle.startsWith('[MISSING:')) ? rawTitle : fallbackTitle;
         
+        // Non-éphémère: embed classique
+        if (!ephemeral) {
+            return {
+                embeds: [{
+                    title: title,
+                    description: message
+                }]
+            };
+        }
+
         const payload = {
             components: [{
                 type: 17,
@@ -329,7 +360,7 @@ class ComponentsV3 {
                 ]
             }]
         };
-        if (ephemeral) payload.flags = 32768;
+        payload.flags = 32768;
         return payload;
     }
 
@@ -353,6 +384,16 @@ class ComponentsV3 {
         const warningMessage = LanguageManager.get(lang, warningKey, placeholders);
         const warningLabel = lang === 'en' ? 'Warning' : 'Avertissement';
         
+        // Non-éphémère: embed classique
+        if (!ephemeral) {
+            return {
+                embeds: [{
+                    title: `⚠️ ${warningLabel}`,
+                    description: warningMessage
+                }]
+            };
+        }
+
         const payload = {
             components: [{
                 type: 17,
@@ -364,7 +405,7 @@ class ComponentsV3 {
                 ]
             }]
         };
-        if (ephemeral) payload.flags = 32768;
+        payload.flags = 32768;
         return payload;
     }
 }

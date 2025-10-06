@@ -1,5 +1,5 @@
 // commands/moderation/setupmute.js
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const Guild = require('../../models/Guild');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const LanguageManager = require('../../utils/languageManager');
@@ -15,13 +15,20 @@ module.exports = {
     
     async execute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles)) {
-            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.no_permission');
-            return interaction.reply({ ...errorResponse, ephemeral: true });
+            const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'setupmute.no_permission', {}, true);
+            return interaction.reply(errorResponse);
         }
 
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: false });
 
         try {
+            // Vérifier permissions du bot pour éditer les salons
+            const me = interaction.guild.members.me;
+            if (!me.permissions.has(PermissionFlagsBits.ManageChannels)) {
+                const errorResponse = await ComponentsV3.errorEmbed(interaction.guild.id, 'errors.bot_no_permission', {}, false);
+                return await interaction.editReply(errorResponse);
+            }
+
             let muteRole = interaction.guild.roles.cache.find(role => role.name === 'Muted');
             
             if (!muteRole) {
@@ -39,19 +46,40 @@ module.exports = {
 
             for (const channel of channels.values()) {
                 try {
-                    if (channel.isTextBased()) {
-                        await channel.permissionOverwrites.edit(muteRole, {
-                            SendMessages: false,
-                            AddReactions: false,
-                            CreatePublicThreads: false,
-                            CreatePrivateThreads: false,
-                            SendMessagesInThreads: false
-                        });
-                    } else if (channel.isVoiceBased()) {
-                        await channel.permissionOverwrites.edit(muteRole, {
-                            Speak: false,
-                            Stream: false
-                        });
+                    switch (channel.type) {
+                        case ChannelType.GuildText:
+                        case ChannelType.GuildAnnouncement:
+                        case ChannelType.GuildForum:
+                            await channel.permissionOverwrites.edit(muteRole, {
+                                SendMessages: false,
+                                AddReactions: false,
+                                CreatePublicThreads: false,
+                                CreatePrivateThreads: false,
+                                SendMessagesInThreads: false
+                            });
+                            break;
+                        case ChannelType.GuildVoice:
+                        case ChannelType.GuildStageVoice:
+                            await channel.permissionOverwrites.edit(muteRole, {
+                                Speak: false,
+                                Stream: false
+                            });
+                            break;
+                        case ChannelType.GuildCategory:
+                            // Propager via la catégorie
+                            await channel.permissionOverwrites.edit(muteRole, {
+                                SendMessages: false,
+                                AddReactions: false,
+                                CreatePublicThreads: false,
+                                CreatePrivateThreads: false,
+                                SendMessagesInThreads: false,
+                                Speak: false,
+                                Stream: false
+                            });
+                            break;
+                        default:
+                            // threads héritent du parent; ignorer explicitement
+                            break;
                     }
                     channelCount++;
                 } catch (error) {
@@ -76,9 +104,9 @@ module.exports = {
             const successResponse = await ComponentsV3.successEmbed(
                 interaction.guild.id,
                 'commands.setupmute.success',
-                successMessage
+                successMessage,
+                false
             );
-            
             await interaction.editReply(successResponse);
 
         } catch (error) {
