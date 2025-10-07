@@ -39,6 +39,17 @@ module.exports = {
                 console.warn('userinfo: échec du fetch forcé du User pour la bannière:', fetchErr);
             }
 
+            // Fallback: si la bannière est absente, tenter un fetch sur l'instance User
+            try {
+                const hasBanner = Boolean(fetchedUser?.banner || fetchedUser?.bannerURL?.({ size: 1024 }));
+                if (!hasBanner && typeof targetUser.fetch === 'function') {
+                    const refetched = await targetUser.fetch(true);
+                    if (refetched) fetchedUser = refetched;
+                }
+            } catch (fallbackErr) {
+                console.warn('userinfo: fallback user.fetch(true) a échoué:', fallbackErr);
+            }
+
             const userInfoEmbed = await BotEmbeds.createUserInfoEmbed(
                 fetchedUser,
                 member,
