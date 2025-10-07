@@ -30,9 +30,17 @@ module.exports = {
         try {
             // Récupérer le membre du serveur
             const member = await interaction.guild.members.fetch(targetUser.id);
-            
+
+            // Forcer la récupération complète du User pour disposer de la bannière
+            let fetchedUser = targetUser;
+            try {
+                fetchedUser = await interaction.client.users.fetch(targetUser.id, { force: true });
+            } catch (fetchErr) {
+                console.warn('userinfo: échec du fetch forcé du User pour la bannière:', fetchErr);
+            }
+
             const userInfoEmbed = await BotEmbeds.createUserInfoEmbed(
-                targetUser,
+                fetchedUser,
                 member,
                 interaction.guild.id,
                 lang

@@ -11,7 +11,9 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.GuildModeration
+        GatewayIntentBits.GuildModeration,
+        // Ajout de l'intent pour récupérer le statut et l'activité des membres
+        GatewayIntentBits.GuildPresences
     ]
 });
 
