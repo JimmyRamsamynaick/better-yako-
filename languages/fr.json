@@ -146,7 +146,7 @@
             "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
             "select_placeholder": "🔍 Sélectionnez une catégorie...",
             "moderation_title": "🛡️ Commandes de Modération",
-            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Enlever le mute d'un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue",
+            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Enlever le mute d'un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue\n**`/setwelcome`** - Configurer la bienvenue (admin, canal)",
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
             "public_title": "👥 Commandes Publiques",

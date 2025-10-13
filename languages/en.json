@@ -248,7 +248,7 @@
             "premium_desc": "Exclusive premium commands",
             "footer": "Help updated automatically",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)",
             "public_title": "👥 Public Commands",
             "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information",
             "premium_title": "⭐ Premium Commands",
