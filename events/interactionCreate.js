@@ -46,8 +46,10 @@ module.exports = {
         setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
         try {
-            console.log('[Handler] Before execute:', { deferred: interaction.deferred, replied: interaction.replied, cmd: command.data.name });
             // Laisser chaque commande gérer son propre acquittement (deferReply)
+            if (process.env.DEBUG_INTERACTIONS === 'true') {
+                console.log('[Handler] Before execute:', { deferred: interaction.deferred, replied: interaction.replied, cmd: command.data.name });
+            }
             await command.execute(interaction);
         } catch (error) {
             console.error('Erreur lors de l\'exécution de la commande:', error);

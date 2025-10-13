@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits, Collection, ActivityType } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, ActivityType, Partials } = require('discord.js');
 const { connect } = require('mongoose');
 const fs = require('fs');
 const path = require('path');
@@ -13,8 +13,12 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.GuildModeration,
         // Ajout de l'intent pour récupérer le statut et l'activité des membres
-        GatewayIntentBits.GuildPresences
-    ]
+        GatewayIntentBits.GuildPresences,
+        // Intent pour les réactions aux messages
+        GatewayIntentBits.GuildMessageReactions
+    ],
+    // Partials pour gérer les réactions sur messages non mis en cache
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
 // Collections

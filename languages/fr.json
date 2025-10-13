@@ -159,6 +159,17 @@
             "premium_desc": "Fonctionnalités premium exclusives",
             "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !"
         },
+        "setwelcome": {
+            "description": "Configurer le système de bienvenue (activer/désactiver)",
+            "enabled_option": "Activer ou désactiver le message de bienvenue",
+            "channel_option": "Salon où envoyer le message de bienvenue",
+            "success_title": "✅ Système de bienvenue mis à jour",
+            "enabled_success": "✅ Système de bienvenue **activé**.",
+            "disabled_success": "❌ Système de bienvenue **désactivé**.",
+            "channel_set_success": "✅ Salon de bienvenue configuré sur {channel}.",
+            "no_permission": "❌ Vous devez être **administrateur** pour utiliser cette commande.",
+            "error": "❌ Une erreur s'est produite lors de la configuration du système de bienvenue."
+        },
         "userinfo": {
             "description": "Afficher les informations d'un utilisateur",
             "user_option": "L'utilisateur dont vous voulez voir les informations",
@@ -508,6 +519,13 @@
                 "state": "État",
                 "action": "Action"
             }
+        },
+        "welcome": {
+            "message": "Bienvenue {user} ! 🎉",
+            "react_appended": "{reactor} te souhaite également la bienvenue !",
+            "react_appended_sg": "te souhaite également la bienvenue !",
+            "react_appended_pl": "te souhaitent également la bienvenue !",
+            "reaction_emoji": "🎉"
         }
     },
     

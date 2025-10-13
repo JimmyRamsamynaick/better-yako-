@@ -67,6 +67,16 @@ const guildSchema = new Schema({
             channels: { type: Boolean, default: true }
         }
     },
+    welcome: {
+        enabled: {
+            type: Boolean,
+            default: true
+        },
+        channelId: {
+            type: String,
+            default: null
+        }
+    },
     // tempVoice supprimé
     users: [userSchema],
     premium: {

@@ -254,6 +254,17 @@
             "premium_title": "⭐ Premium Commands",
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
+        "setwelcome": {
+            "description": "Configure the welcome system (enable/disable)",
+            "enabled_option": "Enable or disable welcome message",
+            "channel_option": "Channel to send the welcome message",
+            "success_title": "✅ Welcome system updated",
+            "enabled_success": "✅ Welcome system **enabled**.",
+            "disabled_success": "❌ Welcome system **disabled**.",
+            "channel_set_success": "✅ Welcome channel set to {channel}.",
+            "no_permission": "❌ You must be **administrator** to use this command.",
+            "error": "❌ An error occurred while configuring the welcome system."
+        },
         "ask": {
             "description": "Ask a question to AI",
             "premium_required": "❌ This command requires a Premium subscription.",
@@ -472,6 +483,13 @@
                 "state": "State",
                 "action": "Action"
             }
+        },
+        "welcome": {
+            "message": "Welcome {user}! 🎉",
+            "react_appended": "{reactor} also welcomes you!",
+            "react_appended_sg": "also welcomes you!",
+            "react_appended_pl": "also welcome you!",
+            "reaction_emoji": "🎉"
         }
     },
     "logs": {
