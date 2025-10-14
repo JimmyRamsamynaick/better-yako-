@@ -43,7 +43,7 @@
         "no_permission": "❌ You don't have permission to use this command.",
         "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action."
     },
-    "commands": {
+  "commands": {
         "ping": {
             "description": "Shows bot latency",
             "response": "🏓 Pong! Latency: {latency}ms",
@@ -254,7 +254,7 @@
             "premium_title": "⭐ Premium Commands",
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
-        "setwelcome": {
+    "setwelcome": {
             "description": "Configure the welcome system (enable/disable)",
             "enabled_option": "Enable or disable welcome message",
             "channel_option": "Channel to send the welcome message",
@@ -307,7 +307,86 @@
             "view_avatar": "View avatar",
             "view_banner": "View banner",
             "no_banner": "No banner"
-        }
+        },
+        "antiraid": {
+      "description": "Configure and manage anti‑raid protections",
+      "panel_description": "Show the anti‑raid configuration panel",
+      "panel": {
+        "title": "🛡️ Anti‑Raid Panel",
+        "header": "Enable/disable protections below.",
+        "info": "Only administrators, server managers or authorized roles/users may modify these settings.",
+        "global_state": "Global state",
+        "warn_config": "Warning configuration",
+        "rate_limit": "Default rate‑limit",
+        "mass_mentions_limit": "Mass mentions limit",
+        "roles": "Authorized roles",
+        "users": "Authorized users",
+        "descriptions_header": "Protections overview",
+        "protections_header": "Protections"
+      },
+      "features": {
+        "join_spike": "Join spike detection",
+        "mass_mentions": "Mass mentions",
+        "link_spam": "Link spam",
+        "captcha": "Light captcha",
+        "rate_limit": "Per‑channel rate‑limit"
+      },
+      "features_desc": {
+        "join_spike": "Detects abnormal join spikes and triggers anti‑raid measures.",
+        "mass_mentions": "Limits or blocks messages with excessive simultaneous mentions.",
+        "link_spam": "Mitigates repeated or malicious link spam.",
+        "captcha": "Requests a lightweight verification for suspicious newcomers.",
+        "rate_limit_per_channel": "Enforces a messages‑per‑minute cap per channel."
+      },
+      "no_permission": "You do not have permission to use this command.",
+      "allowrole_description": "Authorize a role to modify the panel",
+      "allowuser_description": "Authorize a member to modify the panel",
+      "denyrole_description": "Remove authorization from a role",
+      "denyuser_description": "Remove authorization from a user",
+      "panel_no_permission": "You are not allowed to modify this panel.",
+      "allowrole_success": "✅ Authorized role: {role}",
+      "allowuser_success": "✅ Authorized user: {user}",
+      "denyrole_success": "✅ Removed role: {role}",
+      "denyuser_success": "✅ Removed user: {user}",
+      "setmassmentions_description": "Set the per-message mentions limit",
+      "setmassmentions_limit_option": "Mentions limit per message",
+      "setmassmentions_delete_message_option": "Delete message exceeding the limit",
+      "setmassmentions_success": "✅ Mass mentions limit updated: {limit} (delete: {delete})",
+      "massmentions_blocked": "Message blocked for mass mentions (limit: {limit}, mentions: {count}).",
+      "setwarn_description": "Configure auto-timeout after warnings",
+      "setwarn_after_option": "Warnings before timeout",
+      "setwarn_minutes_option": "Timeout duration in minutes",
+      "setwarn_success": "Auto-timeout configured: after {after} warnings, {minutes} minutes",
+      "setratelimit_description": "Set default rate-limit (messages/min)",
+      "setratelimit_mpm_option": "Default messages per minute",
+      "setratelimit_success": "Default rate-limit set to {mpm} msg/min",
+      "error": "An error occurred while managing the anti‑raid panel."
+    },
+    "warn": {
+      "description": "Add a warning to a member",
+      "user_option": "User to warn",
+      "reason_option": "Warning reason",
+      "no_permission": "You do not have permission to issue warnings.",
+      "success_title": "Warning added",
+      "success": "{user} received a warning (total: {count}).\nReason: {reason}",
+      "auto_timeout": "⏱️ Auto-timeout applied: {minutes} minutes."
+    },
+    "unwarn": {
+      "description": "Remove a warning from a member",
+      "user_option": "Target user",
+      "index_option": "Index of warning to remove (latest by default)",
+      "no_permission": "You do not have permission to remove warnings.",
+      "no_warnings": "This user has no warnings.",
+      "success_title": "Warning removed",
+      "success": "Warning removed for {user}. Remaining total: {count}"
+    },
+    "warnlist": {
+      "description": "List members with warnings",
+      "title": "📋 Warned Members",
+      "header": "Total members with warnings: {total}",
+      "empty": "No member has warnings.",
+      "warn_count_label": "warning(s)"
+    }
     },
     "ping": {
         "title": "🏓 Pong!",
@@ -338,7 +417,7 @@
         "cooldown": {
             "title": "⏰ Cooldown",
             "message": "You must wait {timeLeft} seconds before using this command again."
-        }
+  }
     },
     "events": {
         "roles": {

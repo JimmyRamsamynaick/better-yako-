@@ -43,7 +43,7 @@
         "no_permission": "❌ Vous n'avez pas la permission d'utiliser cette commande.",
         "bot_no_permission": "❌ Le bot n'a pas les permissions nécessaires pour effectuer cette action."
     },
-    "commands": {
+  "commands": {
         "ping": {
             "description": "Affiche la latence du bot",
             "response": "🏓 Pong! Latence: {latency}ms",
@@ -159,7 +159,7 @@
             "premium_desc": "Fonctionnalités premium exclusives",
             "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !"
         },
-        "setwelcome": {
+    "setwelcome": {
             "description": "Configurer le système de bienvenue (activer/désactiver)",
             "enabled_option": "Activer ou désactiver le message de bienvenue",
             "channel_option": "Salon où envoyer le message de bienvenue",
@@ -287,8 +287,88 @@
             "success_title": "✅ Langue modifiée",
             "error": "❌ Une erreur est survenue lors du changement de langue.",
             "error_title": "❌ Erreur de changement de langue"
-        }
+        },
+        "antiraid": {
+      "description": "Configurer et gérer les protections anti‑raid",
+      "panel_description": "Afficher le panneau de configuration anti‑raid",
+        "panel": {
+            "title": "🛡️ Panneau Anti‑Raid",
+            "header": "Activez/désactivez les protections ci‑dessous.",
+            "info": "Seuls les administrateurs, responsables du serveur ou les rôles/utilisateurs autorisés peuvent modifier ces paramètres.",
+            "global_state": "État global",
+            "warn_config": "Configuration des avertissements",
+            "rate_limit": "Rate‑limit défaut",
+            "mass_mentions_limit": "Limite de mentions massives",
+            "roles": "Rôles autorisés",
+            "users": "Utilisateurs autorisés",
+            "descriptions_header": "Descriptions des protections",
+            "protections_header": "Protections"
+        },
+      "features": {
+        "join_spike": "Détection de pics d’arrivées",
+        "mass_mentions": "Mentions massives",
+        "link_spam": "Spam de liens",
+        "captcha": "Captcha léger",
+        "rate_limit": "Rate‑limit par salon"
+      },
+      "features_desc": {
+        "join_spike": "Détecte un afflux anormal d'arrivées et active des mesures anti‑raid.",
+        "mass_mentions": "Limite ou bloque les messages contenant trop de mentions simultanées.",
+        "link_spam": "Réduit le spam de liens répétés ou malveillants.",
+        "captcha": "Demande une vérification légère pour les nouveaux arrivants suspects.",
+        "rate_limit_per_channel": "Applique un plafond de messages par minute dans chaque salon."
+      },
+      "no_permission": "Vous n’avez pas la permission d’utiliser cette commande.",
+      "allowrole_description": "Autoriser un rôle à modifier le panneau",
+      "allowuser_description": "Autoriser un membre à modifier le panneau",
+      "denyrole_description": "Retirer l’autorisation à un rôle",
+      "denyuser_description": "Retirer l’autorisation à un utilisateur",
+      "panel_no_permission": "Vous n’êtes pas autorisé à modifier ce panneau.",
+      "allowrole_success": "✅ Rôle autorisé: {role}",
+      "allowuser_success": "✅ Utilisateur autorisé: {user}",
+      "denyrole_success": "✅ Rôle retiré: {role}",
+      "denyuser_success": "✅ Utilisateur retiré: {user}",
+      "setmassmentions_description": "Définir la limite de mentions par message",
+      "setmassmentions_limit_option": "Limite de mentions par message",
+      "setmassmentions_delete_message_option": "Supprimer le message au‑delà de la limite",
+      "setmassmentions_success": "✅ Limite des mentions massives mise à jour: {limit} (suppression: {delete})",
+      "massmentions_blocked": "Message bloqué pour mentions massives (limite: {limit}, mentions: {count}).",
+      "setwarn_description": "Configurer le timeout automatique après avertissements",
+      "setwarn_after_option": "Nombre d’avertissements avant timeout",
+      "setwarn_minutes_option": "Durée du timeout en minutes",
+      "setwarn_success": "Timeout auto configuré: après {after} avertissements, {minutes} minutes",
+      "setratelimit_description": "Définir le rate‑limit par défaut (messages/min)",
+      "setratelimit_mpm_option": "Messages par minute par défaut",
+      "setratelimit_success": "Rate‑limit par défaut défini à {mpm} msg/min",
+      "error": "Une erreur est survenue lors de la gestion du panneau anti‑raid."
     },
+    "warn": {
+      "description": "Ajouter un avertissement à un membre",
+      "user_option": "Utilisateur à avertir",
+      "reason_option": "Raison de l’avertissement",
+      "no_permission": "Vous n’avez pas la permission d’émettre des avertissements.",
+      "success_title": "Avertissement ajouté",
+      "success": "{user} a reçu un avertissement (total: {count}).\nRaison: {reason}",
+      "auto_timeout": "⏱️ Timeout automatique appliqué: {minutes} minutes."
+    },
+    "unwarn": {
+      "description": "Retirer un avertissement à un membre",
+      "user_option": "Utilisateur ciblé",
+      "index_option": "Index de l'avertissement à retirer (dernier par défaut)",
+      "no_permission": "Vous n’avez pas la permission de retirer des avertissements.",
+      "no_warnings": "Cet utilisateur n’a aucun avertissement.",
+      "success_title": "Avertissement retiré",
+      "success": "Avertissement retiré pour {user}. Total restant: {count}"
+    }
+    ,
+    "warnlist": {
+      "description": "Lister les membres ayant des avertissements",
+      "title": "📋 Membres avertis",
+      "header": "Total des membres avec avertissements: {total}",
+      "empty": "Aucun membre n’a d’avertissement.",
+      "warn_count_label": "avertissement(s)"
+    }
+  },
     "tempvoice": {
         "description": "Configurer les salons vocaux temporaires",
         "addhub_description": "Créer ou modifier un salon hub",
@@ -343,7 +423,7 @@
             "not_found": "❌ Élément introuvable.",
             "no_text_channel": "❌ Aucun salon texte lié n'est configuré.",
             "no_temp_channel": "❌ Ce salon n'est pas géré par le système temporaire."
-        }
+  }
     },
     "ping": {
         "title": "🏓 Pong!",
