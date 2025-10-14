@@ -16,11 +16,11 @@ module.exports = {
   async execute(interaction) {
     const lang = 'fr';
     if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-      const payload = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.warn.no_permission', {}, true, lang);
+      const payload = await ComponentsV3.errorEmbed(interaction.guild.id, 'commands.warn.no_permission', {}, false, lang);
       return interaction.reply(payload);
     }
 
-    try { await interaction.deferReply({ ephemeral: true }); } catch (_) {}
+    try { await interaction.deferReply(); } catch (_) {}
 
     let guild = await Guild.findOne({ guildId: interaction.guild.id });
     if (!guild) { guild = new Guild({ guildId: interaction.guild.id }); await guild.save(); }
@@ -33,7 +33,7 @@ module.exports = {
         'commands.warnlist.title',
         'commands.warnlist.empty',
         {},
-        true,
+        false,
         guild.language || lang
       );
       return interaction.editReply(payload);
@@ -53,7 +53,7 @@ module.exports = {
       contentKey: 'commands.warnlist.header',
       contentPlaceholders: { total: String(warnedUsers.length) },
       additionalContent: lines,
-      ephemeral: true,
+      ephemeral: false,
       langOverride: guild.language || lang
     });
 
