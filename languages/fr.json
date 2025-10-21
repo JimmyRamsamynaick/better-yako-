@@ -223,12 +223,16 @@
         "lock": {
             "description": "Verrouiller un salon",
             "channel_option": "Le salon à verrouiller",
-            "reason_option": "Raison du verrouillage"
+            "reason_option": "Raison du verrouillage",
+            "success_title": "🔒 Salon verrouillé",
+            "success": "{executor} a verrouillé {channel} pour {reason}"
         },
         "unlock": {
             "description": "Déverrouiller un salon",
             "channel_option": "Le salon à déverrouiller",
-            "reason_option": "Raison du déverrouillage"
+            "reason_option": "Raison du déverrouillage",
+            "success_title": "🔓 Salon déverrouillé",
+            "success": "{executor} a déverrouillé {channel} pour {reason}"
         },
         "setlogs": {
             "description": "Configure les logs du serveur",
