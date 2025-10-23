@@ -111,7 +111,12 @@
             "error_no_setup": "The mute system is not configured. Use `/setupmute` first",
             "error_role_not_found": "The mute role cannot be found. Reconfigure with `/setupmute`",
             "error_already_muted": "This member is already muted",
-            "error_invalid_duration": "Invalid duration. Use a format like `10m`, `1h`, `1d` (max 28 days)"
+            "error_invalid_duration": "Invalid duration. Use a format like `10m`, `1h`, `1d` (max 28 days)",
+            "error_bot_missing_moderate": "I cannot apply a timeout to this user. Please ensure I have the **Moderate Members** permission.",
+            "error_bot_missing_manage_roles": "I cannot manage the muted role. Please ensure I have the **Manage Roles** permission.",
+            "error_bot_role_position": "I cannot assign the muted role because it is above my highest role. Please move my role above the muted role or lower the muted role.",
+            "error_member_hierarchy": "I cannot modify this member's roles because their highest role is higher or equal to mine.",
+            "error_effective_mute_failed": "Mute could not be applied effectively. Check role order and permissions."
         },
         "unmute": {
             "description": "Unmute a member",
@@ -226,6 +231,18 @@
             "no_permission": "❌ You don't have permission to unban members.",
             "not_banned": "❌ This user is not banned."
         },
+        "voice": {
+            "not_in_voice": "This member is not connected to a voice channel.",
+            "kick_success_title": "✅ Voice Kick",
+            "kick_success": "{executor} disconnected {user} from voice for {reason}",
+            "kick_error": "An error occurred while disconnecting the member from voice",
+            "ban_success_title": "✅ Voice Ban Applied",
+            "ban_success": "{executor} banned {user} from all voice channels for {reason}",
+            "ban_error": "An error occurred while applying the voice ban",
+            "unban_success_title": "✅ Voice Ban Removed",
+            "unban_success": "{executor} removed the voice ban from {user} for {reason}",
+            "unban_error": "An error occurred while removing the voice ban"
+        },
         "setupmute": {
             "description": "Configure the mute system",
             "no_permission": "❌ You don't have permission to manage roles.",
@@ -248,7 +265,7 @@
             "premium_desc": "Exclusive premium commands",
             "footer": "Help updated automatically",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)",
             "public_title": "👥 Public Commands",
             "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information",
             "premium_title": "⭐ Premium Commands",
@@ -269,6 +286,9 @@
             "description": "Ask a question to AI",
             "premium_required": "❌ This command requires a Premium subscription.",
             "premium_required_title": "💎 Premium Required",
+            "title": "🤖 AI Assistant",
+            "question": "Question",
+            "response": "Response",
             "error": "❌ An error occurred while processing your question.",
             "error_title": "❌ AI Error"
         },

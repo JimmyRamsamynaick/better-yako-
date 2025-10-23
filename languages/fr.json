@@ -109,7 +109,12 @@
             "error_no_setup": "Le système de mute n'est pas configuré. Utilisez `/setupmute` d'abord",
             "error_role_not_found": "Le rôle de mute est introuvable. Reconfigurez avec `/setupmute`",
             "error_already_muted": "Ce membre est déjà rendu muet",
-            "error_invalid_duration": "Durée invalide. Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours)"
+            "error_invalid_duration": "Durée invalide. Utilisez un format comme `10m`, `1h`, `1d` (max 28 jours)",
+            "error_bot_missing_moderate": "Le bot ne peut pas appliquer de timeout à cet utilisateur. Vérifiez la permission **Modérer les membres**.",
+            "error_bot_missing_manage_roles": "Le bot ne peut pas gérer le rôle Muted. Vérifiez la permission **Gérer les rôles**.",
+            "error_bot_role_position": "Je ne peux pas attribuer le rôle Muted car il est au-dessus de mon rôle le plus élevé. Placez mon rôle au-dessus du rôle Muted ou abaissez le rôle Muted.",
+            "error_member_hierarchy": "Je ne peux pas modifier les rôles de ce membre car son rôle le plus élevé est supérieur ou égal au mien.",
+            "error_effective_mute_failed": "Impossible d'appliquer le mute efficacement. Vérifiez l'ordre des rôles et les permissions."
         },
         "unmute": {
             "description": "Rendre la parole à un membre",
@@ -146,7 +151,7 @@
             "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
             "select_placeholder": "🔍 Sélectionnez une catégorie...",
             "moderation_title": "🛡️ Commandes de Modération",
-            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet un membre\n**`/unmute`** - Enlever le mute d'un membre\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue\n**`/setwelcome`** - Configurer la bienvenue (admin, canal)",
+            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet (temporaire)\n**`/unmute`** - Rendre la parole\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/voice ban`** - Interdit l’accès à tous les salons vocaux et de scène sur tout le serveur (global par défaut). Si le membre est en vocal, il est immédiatement déconnecté.\n**`/voice unban`** - Restaure l’accès à tous les salons vocaux et de scène (global).\n**`/voice kick`** - Expulse un membre de son salon vocal (déconnexion immédiate).\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue\n**`/setwelcome`** - Configurer le message de bienvenue (admin, salon)",
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
             "public_title": "👥 Commandes Publiques",
@@ -207,7 +212,118 @@
         },
         "ask": {
             "description": "Poser une question à l'IA",
-            "message_option": "Votre question"
+            "message_option": "Votre question",
+            "title": "🤖 Assistant IA",
+            "question": "Question",
+            "response": "Réponse",
+            "error_title": "❌ Erreur IA",
+            "error": "Une erreur est survenue lors de la génération de la réponse."
+        },
+        "unban": {
+            "description": "Débannir un utilisateur du serveur",
+            "userid_option": "ID de l'utilisateur à débannir",
+            "reason_option": "Raison du débannissement",
+            "success_title": "✅ Utilisateur débanni",
+            "success": "{executor} a débanni {user} pour {reason}",
+            "error_title": "❌ Erreur de débannissement",
+            "error": "Une erreur est survenue lors du débannissement",
+            "error_not_banned": "Cet utilisateur n'est pas banni du serveur",
+            "no_permission": "❌ Vous n'avez pas la permission de débannir des membres.",
+            "not_banned": "❌ Cet utilisateur n'est pas banni."
+        },
+        "voice": {
+            "not_in_voice": "Ce membre n'est pas connecté à un salon vocal.",
+            "kick_success_title": "✅ Expulsion vocale",
+            "kick_success": "{executor} a déconnecté {user} du vocal pour {reason}",
+            "kick_error": "Une erreur est survenue lors de la déconnexion du membre du vocal",
+            "ban_success_title": "✅ Bannissement vocal appliqué",
+            "ban_success": "{executor} a banni {user} de tous les salons vocaux pour {reason}",
+            "ban_error": "Une erreur est survenue lors de l'application du bannissement vocal",
+            "unban_success_title": "✅ Bannissement vocal retiré",
+            "unban_success": "{executor} a retiré le bannissement vocal de {user} pour {reason}",
+            "unban_error": "Une erreur est survenue lors du retrait du bannissement vocal"
+        },
+        "setupmute": {
+            "description": "Configurer le système de mute",
+            "success": "✅ Système de mute configuré avec succès !",
+            "no_permission": "❌ Vous n'avez pas la permission de gérer les rôles.",
+            "error": "❌ Une erreur s'est produite lors de la configuration."
+        },
+        "help": {
+            "description": "Afficher la liste des commandes",
+            "category_option": "Catégorie de commandes",
+            "main_title": "📚 Centre d'aide YAKO",
+            "main_description": "Voici la liste de toutes les commandes disponibles. Sélectionnez une catégorie dans le menu déroulant ci-dessous pour voir les détails.\n\n**Catégories disponibles :**\n🛡️ **Modération** - Commandes de gestion du serveur\n🌍 **Public** - Commandes accessibles à tous\n⭐ **Premium** - Commandes premium exclusives",
+            "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
+            "select_placeholder": "🔍 Sélectionnez une catégorie...",
+            "moderation_title": "🛡️ Commandes de Modération",
+            "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet (temporaire)\n**`/unmute`** - Rendre la parole\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/voice ban`** - Interdit l’accès à tous les salons vocaux et de scène sur tout le serveur (global par défaut). Si le membre est en vocal, il est immédiatement déconnecté.\n**`/voice unban`** - Restaure l’accès à tous les salons vocaux et de scène (global).\n**`/voice kick`** - Expulse un membre de son salon vocal (déconnexion immédiate).\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/setlang`** - Changer la langue\n**`/setwelcome`** - Configurer le message de bienvenue (admin, salon)",
+            "moderation_option": "Modération",
+            "moderation_desc": "Outils de gestion du serveur",
+            "public_title": "👥 Commandes Publiques",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
+            "public_option": "Public",
+            "public_desc": "Commandes pour tous les membres",
+            "premium_title": "⭐ Commandes Premium",
+            "premium_description": "**`/ask`** - Poser une question à l'IA\n\n*Fonctionnalités avancées réservées aux serveurs premium*",
+            "premium_option": "Premium",
+            "premium_desc": "Fonctionnalités premium exclusives",
+            "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !"
+        },
+    "setwelcome": {
+            "description": "Configurer le système de bienvenue (activer/désactiver)",
+            "enabled_option": "Activer ou désactiver le message de bienvenue",
+            "channel_option": "Salon où envoyer le message de bienvenue",
+            "success_title": "✅ Système de bienvenue mis à jour",
+            "enabled_success": "✅ Système de bienvenue **activé**.",
+            "disabled_success": "❌ Système de bienvenue **désactivé**.",
+            "channel_set_success": "✅ Salon de bienvenue configuré sur {channel}.",
+            "no_permission": "❌ Vous devez être **administrateur** pour utiliser cette commande.",
+            "error": "❌ Une erreur s'est produite lors de la configuration du système de bienvenue."
+        },
+        "userinfo": {
+            "description": "Afficher les informations d'un utilisateur",
+            "user_option": "L'utilisateur dont vous voulez voir les informations",
+            "title": "👤 Informations de {user}",
+            "fields": {
+                "user_id": "🆔 ID Utilisateur",
+                "account_created": "📅 Compte créé",
+                "joined_server": "📥 A rejoint le serveur",
+                "nickname": "📝 Surnom",
+                "roles": "🎭 Rôles ({count})",
+                "highest_role": "👑 Rôle le plus élevé",
+                "permissions": "🔐 Permissions clés",
+                "status": "🟢 Statut",
+                "activity": "🎮 Activité",
+                "boost_since": "💎 Boost depuis",
+                "avatar": "🖼️ Avatar",
+                "banner": "🎨 Bannière"
+            },
+            "status": {
+                "online": "🟢 En ligne",
+                "idle": "🟡 Absent",
+                "dnd": "🔴 Ne pas déranger",
+                "offline": "⚫ Hors ligne"
+            },
+            "no_nickname": "Aucun",
+            "no_roles": "Aucun rôle",
+            "no_activity": "Aucune activité",
+            "not_boosting": "N'améliore pas le serveur",
+            "permissions_admin": "Administrateur",
+            "permissions_mod": "Modérateur",
+            "permissions_member": "Membre",
+            "view_avatar": "Voir l'avatar",
+            "view_banner": "Voir la bannière",
+            "no_banner": "Aucune bannière"
+        },
+        "ask": {
+            "description": "Poser une question à l'IA",
+            "message_option": "Votre question",
+            "title": "🤖 Assistant IA",
+            "question": "Question",
+            "response": "Réponse",
+            "error_title": "❌ Erreur IA",
+            "error": "Une erreur est survenue lors de la génération de la réponse."
         },
         "unban": {
             "description": "Débannir un utilisateur",
@@ -292,7 +408,7 @@
             "error": "❌ Une erreur est survenue lors du changement de langue.",
             "error_title": "❌ Erreur de changement de langue"
         },
-        "antiraid": {
+    "antiraid": {
       "description": "Configurer et gérer les protections anti‑raid",
       "panel_description": "Afficher le panneau de configuration anti‑raid",
         "panel": {
