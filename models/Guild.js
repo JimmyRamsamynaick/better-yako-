@@ -77,6 +77,16 @@ const guildSchema = new Schema({
             default: null
         }
     },
+    tickets: {
+        categoryId: {
+            type: String,
+            default: null
+        },
+        staffRoleId: {
+            type: String,
+            default: null
+        }
+    },
     // tempVoice supprimé
     users: [userSchema],
     premium: {

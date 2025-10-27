@@ -487,6 +487,19 @@
       "header": "Total des membres avec avertissements: {total}",
       "empty": "Aucun membre n’a d’avertissement.",
       "warn_count_label": "avertissement(s)"
+    },
+    "settickets": {
+        "description": "Configurer le système de tickets",
+        "setcategory_description": "Définir la catégorie parente pour les tickets",
+        "category_option": "Catégorie qui contiendra les tickets",
+        "success_title": "✅ Tickets configurés",
+        "success": "Catégorie de tickets définie sur {category}"
+    },
+    "ticketpanel": {
+        "description": "Envoyer un panneau de tickets",
+        "title": "🎫 Centre de support",
+        "content": "Choisissez une catégorie de ticket ci-dessous.",
+        "footer": "Le staff vous répondra rapidement."
     }
   },
     "tempvoice": {
@@ -755,5 +768,57 @@
         "channel_lock_details": "**Salon:** {channel}\n**Modérateur:** {moderator}\n**Raison:** {reason}",
         "channel_unlock": "🔓 Salon {channel} déverrouillé",
         "channel_unlock_details": "**Salon:** {channel}\n**Modérateur:** {moderator}\n**Raison:** {reason}"
+    },
+    "tickets": {
+        "open_title": "🎫 Ticket ouvert",
+        "open_title_template": "Ticket {category}",
+        "open_description": "Bonjour {user}, bienvenue dans votre ticket !\nUn membre du staff va vous prendre en charge dans les plus brefs délais.",
+        "open_fields": {
+            "category": "Catégorie",
+            "created": "Créé le"
+        },
+        "open_reminders_label": "Rappels",
+        "open_reminders_content": "→ Soyez précis dans votre demande\n→ Restez poli et respectueux\n→ Patientez, nous répondons rapidement\n→ Ne spammez pas le ticket",
+        "open_footer": "Ticket créé le {date}",
+        "panel_title": "Assistance",
+        "panel_content": "Les tickets existent pour vous aider !\nNotre équipe s'efforce de maintenir un serveur apaisé et agréable pour tous.\nCe système a été créé pour faciliter la communication avec nous.\n\n⚠️ Un ticket peut prendre du temps à être traité — pas de panique, restez patients !\nTout abus (spam, demandes inutiles, etc.) sera sévèrement sanctionné.\n\n**Autres sections**\n• Recrutement : Envie de nous rejoindre ?\n• Signalement : Un problème à rapporter ?\n• Partenariat : Collaborons ensemble !\n• Owners : Besoin direct des fondateurs ?",
+        "select_category_placeholder": "Choisissez la catégorie de votre demande",
+        "close_button_label": "Fermer le ticket",
+        "created_confirmation": "Ticket créé",
+        "errors": {
+            "no_category_setup": "Catégorie des tickets non configurée. Utilisez /settickets.",
+            "invalid_category": "La catégorie configurée est introuvable.",
+            "channel_not_found": "Salon de ticket introuvable."
+        },
+        "logs": {
+            "created": "Ticket créé par {user} dans #{channel} ({category})",
+            "closed": "Ticket fermé par {user} dans #{channel}"
+        },
+        "categories": {
+            "support": {
+                "label": "Support",
+                "description": "Demander de l'aide au staff"
+            },
+            "report": {
+                "label": "Signalement",
+                "description": "Signaler un problème ou un utilisateur"
+            },
+            "other": {
+                "label": "Autre",
+                "description": "Autre demande"
+            },
+            "recrutement": {
+                "label": "Recrutement",
+                "description": "Envie de nous rejoindre ?"
+            },
+            "partenariat": {
+                "label": "Partenariat",
+                "description": "Collaborons ensemble !"
+            },
+            "owners": {
+                "label": "Owners",
+                "description": "Besoin direct des fondateurs ?"
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 const { Collection, MessageFlags } = require('discord.js');
 const BotEmbeds = require('../utils/embeds');
 const helpCommand = require('../commands/public/help');
+const ticketpanelCommand = require('../commands/public/ticketpanel');
 
 module.exports = {
     name: 'interactionCreate',
@@ -11,6 +12,43 @@ module.exports = {
             // Déléguer les interactions help au fichier help.js
             if (interaction.customId === 'help_category_select') {
                 await helpCommand.handleSelectMenuInteraction(interaction);
+                return;
+            }
+
+            // Sélecteur de catégorie de ticket
+            if (interaction.customId === 'ticket_category_select') {
+                try {
+                    await ticketpanelCommand.handleSelectMenuInteraction(interaction);
+                } catch (err) {
+                    console.error('[Tickets] Select menu handling failed:', err);
+                    const errorEmbed = BotEmbeds.createGenericErrorEmbed('Échec de l\'interaction de ticket.');
+                    try { await interaction.reply(errorEmbed); } catch (_) {}
+                }
+                return;
+            }
+        }
+
+        // Boutons du système de tickets (ouvrir/fermer)
+        if (interaction.isButton()) {
+            const id = interaction.customId || '';
+            if (id.startsWith('ticket_category:')) {
+                try {
+                    await ticketpanelCommand.handleButtonInteraction(interaction);
+                } catch (err) {
+                    console.error('[Tickets] Button handling failed:', err);
+                    const errorEmbed = BotEmbeds.createGenericErrorEmbed('Échec de l\'interaction de ticket.');
+                    try { await interaction.reply(errorEmbed); } catch (_) {}
+                }
+                return;
+            }
+            if (id.startsWith('ticket_close:')) {
+                try {
+                    await ticketpanelCommand.handleCloseButton(interaction);
+                } catch (err) {
+                    console.error('[Tickets] Close button handling failed:', err);
+                    const errorEmbed = BotEmbeds.createGenericErrorEmbed('Échec de la fermeture du ticket.');
+                    try { await interaction.reply(errorEmbed); } catch (_) {}
+                }
                 return;
             }
         }
