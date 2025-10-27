@@ -55,6 +55,9 @@ jspm_packages/
 # Backup and refonte directory
 backup_refonte/
 
+# Ticket transcripts (always ignored)
+transcripts/
+
 # ================================
 # LOGS & DEBUGGING
 # ================================

@@ -99,4 +99,32 @@ const guildSchema = new Schema({
     }
 });
 
+// Sanitize legacy data: ensure users[*].warnings is always an array of objects
+guildSchema.pre('validate', function(next) {
+    try {
+        if (Array.isArray(this.users)) {
+            this.users.forEach((u) => {
+                if (!u) return;
+                const w = u.warnings;
+                // If warnings is a number or missing, coerce to empty array
+                if (typeof w === 'number' || (!Array.isArray(w) && w != null)) {
+                    u.warnings = [];
+                    return;
+                }
+                if (!Array.isArray(w)) {
+                    u.warnings = [];
+                    return;
+                }
+                // Filter out invalid entries to keep only plain objects
+                u.warnings = w.filter((entry) => entry && typeof entry === 'object');
+            });
+        }
+        next();
+    } catch (err) {
+        // Do not block validation because of sanitation error
+        console.error('Guild warnings sanitation error:', err);
+        next();
+    }
+});
+
 module.exports = model('Guild', guildSchema);

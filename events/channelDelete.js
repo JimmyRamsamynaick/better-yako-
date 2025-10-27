@@ -1,6 +1,10 @@
 const { EmbedBuilder, ChannelType } = require('discord.js');
 const Guild = require('../models/Guild');
 const LanguageManager = require('../utils/languageManager');
+const fs = require('fs');
+const path = require('path');
+const { get: getTicketEntry, remove: removeTicketEntry } = require('../utils/ticketsRegistry');
+const { getTranscriptFilePath } = require('../utils/ticketTranscripts');
 
 module.exports = {
     name: 'channelDelete',
@@ -80,7 +84,46 @@ module.exports = {
                 .setTimestamp()
                 .setFooter({ text: `ID: ${channel.id}` });
 
-            await logChannel.send({ embeds: [embed] });
+            // Si ce canal correspond à un ticket fermé via le système de tickets, enrichir le log
+            const ticketEntry = getTicketEntry(channel.id);
+            let files = [];
+            if (ticketEntry) {
+                const meta = ticketEntry.meta || {};
+                const onClose = ticketEntry.onClose || {};
+                const closedBy = ticketEntry.closedBy;
+
+                const categoryKey = meta.categoryKey || 'inconnu';
+                const categoryLabel = LanguageManager.get(lang, `tickets.categories.${categoryKey}.label`) || (categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1));
+
+                const ticketFields = [
+                    { name: '🎫 Ticket', value: `Catégorie: **${categoryLabel}**`, inline: true },
+                ];
+                if (meta.openerTag) {
+                    ticketFields.push({ name: '👤 Ouvert par', value: meta.openerTag, inline: true });
+                }
+                if (closedBy) {
+                    const closedByText = typeof closedBy === 'object' && closedBy.tag ? closedBy.tag : String(closedBy);
+                    ticketFields.push({ name: '🗑️ Fermé par', value: closedByText, inline: true });
+                }
+                if (typeof onClose.totalMessages === 'number') {
+                    ticketFields.push({ name: '💬 Messages', value: String(onClose.totalMessages), inline: true });
+                }
+
+                embed.addFields(ticketFields);
+
+                // Joindre le transcript si disponible
+                try {
+                    const transcriptPath = getTranscriptFilePath(channel.name);
+                    if (fs.existsSync(transcriptPath)) {
+                        files.push({ attachment: transcriptPath, name: onClose.transcriptFileName || path.basename(transcriptPath) });
+                    }
+                } catch (_) {}
+
+                // Nettoyer l'entrée du registre après log
+                removeTicketEntry(channel.id);
+            }
+
+            await logChannel.send({ embeds: [embed], ...(files.length > 0 ? { files } : {}) });
 
         } catch (error) {
             console.error('Erreur lors du log de suppression de canal:', error);
