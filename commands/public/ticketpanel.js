@@ -42,11 +42,42 @@ async function createTicketChannel(interaction, categoryKey) {
     const channelName = `ticket-${categoryKey}-${userTag}`.toLowerCase();
 
     try {
+        // Déterminer les permissions: visibilité limitée à owner, admins, staff et auteur
+        const everyoneRoleId = interaction.guild.roles.everyone.id;
+        const adminRoleIds = interaction.guild.roles.cache
+            .filter(r => r.permissions.has('Administrator'))
+            .map(r => r.id);
+        const staffRoleId = guildData?.tickets?.staffRoleId || null;
+        const ownerId = interaction.guild.ownerId;
+
+        const overwrites = [
+            // Bloquer tout le monde par défaut
+            { id: everyoneRoleId, deny: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'] },
+            // Autoriser le bot
+            { id: interaction.client.user.id, allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory', 'AttachFiles', 'EmbedLinks', 'ManageChannels'] },
+            // Autoriser l'auteur du ticket
+            { id: interaction.user.id, allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory', 'AttachFiles', 'EmbedLinks'] },
+        ];
+
+        // Autoriser le propriétaire du serveur
+        if (ownerId) {
+            overwrites.push({ id: ownerId, allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'] });
+        }
+        // Autoriser les rôles admin
+        adminRoleIds.forEach(roleId => {
+            overwrites.push({ id: roleId, allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'] });
+        });
+        // Autoriser le rôle staff configuré
+        if (staffRoleId) {
+            overwrites.push({ id: staffRoleId, allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'] });
+        }
+
         const channel = await interaction.guild.channels.create({
             name: channelName,
             type: ChannelType.GuildText,
             parent: category.id,
-            reason: `Ticket ${categoryKey} ouvert par ${interaction.user.tag}`
+            reason: `Ticket ${categoryKey} ouvert par ${interaction.user.tag}`,
+            permissionOverwrites: overwrites
         });
 
         // Enregistrer les métadonnées du ticket pour les logs de suppression
@@ -133,7 +164,15 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: false });
+        // Acquittement rapide pour éviter "L’application ne répond plus"
+        try {
+            await interaction.deferReply({ ephemeral: true });
+        } catch (_) {
+            if (!interaction.deferred && !interaction.replied) {
+                try { await interaction.reply({ content: '⏳ Préparation du panneau de tickets…', ephemeral: true }); } catch (_) {}
+            }
+        }
+
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
         const lang = guildData?.language || 'fr';
 
@@ -157,13 +196,42 @@ module.exports = {
                     description: safeLang(`tickets.categories.${cat.key}.description`, `Ouvrir un ticket pour ${cat.key}`, lang),
                     emoji: cat.emoji,
                 })),
-            }, ],
+            }],
         };
 
-        await interaction.editReply({
-            ...basePayload,
-            components: [selectMenu],
-        });
+        // Vérifier les permissions d’envoi dans le salon
+        const me = interaction.guild.members.me;
+        const channel = interaction.channel;
+        const perms = channel.permissionsFor(me);
+        const canSend = perms && perms.has(PermissionFlagsBits.SendMessages);
+        const canEmbed = perms && perms.has(PermissionFlagsBits.EmbedLinks);
+
+        if (canSend && canEmbed) {
+            try {
+                await channel.send({
+                    ...basePayload,
+                    components: [selectMenu],
+                });
+                await interaction.editReply({
+                    content: safeLang('tickets.panel_sent_confirmation', '✅ Panneau de tickets envoyé dans ce salon.', lang)
+                });
+            } catch (err) {
+                await interaction.editReply({
+                    embeds: [{ title: '❌ Erreur', description: err.message }]
+                });
+            }
+        } else {
+            const missing = [
+                !canSend ? 'Envoyer des messages' : null,
+                !canEmbed ? 'Intégrer des liens' : null,
+            ].filter(Boolean).join(', ');
+            await interaction.editReply({
+                embeds: [{
+                    title: '❌ Permissions manquantes',
+                    description: safeLang('tickets.panel_missing_perms', `Je n’ai pas les permissions pour envoyer le panneau ici (${missing}).`, lang)
+                }]
+            });
+        }
     },
 
     async handleSelectMenuInteraction(interaction) {
