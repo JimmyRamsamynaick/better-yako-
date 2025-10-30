@@ -267,7 +267,7 @@
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
             "public_title": "👥 Commandes Publiques",
-            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/vote`** - Voter pour le bot",
             "public_option": "Public",
             "public_desc": "Commandes pour tous les membres",
             "premium_title": "⭐ Commandes Premium",
