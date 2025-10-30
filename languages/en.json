@@ -438,6 +438,15 @@
         "premium_required": "This command requires a premium server. ⭐\nContact the support team for more information.",
         "error": "Sorry, I couldn't process your question."
     },
+
+    "commands": {
+        "vote": {
+            "description": "Vote for the bot on Top.gg",
+            "title": "🗳️ Vote for YAKO",
+            "content": "Thanks for your support! Click the button below to open the Top.gg voting page.",
+            "button": "Vote on Top.gg"
+        }
+    },
     "errors": {
         "no_permission": "❌ You don't have permission to use this command.",
         "no_permission_title": "❌ Insufficient permissions",

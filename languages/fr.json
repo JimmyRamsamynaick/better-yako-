@@ -155,7 +155,7 @@
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
             "public_title": "👥 Commandes Publiques",
-            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/vote`** - Lien de vote Top.gg",
             "public_option": "Public",
             "public_desc": "Commandes pour tous les membres",
             "premium_title": "⭐ Commandes Premium",
@@ -248,6 +248,12 @@
             "success": "✅ Système de mute configuré avec succès !",
             "no_permission": "❌ Vous n'avez pas la permission de gérer les rôles.",
             "error": "❌ Une erreur s'est produite lors de la configuration."
+        },
+        "vote": {
+            "description": "Voter pour le bot sur Top.gg",
+            "title": "🗳️ Vote pour YAKO",
+            "content": "Merci de soutenir le bot ! Clique sur le bouton ci-dessous pour ouvrir la page de vote sur Top.gg.",
+            "button": "Voter sur Top.gg"
         },
         "help": {
             "description": "Afficher la liste des commandes",
