@@ -56,7 +56,7 @@
         "vote": {
             "description": "Vote for the bot on Top.gg",
             "title": "⭐ Vote for YAKO",
-            "content": "Thanks for your support! Click the button below to open the voting page: {url}\n\nNote: Voting happens on Top.gg and may require you to log in.",
+            "content": "Thanks for your support! Here is the voting page: {url}\n\nNote: Voting happens on Top.gg and may require you to log in.",
             "button_label": "Vote on Top.gg"
         },
 

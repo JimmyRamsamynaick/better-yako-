@@ -55,7 +55,7 @@
         "vote": {
             "description": "Voter pour le bot sur Top.gg",
             "title": "⭐ Voter pour YAKO",
-            "content": "Merci de votre soutien ! Cliquez sur le bouton ci-dessous pour ouvrir la page de vote : {url}\n\nNote : le vote s'effectue sur Top.gg et peut nécessiter une connexion.",
+            "content": "Merci de votre soutien ! Voici la page de vote : {url}\n\nNote : le vote s'effectue sur Top.gg et peut nécessiter une connexion.",
             "button_label": "Voter sur Top.gg"
         },
         "serverinfo": {

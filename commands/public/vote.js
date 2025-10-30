@@ -19,7 +19,7 @@ module.exports = {
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
         const lang = guildData?.language || 'fr';
 
-        // Créer un message d'information (éphémère) avec un bouton lien
+        // Créer un message d'information (éphémère) SANS bouton Top.gg
         const infoPayload = await ComponentsV3.infoEmbed(
             interaction.guild.id,
             'commands.vote.title',
@@ -29,27 +29,6 @@ module.exports = {
             lang
         );
 
-        const buttonRow = {
-            type: 1,
-            components: [
-                {
-                    type: 2,
-                    style: 5, // Link button
-                    label: LanguageManager.get(lang, 'commands.vote.button_label') || (lang === 'en' ? 'Vote on Top.gg' : 'Voter sur Top.gg'),
-                    url: TOPGG_URL,
-                    emoji: { name: '⭐' }
-                }
-            ]
-        };
-
-        // Insérer le bouton dans le container Components V3 (type 17)
-        const payload = { ...infoPayload };
-        if (payload.components && payload.components[0] && payload.components[0].type === 17) {
-            payload.components[0].components.push(buttonRow);
-        } else {
-            payload.components = [{ type: 17, components: [ buttonRow ] }];
-        }
-
-        await interaction.reply(payload);
+        await interaction.reply(infoPayload);
     }
 };
