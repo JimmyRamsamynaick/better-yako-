@@ -61,27 +61,9 @@ module.exports = {
         if (!command) return;
 
         // Système de cooldown
-        const { cooldowns } = client;
-        if (!cooldowns.has(command.data.name)) {
-            cooldowns.set(command.data.name, new Collection());
-        }
-
-        const now = Date.now();
-        const timestamps = cooldowns.get(command.data.name);
-        const cooldownAmount = (command.cooldown || 3) * 1000;
-
-        if (timestamps.has(interaction.user.id)) {
-            const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
-
-            if (now < expirationTime) {
-                const timeLeft = (expirationTime - now) / 1000;
-                const errorEmbed = BotEmbeds.createCooldownErrorEmbed(timeLeft);
-                return interaction.reply({ components: [errorEmbed], flags: require('discord.js').MessageFlags.IsComponentsV2 });
-            }
-        }
-
-        timestamps.set(interaction.user.id, now);
-        setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+        // Désactivation du système de cooldown (à la demande de l'utilisateur)
+        // Si vous souhaitez le réactiver, entourez le bloc avec:
+        // if (process.env.ENABLE_COOLDOWN === 'true') { ... }
 
         try {
             // Laisser chaque commande gérer son propre acquittement (deferReply)
