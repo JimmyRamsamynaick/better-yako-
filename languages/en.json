@@ -53,6 +53,13 @@
             "api_latency_label": "API Latency"
         },
 
+        "vote": {
+            "description": "Vote for the bot on Top.gg",
+            "title": "⭐ Vote for YAKO",
+            "content": "Thanks for your support! Click the button below to open the voting page: {url}\n\nNote: Voting happens on Top.gg and may require you to log in.",
+            "button_label": "Vote on Top.gg"
+        },
+
 
         "serverinfo": {
             "description": "Shows server information",
@@ -267,7 +274,7 @@
             "moderation_title": "🛡️ Moderation Commands",
             "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)",
             "public_title": "👥 Public Commands",
-            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information",
+            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/vote`** - Vote for the bot",
             "premium_title": "⭐ Premium Commands",
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
@@ -437,15 +444,6 @@
         "footer": "Question asked by {username}",
         "premium_required": "This command requires a premium server. ⭐\nContact the support team for more information.",
         "error": "Sorry, I couldn't process your question."
-    },
-
-    "commands": {
-        "vote": {
-            "description": "Vote for the bot on Top.gg",
-            "title": "🗳️ Vote for YAKO",
-            "content": "Thanks for your support! Click the button below to open the Top.gg voting page.",
-            "button": "Vote on Top.gg"
-        }
     },
     "errors": {
         "no_permission": "❌ You don't have permission to use this command.",

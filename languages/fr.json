@@ -52,6 +52,12 @@
             "details": "**Latence du bot:** {latency}ms",
             "api_latency_label": "Latence de l'API"
         },
+        "vote": {
+            "description": "Voter pour le bot sur Top.gg",
+            "title": "⭐ Voter pour YAKO",
+            "content": "Merci de votre soutien ! Cliquez sur le bouton ci-dessous pour ouvrir la page de vote : {url}\n\nNote : le vote s'effectue sur Top.gg et peut nécessiter une connexion.",
+            "button_label": "Voter sur Top.gg"
+        },
         "serverinfo": {
             "description": "Affiche les informations du serveur",
             "title": "📊 Informations du serveur",
@@ -155,7 +161,7 @@
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
             "public_title": "👥 Commandes Publiques",
-            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/vote`** - Lien de vote Top.gg",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/vote`** - Voter pour le bot",
             "public_option": "Public",
             "public_desc": "Commandes pour tous les membres",
             "premium_title": "⭐ Commandes Premium",
@@ -248,12 +254,6 @@
             "success": "✅ Système de mute configuré avec succès !",
             "no_permission": "❌ Vous n'avez pas la permission de gérer les rôles.",
             "error": "❌ Une erreur s'est produite lors de la configuration."
-        },
-        "vote": {
-            "description": "Voter pour le bot sur Top.gg",
-            "title": "🗳️ Vote pour YAKO",
-            "content": "Merci de soutenir le bot ! Clique sur le bouton ci-dessous pour ouvrir la page de vote sur Top.gg.",
-            "button": "Voter sur Top.gg"
         },
         "help": {
             "description": "Afficher la liste des commandes",
@@ -405,6 +405,39 @@
             "no_channels_configured": "❌ Aucun canal spécifique n'est configuré pour les logs.",
             "channel_not_found": "❌ Le canal {channel} n'est pas configuré pour les logs.",
             "channel_removed": "✅ Canal {channel} supprimé de la configuration des logs."
+        },
+        "voice": {
+            "join": { "title": "🔊 Utilisateur a rejoint un salon vocal" },
+            "leave": { "title": "🔇 Utilisateur a quitté un salon vocal" },
+            "switch": { "title": "🔄 Utilisateur a changé de salon vocal" },
+            "mute_micro": {
+                "title_muted": "🎤 Membre rendu muet (micro)",
+                "title_unmuted": "🎤 Membre n'est plus muet (micro)"
+            },
+            "deaf": {
+                "title_deafened": "🎧 Membre rendu sourd (casque)",
+                "title_undeafened": "🎧 Membre n'est plus sourd (casque)"
+            },
+            "self_mute": {
+                "title_on": "🎤 Utilisateur s'est auto-mis en sourdine",
+                "title_off": "🎤 Utilisateur s'est auto-désilencé",
+                "action_on": "Auto-mute",
+                "action_off": "Auto-unmute"
+            },
+            "self_deaf": {
+                "title_on": "🎧 Utilisateur s'est auto-rendu sourd",
+                "title_off": "🎧 Utilisateur s'est auto-undeaf",
+                "action_on": "Auto-deaf",
+                "action_off": "Auto-undeaf"
+            },
+            "fields": {
+                "user": "👤 Utilisateur",
+                "channel": "📍 Salon",
+                "old_channel": "📍 Ancien salon",
+                "new_channel": "📍 Nouveau salon",
+                "state": "État",
+                "action": "Action"
+            }
         },
     "setlang": {
             "description": "Changer la langue du bot",
@@ -564,6 +597,7 @@
             "no_temp_channel": "❌ Ce salon n'est pas géré par le système temporaire."
   }
     },
+
     "ping": {
         "title": "🏓 Pong!",
         "description": "**Latence du bot:** {latency}ms\n**Latence de l'API:** {apiLatency}ms",
