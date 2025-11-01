@@ -44,6 +44,18 @@
         "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action."
     },
   "commands": {
+        "voice": {
+            "kick_success_title": "Voice Kick",
+            "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",
+            "ban_success_title": "Voice Ban",
+            "ban_success": "{executor} banned {user} from voice channels.\nReason: {reason}",
+            "unban_success_title": "Voice Unban",
+            "unban_success": "{executor} unbanned {user} from voice channels.\nReason: {reason}",
+            "kick_error": "Failed to kick the user from voice channel.",
+            "ban_error": "Failed to ban the user from voice channels.",
+            "unban_error": "Failed to unban the user from voice channels.",
+            "not_in_voice": "This user is not in a voice channel."
+        },
         "ping": {
             "description": "Shows bot latency",
             "response": "🏓 Pong! Latency: {latency}ms",
@@ -240,15 +252,15 @@
         },
         "voice": {
             "not_in_voice": "This member is not connected to a voice channel.",
-            "kick_success_title": "✅ Voice Kick",
-            "kick_success": "{executor} disconnected {user} from voice for {reason}",
-            "kick_error": "An error occurred while disconnecting the member from voice",
-            "ban_success_title": "✅ Voice Ban Applied",
-            "ban_success": "{executor} banned {user} from all voice channels for {reason}",
-            "ban_error": "An error occurred while applying the voice ban",
-            "unban_success_title": "✅ Voice Ban Removed",
-            "unban_success": "{executor} removed the voice ban from {user} for {reason}",
-            "unban_error": "An error occurred while removing the voice ban"
+            "kick_success_title": "Voice Kick",
+            "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",
+            "kick_error": "Failed to kick the user from voice channel.",
+            "ban_success_title": "Voice Ban",
+            "ban_success": "{executor} banned {user} from voice channels.\nReason: {reason}",
+            "ban_error": "Failed to ban the user from voice channels.",
+            "unban_success_title": "Voice Unban",
+            "unban_success": "{executor} unbanned {user} from voice channels.\nReason: {reason}",
+            "unban_error": "Failed to unban the user from voice channels."
         },
         "setupmute": {
             "description": "Configure the mute system",
