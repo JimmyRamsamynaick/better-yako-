@@ -332,6 +332,31 @@
             "success": "La langue a été changée en **{language}** !",
             "no_permission": "❌ Vous n'avez pas la permission de changer la langue.",
             "error": "❌ Une erreur s'est produite lors du changement de langue."
+        },
+        "warn": {
+            "description": "Ajouter un avertissement à un membre",
+            "user_option": "Utilisateur à avertir",
+            "reason_option": "Raison de l'avertissement",
+            "no_permission": "Vous n'avez pas la permission d'émettre des avertissements.",
+            "success_title": "Avertissement ajouté",
+            "success": "{user} a reçu un avertissement (total : {count}).\nRaison : {reason}",
+            "auto_timeout": "⏱️ Timeout automatique appliqué : {minutes} minutes."
+        },
+        "unwarn": {
+            "description": "Retirer un avertissement d'un membre",
+            "user_option": "Utilisateur cible",
+            "index_option": "Index de l'avertissement à retirer (le plus récent par défaut)",
+            "no_permission": "Vous n'avez pas la permission de retirer des avertissements.",
+            "no_warnings": "Cet utilisateur n'a aucun avertissement.",
+            "success_title": "Avertissement retiré",
+            "success": "Avertissement retiré pour {user}. Total restant : {count}"
+        },
+        "warnlist": {
+            "description": "Lister les membres avec des avertissements",
+            "title": "📋 Membres avertis",
+            "header": "Total des membres avec avertissements : {total}",
+            "empty": "Aucun membre n'a d'avertissements.",
+            "warn_count_label": "avertissement(s)"
         }
     },
     "events": {
@@ -443,11 +468,70 @@
                 "state": "État",
                 "action": "Action"
             }
+        },
+        "welcome": {
+            "message": "Bienvenue {user} ! 🎉",
+            "react_appended": "{reactor} te souhaite aussi la bienvenue !",
+            "react_appended_sg": "te souhaite aussi la bienvenue !",
+            "react_appended_pl": "te souhaitent aussi la bienvenue !",
+            "reaction_emoji": "🎉"
         }
     },
     "serverinfo": {
         "title": "📊 Informations de {guildName}",
         "description": "👑 **Propriétaire :** {owner}\n📅 **Créé le :** {createdAt}\n🏷️ **ID :** {guildId}\n👥 **Membres :** {memberCount}\n📝 **Salons :** {channelCount}\n🎭 **Rôles :** {roleCount}\n😀 **Émojis :** {emojiCount}\n🚀 **Niveau de boost :** Niveau {boostLevel} ({boostCount} boosts)\n🔒 **Niveau de vérification :** {verificationLevel}{guildDescription}",
         "footer": "Informations mises à jour en temps réel"
+    },
+    "tickets": {
+        "open_title": "🎫 Ticket ouvert",
+        "open_title_template": "Ticket {category}",
+        "open_description": "Bonjour {user}, bienvenue dans votre ticket !\nUn membre du staff vous assistera sous peu.",
+        "open_fields": {
+            "category": "Catégorie",
+            "created": "Créé"
+        },
+        "open_reminders_label": "Rappels",
+        "open_reminders_content": "→ Soyez précis dans votre demande\n→ Restez poli et respectueux\n→ Soyez patient, nous répondons rapidement\n→ Ne spammez pas le ticket",
+        "open_footer": "Ticket créé le {date}",
+        "panel_title": "Assistance",
+        "panel_content": "Les tickets existent pour vous aider !\nNotre équipe s'efforce de maintenir ce serveur calme et agréable pour tous.\nCe système a été créé pour faciliter le contact avec nous.\n\n⚠️ Un ticket peut prendre du temps à être traité — soyez patient !\nTout abus (spam, demandes inutiles, etc.) sera strictement sanctionné.\n\n**Autres sections**\n• Recrutement : Envie de nous rejoindre ?\n• Signalement : Quelque chose à signaler ?\n• Partenariat : Collaborons ensemble !\n• Propriétaires : Besoin des fondateurs directement ?",
+        "select_category_placeholder": "Choisissez la catégorie de votre demande",
+        "close_button_label": "Fermer le ticket",
+        "created_confirmation": "Ticket créé",
+        "errors": {
+            "no_category_setup": "Catégorie de ticket non configurée. Utilisez /settickets.",
+            "invalid_category": "Catégorie configurée introuvable.",
+            "channel_not_found": "Salon de ticket introuvable."
+        },
+        "logs": {
+            "created": "Ticket créé par {user} dans #{channel} ({category})",
+            "closed": "Ticket fermé par {user} dans #{channel}"
+        },
+        "categories": {
+            "support": {
+                "label": "Support",
+                "description": "Demander de l'aide au staff"
+            },
+            "report": {
+                "label": "Signalement",
+                "description": "Signaler un problème ou un utilisateur"
+            },
+            "other": {
+                "label": "Autre",
+                "description": "Autre demande"
+            },
+            "recrutement": {
+                "label": "Recrutement",
+                "description": "Envie de nous rejoindre ?"
+            },
+            "partenariat": {
+                "label": "Partenariat",
+                "description": "Collaborons ensemble !"
+            },
+            "owners": {
+                "label": "Propriétaires",
+                "description": "Besoin des fondateurs directement ?"
+            }
+        }
     }
 }
