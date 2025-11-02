@@ -45,6 +45,22 @@
     },
   "commands": {
         "voice": {
+            "description": "Commandes de modération vocale",
+            "kick": {
+                "description": "Expulser un membre d'un salon vocal",
+                "user_option": "Le membre à expulser du vocal",
+                "reason_option": "Raison de l'expulsion"
+            },
+            "ban": {
+                "description": "Bannir un membre des salons vocaux",
+                "user_option": "Le membre à bannir des vocaux",
+                "reason_option": "Raison du bannissement"
+            },
+            "unban": {
+                "description": "Débannir un membre des salons vocaux",
+                "user_option": "Le membre à débannir des vocaux",
+                "reason_option": "Raison du débannissement"
+            },
             "kick_success_title": "Expulsion vocale",
             "kick_success": "{executor} a expulsé {user} du salon vocal.\nRaison: {reason}",
             "ban_success_title": "Bannissement vocal",

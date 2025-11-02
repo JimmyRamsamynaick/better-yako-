@@ -251,6 +251,22 @@
             "not_banned": "❌ This user is not banned."
         },
         "voice": {
+            "description": "Voice moderation commands",
+            "kick": {
+                "description": "Kick a member from a voice channel",
+                "user_option": "The member to kick from voice",
+                "reason_option": "Reason for the kick"
+            },
+            "ban": {
+                "description": "Ban a member from voice channels",
+                "user_option": "The member to ban from voice",
+                "reason_option": "Reason for the ban"
+            },
+            "unban": {
+                "description": "Unban a member from voice channels",
+                "user_option": "The member to unban from voice",
+                "reason_option": "Reason for the unban"
+            },
             "not_in_voice": "This member is not connected to a voice channel.",
             "kick_success_title": "Voice Kick",
             "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",

@@ -25,49 +25,79 @@ function canUse(member) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('voice')
-    .setDescription('Commandes de modération vocale')
+    .setDescription(LanguageManager.get('fr', 'commands.voice.description') || 'Commandes de modération vocale')
+    .setDescriptionLocalizations({
+      'en-US': LanguageManager.get('en', 'commands.voice.description') || 'Voice moderation commands'
+    })
     .addSubcommand(subcommand =>
       subcommand
         .setName('kick')
-        .setDescription('Expulser un membre d\'un salon vocal')
+        .setDescription(LanguageManager.get('fr', 'commands.voice.kick.description') || 'Expulser un membre d\'un salon vocal')
+        .setDescriptionLocalizations({
+          'en-US': LanguageManager.get('en', 'commands.voice.kick.description') || 'Kick a member from a voice channel'
+        })
         .addUserOption(option =>
           option.setName('user')
-            .setDescription('Le membre à expulser du vocal')
+            .setDescription(LanguageManager.get('fr', 'commands.voice.kick.user_option') || 'Le membre à expulser du vocal')
+            .setDescriptionLocalizations({
+              'en-US': LanguageManager.get('en', 'commands.voice.kick.user_option') || 'The member to kick from voice'
+            })
             .setRequired(true)
         )
         .addStringOption(option =>
           option.setName('reason')
-            .setDescription('Raison de l\'expulsion')
+            .setDescription(LanguageManager.get('fr', 'commands.voice.kick.reason_option') || 'Raison de l\'expulsion')
+            .setDescriptionLocalizations({
+              'en-US': LanguageManager.get('en', 'commands.voice.kick.reason_option') || 'Reason for the kick'
+            })
             .setRequired(false)
         )
     )
     .addSubcommand(subcommand =>
       subcommand
         .setName('ban')
-        .setDescription('Bannir un membre des salons vocaux')
+        .setDescription(LanguageManager.get('fr', 'commands.voice.ban.description') || 'Bannir un membre des salons vocaux')
+        .setDescriptionLocalizations({
+          'en-US': LanguageManager.get('en', 'commands.voice.ban.description') || 'Ban a member from voice channels'
+        })
         .addUserOption(option =>
           option.setName('user')
-            .setDescription('Le membre à bannir des vocaux')
+            .setDescription(LanguageManager.get('fr', 'commands.voice.ban.user_option') || 'Le membre à bannir des vocaux')
+            .setDescriptionLocalizations({
+              'en-US': LanguageManager.get('en', 'commands.voice.ban.user_option') || 'The member to ban from voice'
+            })
             .setRequired(true)
         )
         .addStringOption(option =>
           option.setName('reason')
-            .setDescription('Raison du bannissement')
+            .setDescription(LanguageManager.get('fr', 'commands.voice.ban.reason_option') || 'Raison du bannissement')
+            .setDescriptionLocalizations({
+              'en-US': LanguageManager.get('en', 'commands.voice.ban.reason_option') || 'Reason for the ban'
+            })
             .setRequired(false)
         )
     )
     .addSubcommand(subcommand =>
       subcommand
         .setName('unban')
-        .setDescription('Débannir un membre des salons vocaux')
+        .setDescription(LanguageManager.get('fr', 'commands.voice.unban.description') || 'Débannir un membre des salons vocaux')
+        .setDescriptionLocalizations({
+          'en-US': LanguageManager.get('en', 'commands.voice.unban.description') || 'Unban a member from voice channels'
+        })
         .addUserOption(option =>
           option.setName('user')
-            .setDescription('Le membre à débannir des vocaux')
+            .setDescription(LanguageManager.get('fr', 'commands.voice.unban.user_option') || 'Le membre à débannir des vocaux')
+            .setDescriptionLocalizations({
+              'en-US': LanguageManager.get('en', 'commands.voice.unban.user_option') || 'The member to unban from voice'
+            })
             .setRequired(true)
         )
         .addStringOption(option =>
           option.setName('reason')
-            .setDescription('Raison du débannissement')
+            .setDescription(LanguageManager.get('fr', 'commands.voice.unban.reason_option') || 'Raison du débannissement')
+            .setDescriptionLocalizations({
+              'en-US': LanguageManager.get('en', 'commands.voice.unban.reason_option') || 'Reason for the unban'
+            })
             .setRequired(false)
         )
     ),
