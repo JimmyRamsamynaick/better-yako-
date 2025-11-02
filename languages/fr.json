@@ -309,6 +309,7 @@
                 "configured_channels": "Salons spécifiques configurés :",
                 "no_specific_channels": "Salons spécifiques : Aucun configuré",
                 "useful_commands": "Commandes utiles :",
+                "cmd_setchannel": "• `/setlogs setchannel` - Configurer un salon spécifique",
                 "cmd_config": "• `/setlogs config` - Modifier les types globaux",
                 "cmd_removechannel": "• `/setlogs removechannel` - Retirer un salon spécifique",
                 "enabled_label": "✅ Activé",
