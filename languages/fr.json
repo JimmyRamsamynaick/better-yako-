@@ -444,5 +444,10 @@
                 "action": "Action"
             }
         }
+    },
+    "serverinfo": {
+        "title": "📊 Informations de {guildName}",
+        "description": "👑 **Propriétaire :** {owner}\n📅 **Créé le :** {createdAt}\n🏷️ **ID :** {guildId}\n👥 **Membres :** {memberCount}\n📝 **Salons :** {channelCount}\n🎭 **Rôles :** {roleCount}\n😀 **Émojis :** {emojiCount}\n🚀 **Niveau de boost :** Niveau {boostLevel} ({boostCount} boosts)\n🔒 **Niveau de vérification :** {verificationLevel}{guildDescription}",
+        "footer": "Informations mises à jour en temps réel"
     }
 }
