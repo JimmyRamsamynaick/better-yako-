@@ -265,18 +265,7 @@
             "no_permission": "❌ Vous n'avez pas la permission de débannir des membres.",
             "not_banned": "❌ Cet utilisateur n'est pas banni."
         },
-        "voice": {
-            "not_in_voice": "Ce membre n'est pas connecté à un salon vocal.",
-            "kick_success_title": "✅ Expulsion vocale",
-            "kick_success": "✅ Succès",
-            "kick_error": "Une erreur est survenue lors de la déconnexion du membre du vocal",
-            "ban_success_title": "✅ Bannissement vocal appliqué",
-            "ban_success": "✅ Succès",
-            "ban_error": "Une erreur est survenue lors de l'application du bannissement vocal",
-            "unban_success_title": "✅ Bannissement vocal retiré",
-            "unban_success": "✅ Succès",
-            "unban_error": "Une erreur est survenue lors du retrait du bannissement vocal"
-        },
+        
         "lock": {
             "description": "Verrouiller un salon",
             "channel_option": "Le salon à verrouiller",
