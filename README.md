@@ -276,7 +276,7 @@ Ce projet est distribué sous licence MIT. Voir le fichier `LICENSE` pour plus d
 - **Documentation** : [Wiki du projet](https://github.com/votre-username/discord-bot-v14/wiki)
 - **Issues** : [GitHub Issues](https://github.com/votre-username/discord-bot-v14/issues)
 - **Discord** : [Serveur de support](https://discord.gg/votre-invite)
-- **Email** : support@yakobot.com
+- **Email** : jimmyramsamynaick@gmail.com
 
 ### 🐛 Problèmes Connus
 - Latence élevée avec de gros serveurs (>10k membres)
