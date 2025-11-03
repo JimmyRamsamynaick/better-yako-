@@ -251,7 +251,13 @@ Nous accueillons toutes les contributions ! Voici comment participer :
 - [ ] 🎵 Commandes musicales
 - [ ] 📊 Dashboard web
 - [ ] 🔔 Système de notifications
+- [ ] 🎮 Mini-jeux intégrés
 
+### Version 1.2 (Future)
+- [ ] 🤖 IA plus avancée
+- [ ] 📱 Application mobile
+- [ ] 🌍 Plus de langues
+- [ ] ☁️ Déploiement cloud
 ---
 
 ## 🔗 Liens & Contact
@@ -260,13 +266,7 @@ Nous accueillons toutes les contributions ! Voici comment participer :
 
 ## 📄 Licence
 Ce projet est distribué sous licence MIT. Voir le fichier `LICENSE` pour plus d’informations.
-- [ ] 🎮 Mini-jeux intégrés
 
-### Version 1.2 (Future)
-- [ ] 🤖 IA plus avancée
-- [ ] 📱 Application mobile
-- [ ] 🌍 Plus de langues
-- [ ] ☁️ Déploiement cloud
 
 ---
 
