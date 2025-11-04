@@ -1,4 +1,4 @@
-# 🤖 Yako Bot - Discord Moderation & AI Assistant (BETA)
+# 🤖 Yako Bot — Modération Discord & Assistant IA (BETA)
 
 <div align="center">
 
@@ -8,13 +8,13 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18.0.0+-green.svg)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-6.19.0+-brightgreen.svg)](https://mongodb.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-BETA-orange.svg)](https://github.com/votre-username/discord-bot-v14)
+[![Status](https://img.shields.io/badge/Status-BETA-orange.svg)](https://github.com/JimmyRamsamynaick/better-yako-)
 
-**🚧 Version BETA - En développement actif 🚧**
+**🚧 Version BETA — En développement actif 🚧**
 
-*Un bot Discord moderne et puissant avec modération avancée, intelligence artificielle intégrée et support multilingue*
+Bot Discord moderne et puissant avec modération avancée, assistant IA intégré et support multilingue.
 
-[📖 Documentation](#-documentation) • [🚀 Installation](#-installation) • [⚡ Fonctionnalités](#-fonctionnalités) • [🤝 Contribuer](#-contribuer)
+[🚀 Installation](#-installation) • [✨ Fonctionnalités](#-fonctionnalités) • [📋 Commandes](#-commandes-disponibles) • [🤝 Contribuer](#-contribuer)
 
 </div>
 
@@ -63,8 +63,8 @@
 
 ```bash
 # Cloner le repository
-git clone https://github.com/votre-username/discord-bot-v14.git
-cd discord-bot-v14
+git clone https://github.com/JimmyRamsamynaick/better-yako-.git
+cd better-yako-
 
 # Installer les dépendances
 npm install
@@ -104,33 +104,36 @@ DEBUG_MODE=false
 ## 📋 Commandes Disponibles
 
 ### 🛡️ Modération
-| Commande | Description | Permissions |
-|----------|-------------|-------------|
-| `/ban` | Bannir un membre du serveur | Ban Members |
-| `/unban` | Débannir un membre | Ban Members |
-| `/kick` | Expulser un membre | Kick Members |
-| `/mute` | Rendre muet un membre | Manage Roles |
-| `/unmute` | Rendre la parole à un membre | Manage Roles |
-| `/clear` | Supprimer des messages | Manage Messages |
-| `/lock` | Verrouiller un salon | Manage Channels |
-| `/unlock` | Déverrouiller un salon | Manage Channels |
-| `/setupmute` | Configurer le système de mute | Manage Roles |
-| `/setlogs` | Configurer les logs | Manage Guild |
-| `/setlang` | Changer la langue du serveur | Manage Guild |
+- `/ban` — Bannir un membre du serveur
+- `/unban` — Débannir un membre
+- `/kick` — Expulser un membre
+- `/mute` — Rendre muet un membre
+- `/unmute` — Rendre la parole à un membre
+- `/clear` — Supprimer des messages
+- `/lock` — Verrouiller un salon
+- `/unlock` — Déverrouiller un salon
+- `/setupmute` — Configurer le système de mute
+- `/setlogs` — Configurer les logs
+- `/setlang` — Changer la langue du serveur
+- `/setwelcome` — Configurer le message de bienvenue
+- `/settickets` — Configurer le système de tickets
+- `/warn` — Ajouter un avertissement à un membre
+- `/unwarn` — Retirer un avertissement d’un membre
+- `/warnlist` — Voir les avertissements d’un membre
+- `/voice ban` — Interdire l’accès aux salons vocaux et de scène (global par défaut)
+- `/voice unban` — Restaurer l’accès aux salons vocaux et de scène (global)
+- `/voice kick` — Déconnecter immédiatement un membre du salon vocal
 
 ### 👥 Public
-| Commande | Description | Permissions |
-|----------|-------------|-------------|
-| `/help` | Afficher l'aide interactive | Aucune |
-| `/ping` | Vérifier la latence du bot | Aucune |
-| `/serverinfo` | Informations détaillées du serveur | Aucune |
-| `/userinfo` | Informations d'un utilisateur | Aucune |
-| `/avatar` | Afficher l'avatar d'un utilisateur | Aucune |
+- `/help` — Afficher l’aide interactive
+- `/ping` — Vérifier la latence du bot
+- `/serverinfo` — Informations détaillées du serveur
+- `/userinfo` — Informations d’un utilisateur
+- `/vote` — Voter pour soutenir le bot
+- `/ticketpanel` — Envoyer un panneau de tickets
 
 ### ⭐ Premium
-| Commande | Description | Permissions |
-|----------|-------------|-------------|
-| `/ask` | Poser une question à l'IA | Premium Server |
+- `/ask` — Poser une question à l’IA (serveur premium)
 
 ---
 
@@ -255,6 +258,15 @@ Nous accueillons toutes les contributions ! Voici comment participer :
 - [ ] 📱 Application mobile
 - [ ] 🌍 Plus de langues
 - [ ] ☁️ Déploiement cloud
+---
+
+## 🔗 Liens & Contact
+- Repository : https://github.com/JimmyRamsamynaick/better-yako-
+- Contact : jimmyramsamynaick@gmail.com
+
+## 📄 Licence
+Ce projet est distribué sous licence MIT. Voir le fichier `LICENSE` pour plus d’informations.
+
 
 ---
 
@@ -264,7 +276,7 @@ Nous accueillons toutes les contributions ! Voici comment participer :
 - **Documentation** : [Wiki du projet](https://github.com/votre-username/discord-bot-v14/wiki)
 - **Issues** : [GitHub Issues](https://github.com/votre-username/discord-bot-v14/issues)
 - **Discord** : [Serveur de support](https://discord.gg/votre-invite)
-- **Email** : support@yakobot.com
+- **Email** : jimmyramsamynaick@gmail.com
 
 ### 🐛 Problèmes Connus
 - Latence élevée avec de gros serveurs (>10k membres)

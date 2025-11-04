@@ -44,6 +44,18 @@
         "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action."
     },
   "commands": {
+        "voice": {
+            "kick_success_title": "Voice Kick",
+            "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",
+            "ban_success_title": "Voice Ban",
+            "ban_success": "{executor} banned {user} from voice channels.\nReason: {reason}",
+            "unban_success_title": "Voice Unban",
+            "unban_success": "{executor} unbanned {user} from voice channels.\nReason: {reason}",
+            "kick_error": "Failed to kick the user from voice channel.",
+            "ban_error": "Failed to ban the user from voice channels.",
+            "unban_error": "Failed to unban the user from voice channels.",
+            "not_in_voice": "This user is not in a voice channel."
+        },
         "ping": {
             "description": "Shows bot latency",
             "response": "🏓 Pong! Latency: {latency}ms",
@@ -106,6 +118,13 @@
             "channel_set_success": "✅ Welcome channel set to {channel}.",
             "no_permission": "❌ You must be an **administrator** to use this command.",
             "error": "❌ An error occurred while configuring the welcome system."
+        },
+
+        "vote": {
+            "description": "Vote for the bot on Top.gg",
+            "title": "⭐ Vote for YAKO",
+            "content": "Thanks for your support! Here is the voting page: {url}\n\nNote: Voting happens on Top.gg and may require you to log in.",
+            "button_label": "Vote on Top.gg"
         },
 
 
@@ -281,16 +300,32 @@
             "not_banned": "❌ This user is not banned."
         },
         "voice": {
+            "description": "Voice moderation commands",
+            "kick": {
+                "description": "Kick a member from a voice channel",
+                "user_option": "The member to kick from voice",
+                "reason_option": "Reason for the kick"
+            },
+            "ban": {
+                "description": "Ban a member from voice channels",
+                "user_option": "The member to ban from voice",
+                "reason_option": "Reason for the ban"
+            },
+            "unban": {
+                "description": "Unban a member from voice channels",
+                "user_option": "The member to unban from voice",
+                "reason_option": "Reason for the unban"
+            },
             "not_in_voice": "This member is not connected to a voice channel.",
-            "kick_success_title": "✅ Voice Kick",
-            "kick_success": "{executor} disconnected {user} from voice for {reason}",
-            "kick_error": "An error occurred while disconnecting the member from voice",
-            "ban_success_title": "✅ Voice Ban Applied",
-            "ban_success": "{executor} banned {user} from all voice channels for {reason}",
-            "ban_error": "An error occurred while applying the voice ban",
-            "unban_success_title": "✅ Voice Ban Removed",
-            "unban_success": "{executor} removed the voice ban from {user} for {reason}",
-            "unban_error": "An error occurred while removing the voice ban"
+            "kick_success_title": "Voice Kick",
+            "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",
+            "kick_error": "Failed to kick the user from voice channel.",
+            "ban_success_title": "Voice Ban",
+            "ban_success": "{executor} banned {user} from voice channels.\nReason: {reason}",
+            "ban_error": "Failed to ban the user from voice channels.",
+            "unban_success_title": "Voice Unban",
+            "unban_success": "{executor} unbanned {user} from voice channels.\nReason: {reason}",
+            "unban_error": "Failed to unban the user from voice channels."
         },
         "setupmute": {
             "description": "Configure the mute system",
@@ -314,9 +349,9 @@
             "premium_desc": "Exclusive premium commands",
             "footer": "Help updated automatically",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)\n**`/settickets`** - Configure the ticket system\n**`/warn`** - Add a warning to a member\n**`/unwarn`** - Remove a warning from a member\n**`/warnlist`** - View warnings of a member",
             "public_title": "👥 Public Commands",
-            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information",
+            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/vote`** - Allows you to vote to support the bot\n**`/ticketpanel`** - Send a ticket panel",
             "premium_title": "⭐ Premium Commands",
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },

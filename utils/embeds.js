@@ -917,8 +917,8 @@ class BotEmbeds {
         
         const title = LanguageManager.get(lang, 'commands.setlang.success_title') || '✅ Language changed';
         const message = LanguageManager.get(lang, 'commands.setlang.success', {
-            language: languageNames[language]
-        }) || `✅ Bot language changed to **${languageNames[language]}**.`;
+            language: languageNames[language] || language
+        }) || `✅ Bot language changed to **${languageNames[language] || language}**.`;
 
         return {
             type: 17,
