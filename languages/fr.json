@@ -726,11 +726,12 @@
             },
             "fields": {
                 "user": "👤 Utilisateur",
-                "channel": "📍 Canal",
-                "old_channel": "📍 Ancien canal",
-                "new_channel": "📍 Nouveau canal",
-                "state": "État",
-                "action": "Action"
+                        "channel": "📍 Canal",
+                        "old_channel": "📍 Ancien canal",
+                        "new_channel": "📍 Nouveau canal",
+                        "state": "État",
+                        "action": "Action",
+                        "moderator": "🛡️ Modérateur"
             }
         },
         "welcome": {

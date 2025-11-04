@@ -29,8 +29,19 @@ class LanguageManager {
         }
     }
 
+    // Normalize incoming language codes to our base set
+    normalizeLanguageCode(code) {
+        if (!code) return 'fr';
+        const c = String(code).toLowerCase();
+        // Map common locale variants to base languages we support
+        if (c.startsWith('fr')) return 'fr';
+        if (c.startsWith('en')) return 'en';
+        return c;
+    }
+
     get(langCode, key, replacements = {}) {
-        const lang = this.languages.get(langCode) || this.languages.get('fr');
+        const normalized = this.normalizeLanguageCode(langCode);
+        const lang = this.languages.get(normalized) || this.languages.get('fr');
         
         if (!lang) {
             return `[LANG_ERROR: ${key}]`;
@@ -69,7 +80,7 @@ class LanguageManager {
     }
 
     isLanguageSupported(langCode) {
-        return this.languages.has(langCode);
+        return this.languages.has(this.normalizeLanguageCode(langCode));
     }
 }
 

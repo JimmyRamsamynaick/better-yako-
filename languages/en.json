@@ -52,6 +52,61 @@
             "details": "**Bot Latency:** {latency}ms",
             "api_latency_label": "API Latency"
         },
+        "ask": {
+            "description": "Ask a question to the AI",
+            "message_option": "Your question",
+            "title": "🤖 AI Assistant",
+            "question": "Question",
+            "response": "Response",
+            "error_title": "❌ AI Error",
+            "error": "An error occurred while generating the response."
+        },
+        "userinfo": {
+            "description": "Display user information",
+            "user_option": "The user you want to see information about",
+            "title": "👤 {user} Information",
+            "fields": {
+                "user_id": "🆔 User ID",
+                "account_created": "📅 Account Created",
+                "joined_server": "📥 Joined Server",
+                "nickname": "📝 Nickname",
+                "roles": "🎭 Roles ({count})",
+                "highest_role": "👑 Highest Role",
+                "permissions": "🔐 Key Permissions",
+                "status": "🟢 Status",
+                "activity": "🎮 Activity",
+                "boost_since": "💎 Boosting Since",
+                "avatar": "🖼️ Avatar",
+                "banner": "🎨 Banner"
+            },
+            "status": {
+                "online": "🟢 Online",
+                "idle": "🟡 Idle",
+                "dnd": "🔴 Do Not Disturb",
+                "offline": "⚫ Offline"
+            },
+            "no_nickname": "None",
+            "no_roles": "No roles",
+            "no_activity": "No activity",
+            "not_boosting": "Not boosting the server",
+            "permissions_admin": "Administrator",
+            "permissions_mod": "Moderator",
+            "permissions_member": "Member",
+            "view_avatar": "View Avatar",
+            "view_banner": "View Banner",
+            "no_banner": "No banner"
+        },
+        "setwelcome": {
+            "description": "Configure the welcome system (enable/disable)",
+            "enabled_option": "Enable or disable the welcome message",
+            "channel_option": "Channel to send the welcome message to",
+            "success_title": "✅ Welcome system updated",
+            "enabled_success": "✅ Welcome system **enabled**.",
+            "disabled_success": "❌ Welcome system **disabled**.",
+            "channel_set_success": "✅ Welcome channel set to {channel}.",
+            "no_permission": "❌ You must be an **administrator** to use this command.",
+            "error": "❌ An error occurred while configuring the welcome system."
+        },
 
 
         "serverinfo": {
@@ -139,13 +194,7 @@
             "error": "An error occurred while deleting messages",
             "no_messages_found": "No messages found for {user} in the last 100 messages."
         },
-        "setlang": {
-            "description": "Change bot language",
-            "success": "✅ Bot language changed to **{language}**.",
-            "success_title": "✅ Language changed",
-            "error": "❌ An error occurred while changing the language.",
-            "error_title": "❌ Language change error"
-        },
+
         "setlogs": {
             "description": "Configure server logs",
             "disable_description": "Disable logs",
@@ -593,7 +642,8 @@
                 "old_channel": "📍 Old channel",
                 "new_channel": "📍 New channel",
                 "state": "State",
-                "action": "Action"
+                "action": "Action",
+                "moderator": "🛡️ Moderator"
             }
         },
         "welcome": {
