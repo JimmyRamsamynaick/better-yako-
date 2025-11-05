@@ -155,7 +155,7 @@
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
             "public_title": "👥 Commandes Publiques",
-            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur",
+            "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/ticketpanel`** - Envoyer un panneau de tickets\n**`/vote`** - Voter pour le bot sur Top.gg",
             "public_option": "Public",
             "public_desc": "Commandes pour tous les membres",
             "premium_title": "⭐ Commandes Premium",
@@ -232,21 +232,21 @@
             "not_banned": "❌ Cet utilisateur n'est pas banni."
         },
         "voice": {
-            "description": "Voice moderation commands",
+            "description": "Commandes de modération vocale",
             "kick": {
-                "description": "Kick a member from a voice channel",
-                "user_option": "The member to kick from voice",
-                "reason_option": "Reason for the kick"
+                "description": "Expulser un membre d'un salon vocal",
+                "user_option": "Le membre à expulser du vocal",
+                "reason_option": "Raison de l'expulsion"
             },
             "ban": {
-                "description": "Ban a member from voice channels",
-                "user_option": "The member to ban from voice",
-                "reason_option": "Reason for the ban"
+                "description": "Bannir un membre des salons vocaux",
+                "user_option": "Le membre à bannir des vocaux",
+                "reason_option": "Raison du bannissement"
             },
             "unban": {
-                "description": "Unban a member from voice channels",
-                "user_option": "The member to unban from voice",
-                "reason_option": "Reason for the unban"
+                "description": "Débannir un membre des salons vocaux",
+                "user_option": "Le membre à débannir des vocaux",
+                "reason_option": "Raison du débannissement"
             },
             "not_in_voice": "Ce membre n'est pas connecté à un salon vocal.",
             "kick_success_title": "✅ Expulsion vocale",
@@ -260,10 +260,16 @@
             "unban_error": "Une erreur est survenue lors du retrait du bannissement vocal"
         },
         "vote": {
-            "description": "Vote for the bot on Top.gg",
-            "title": "⭐ Support the bot",
-            "content": "Thanks for your support! Click the button below to vote on Top.gg.",
-            "button_label": "Vote on Top.gg"
+            "description": "Voter pour le bot sur Top.gg",
+            "title": "⭐ Voter pour YAKO",
+            "content": "Merci de votre soutien ! Voici la page de vote :\n{url}\n\nNote : le vote s'effectue sur Top.gg et peut nécessiter une connexion.",
+            "button_label": "Voter sur Top.gg"
+        },
+        "reloadlangs": {
+            "description": "Recharger les fichiers de langue",
+            "success_title": "✅ Langues rechargées",
+            "success": "Les fichiers de langue ont été rechargés depuis le disque.",
+            "error": "❌ Une erreur est survenue lors du rechargement des langues."
         },
         "setupmute": {
             "description": "Configurer le système de mute",

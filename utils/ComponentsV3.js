@@ -144,21 +144,29 @@ class ComponentsV3 {
             });
         });
 
-        // Ajouter les boutons
+        // Ajouter les boutons (support des boutons de lien style 5 avec url)
         if (buttons.length > 0) {
             const buttonRows = [];
             for (let i = 0; i < buttons.length; i += 5) {
-                const rowButtons = buttons.slice(i, i + 5).map(button => ({
-                    type: 2,
-                    label: button.labelKey ? 
-                        LanguageManager.get(lang, button.labelKey) : 
-                        button.label,
-                    style: button.style || 1,
-                    custom_id: button.customId,
-                    emoji: button.emoji,
-                    disabled: button.disabled || false
-                }));
-                
+                const rowButtons = buttons.slice(i, i + 5).map(button => {
+                    const base = {
+                        type: 2,
+                        label: button.labelKey ?
+                            LanguageManager.get(lang, button.labelKey) :
+                            button.label,
+                        style: button.style || 1,
+                        emoji: button.emoji,
+                        disabled: button.disabled || false
+                    };
+                    // Bouton de lien
+                    if (base.style === 5 && button.url) {
+                        base.url = button.url;
+                    } else {
+                        base.custom_id = button.customId;
+                    }
+                    return base;
+                });
+
                 buttonRows.push({
                     type: 1,
                     components: rowButtons

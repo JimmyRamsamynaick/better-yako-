@@ -81,6 +81,12 @@ module.exports = {
                 return;
             }
 
+            // Si l\'interaction est inconnue (timeout côté API), ne pas insister
+            if (error && error.code === 10062) {
+                console.warn('[Handler] Unknown interaction (10062), aucune réponse de secours envoyée.');
+                return;
+            }
+
             // Sinon, tenter une réponse éphémère puis basculer sur editReply/followUp si nécessaire
             try {
                 await interaction.reply({ ...errorEmbed, flags: MessageFlags.Ephemeral });
