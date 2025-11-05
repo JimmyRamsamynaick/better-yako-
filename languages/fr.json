@@ -232,6 +232,22 @@
             "not_banned": "❌ Cet utilisateur n'est pas banni."
         },
         "voice": {
+            "description": "Voice moderation commands",
+            "kick": {
+                "description": "Kick a member from a voice channel",
+                "user_option": "The member to kick from voice",
+                "reason_option": "Reason for the kick"
+            },
+            "ban": {
+                "description": "Ban a member from voice channels",
+                "user_option": "The member to ban from voice",
+                "reason_option": "Reason for the ban"
+            },
+            "unban": {
+                "description": "Unban a member from voice channels",
+                "user_option": "The member to unban from voice",
+                "reason_option": "Reason for the unban"
+            },
             "not_in_voice": "Ce membre n'est pas connecté à un salon vocal.",
             "kick_success_title": "✅ Expulsion vocale",
             "kick_success": "{executor} a déconnecté {user} du vocal pour {reason}",
@@ -242,6 +258,12 @@
             "unban_success_title": "✅ Bannissement vocal retiré",
             "unban_success": "{executor} a retiré le bannissement vocal de {user} pour {reason}",
             "unban_error": "Une erreur est survenue lors du retrait du bannissement vocal"
+        },
+        "vote": {
+            "description": "Vote for the bot on Top.gg",
+            "title": "⭐ Support the bot",
+            "content": "Thanks for your support! Click the button below to vote on Top.gg.",
+            "button_label": "Vote on Top.gg"
         },
         "setupmute": {
             "description": "Configurer le système de mute",
@@ -726,12 +748,11 @@
             },
             "fields": {
                 "user": "👤 Utilisateur",
-                        "channel": "📍 Canal",
-                        "old_channel": "📍 Ancien canal",
-                        "new_channel": "📍 Nouveau canal",
-                        "state": "État",
-                        "action": "Action",
-                        "moderator": "🛡️ Modérateur"
+                "channel": "📍 Canal",
+                "old_channel": "📍 Ancien canal",
+                "new_channel": "📍 Nouveau canal",
+                "state": "État",
+                "action": "Action"
             }
         },
         "welcome": {

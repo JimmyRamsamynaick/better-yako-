@@ -44,18 +44,6 @@
         "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action."
     },
   "commands": {
-        "voice": {
-            "kick_success_title": "Voice Kick",
-            "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",
-            "ban_success_title": "Voice Ban",
-            "ban_success": "{executor} banned {user} from voice channels.\nReason: {reason}",
-            "unban_success_title": "Voice Unban",
-            "unban_success": "{executor} unbanned {user} from voice channels.\nReason: {reason}",
-            "kick_error": "Failed to kick the user from voice channel.",
-            "ban_error": "Failed to ban the user from voice channels.",
-            "unban_error": "Failed to unban the user from voice channels.",
-            "not_in_voice": "This user is not in a voice channel."
-        },
         "ping": {
             "description": "Shows bot latency",
             "response": "🏓 Pong! Latency: {latency}ms",
@@ -63,68 +51,6 @@
             "footer": "Bot performance",
             "details": "**Bot Latency:** {latency}ms",
             "api_latency_label": "API Latency"
-        },
-        "ask": {
-            "description": "Ask a question to the AI",
-            "message_option": "Your question",
-            "title": "🤖 AI Assistant",
-            "question": "Question",
-            "response": "Response",
-            "error_title": "❌ AI Error",
-            "error": "An error occurred while generating the response."
-        },
-        "userinfo": {
-            "description": "Display user information",
-            "user_option": "The user you want to see information about",
-            "title": "👤 {user} Information",
-            "fields": {
-                "user_id": "🆔 User ID",
-                "account_created": "📅 Account Created",
-                "joined_server": "📥 Joined Server",
-                "nickname": "📝 Nickname",
-                "roles": "🎭 Roles ({count})",
-                "highest_role": "👑 Highest Role",
-                "permissions": "🔐 Key Permissions",
-                "status": "🟢 Status",
-                "activity": "🎮 Activity",
-                "boost_since": "💎 Boosting Since",
-                "avatar": "🖼️ Avatar",
-                "banner": "🎨 Banner"
-            },
-            "status": {
-                "online": "🟢 Online",
-                "idle": "🟡 Idle",
-                "dnd": "🔴 Do Not Disturb",
-                "offline": "⚫ Offline"
-            },
-            "no_nickname": "None",
-            "no_roles": "No roles",
-            "no_activity": "No activity",
-            "not_boosting": "Not boosting the server",
-            "permissions_admin": "Administrator",
-            "permissions_mod": "Moderator",
-            "permissions_member": "Member",
-            "view_avatar": "View Avatar",
-            "view_banner": "View Banner",
-            "no_banner": "No banner"
-        },
-        "setwelcome": {
-            "description": "Configure the welcome system (enable/disable)",
-            "enabled_option": "Enable or disable the welcome message",
-            "channel_option": "Channel to send the welcome message to",
-            "success_title": "✅ Welcome system updated",
-            "enabled_success": "✅ Welcome system **enabled**.",
-            "disabled_success": "❌ Welcome system **disabled**.",
-            "channel_set_success": "✅ Welcome channel set to {channel}.",
-            "no_permission": "❌ You must be an **administrator** to use this command.",
-            "error": "❌ An error occurred while configuring the welcome system."
-        },
-
-        "vote": {
-            "description": "Vote for the bot on Top.gg",
-            "title": "⭐ Vote for YAKO",
-            "content": "Thanks for your support! Here is the voting page: {url}\n\nNote: Voting happens on Top.gg and may require you to log in.",
-            "button_label": "Vote on Top.gg"
         },
 
 
@@ -213,7 +139,13 @@
             "error": "An error occurred while deleting messages",
             "no_messages_found": "No messages found for {user} in the last 100 messages."
         },
-
+        "setlang": {
+            "description": "Change bot language",
+            "success": "✅ Bot language changed to **{language}**.",
+            "success_title": "✅ Language changed",
+            "error": "❌ An error occurred while changing the language.",
+            "error_title": "❌ Language change error"
+        },
         "setlogs": {
             "description": "Configure server logs",
             "disable_description": "Disable logs",
@@ -317,15 +249,21 @@
                 "reason_option": "Reason for the unban"
             },
             "not_in_voice": "This member is not connected to a voice channel.",
-            "kick_success_title": "Voice Kick",
-            "kick_success": "{executor} kicked {user} from voice channel.\nReason: {reason}",
-            "kick_error": "Failed to kick the user from voice channel.",
-            "ban_success_title": "Voice Ban",
-            "ban_success": "{executor} banned {user} from voice channels.\nReason: {reason}",
-            "ban_error": "Failed to ban the user from voice channels.",
-            "unban_success_title": "Voice Unban",
-            "unban_success": "{executor} unbanned {user} from voice channels.\nReason: {reason}",
-            "unban_error": "Failed to unban the user from voice channels."
+            "kick_success_title": "✅ Voice Kick",
+            "kick_success": "{executor} disconnected {user} from voice for {reason}",
+            "kick_error": "An error occurred while disconnecting the member from voice",
+            "ban_success_title": "✅ Voice Ban Applied",
+            "ban_success": "{executor} banned {user} from all voice channels for {reason}",
+            "ban_error": "An error occurred while applying the voice ban",
+            "unban_success_title": "✅ Voice Ban Removed",
+            "unban_success": "{executor} removed the voice ban from {user} for {reason}",
+            "unban_error": "An error occurred while removing the voice ban"
+        },
+        "vote": {
+            "description": "Vote for the bot on Top.gg",
+            "title": "⭐ Support the bot",
+            "content": "Thanks for your support! Click the button below to vote on Top.gg.",
+            "button_label": "Vote on Top.gg"
         },
         "setupmute": {
             "description": "Configure the mute system",
@@ -349,9 +287,9 @@
             "premium_desc": "Exclusive premium commands",
             "footer": "Help updated automatically",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)\n**`/settickets`** - Configure the ticket system\n**`/warn`** - Add a warning to a member\n**`/unwarn`** - Remove a warning from a member\n**`/warnlist`** - View warnings of a member",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member\n**`/unmute`** - Unmute a member\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)",
             "public_title": "👥 Public Commands",
-            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/vote`** - Allows you to vote to support the bot\n**`/ticketpanel`** - Send a ticket panel",
+            "public_description": "**`/help`** - Display this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information",
             "premium_title": "⭐ Premium Commands",
             "premium_description": "**`/ask`** - Ask a question to the integrated AI\n\n*Premium commands require a premium server*"
         },
@@ -677,8 +615,7 @@
                 "old_channel": "📍 Old channel",
                 "new_channel": "📍 New channel",
                 "state": "State",
-                "action": "Action",
-                "moderator": "🛡️ Moderator"
+                "action": "Action"
             }
         },
         "welcome": {
