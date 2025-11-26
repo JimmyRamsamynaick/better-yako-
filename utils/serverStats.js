@@ -5,7 +5,15 @@ const LanguageManager = require('./languageManager');
 async function computeCounts(guild) {
   try { await guild.fetch(); } catch (_) {}
   try { await guild.members.fetch(); } catch (_) {}
-  const total = guild.approximateMemberCount ?? guild.memberCount ?? guild.members.cache.size ?? 0;
+  let total = guild.approximateMemberCount ?? guild.memberCount ?? guild.members.cache.size ?? 0;
+  if (!total || total === 0) {
+    try {
+      const { REST, Routes } = require('discord.js');
+      const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+      const data = await rest.get(Routes.guild(guild.id), { query: { with_counts: true } });
+      total = data?.approximate_member_count ?? total;
+    } catch (_) {}
+  }
   const botsCached = guild.members.cache.filter(m => m.user.bot).size;
   const bots = Math.min(botsCached || 0, total);
   const humans = Math.max(0, total - bots);
@@ -48,7 +56,7 @@ async function setup(interaction, { type, showTotal, showHumans, showBots, categ
   const everyoneId = guild.id;
 
   const permsVoice = [{ id: everyoneId, deny: [PermissionsBitField.Flags.Connect] }];
-  const permsText = [{ id: everyoneId, deny: [PermissionsBitField.Flags.SendMessages] }];
+  const permsText = [{ id: everyoneId, deny: [PermissionsBitField.Flags.ViewChannel] }];
 
   const createCh = async (baseName) => {
     const name = `${baseName}: 0`;
