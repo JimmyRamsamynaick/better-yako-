@@ -7,6 +7,7 @@ module.exports = {
     name: 'guildMemberAdd',
     async execute(member) {
         try {
+            const ServerStats = require('../utils/serverStats');
             const guild = await Guild.findOne({ guildId: member.guild.id });
 
             // ===== Logs de jointure (si activés) =====
@@ -82,6 +83,8 @@ module.exports = {
                 }
                 WelcomeTracker.register(sent.id, member.guild.id, member.id);
             }
+
+            try { await ServerStats.updateForGuild(member.guild); } catch (_) {}
 
         } catch (error) {
             console.error('Erreur dans guildMemberAdd:', error);
