@@ -3,8 +3,9 @@ const GuildModel = require('../models/Guild');
 const LanguageManager = require('./languageManager');
 
 async function computeCounts(guild) {
+  try { await guild.fetch(); } catch (_) {}
   try { await guild.members.fetch(); } catch (_) {}
-  const total = guild.memberCount || guild.members.cache.size || 0;
+  const total = guild.approximateMemberCount ?? guild.memberCount ?? guild.members.cache.size ?? 0;
   const botsCached = guild.members.cache.filter(m => m.user.bot).size;
   const bots = Math.min(botsCached || 0, total);
   const humans = Math.max(0, total - bots);
