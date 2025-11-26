@@ -3,15 +3,11 @@ const GuildModel = require('../models/Guild');
 const LanguageManager = require('./languageManager');
 
 async function computeCounts(guild) {
-  try {
-    await guild.members.fetch();
-  } catch (_) {}
-  const total = guild.memberCount || guild.members.cache.size;
-  let humans = 0;
-  let bots = 0;
-  guild.members.cache.forEach(m => {
-    if (m.user.bot) bots += 1; else humans += 1;
-  });
+  try { await guild.members.fetch(); } catch (_) {}
+  const total = guild.memberCount || guild.members.cache.size || 0;
+  const botsCached = guild.members.cache.filter(m => m.user.bot).size;
+  const bots = Math.min(botsCached || 0, total);
+  const humans = Math.max(0, total - bots);
   return { total, humans, bots };
 }
 
@@ -27,10 +23,12 @@ async function updateForGuild(guild) {
 
   const rename = async (id, name) => {
     if (!id) return;
-    const ch = guild.channels.cache.get(id);
-    if (!ch) return;
+    let ch = guild.channels.cache.get(id);
+    if (!ch) {
+      try { ch = await guild.channels.fetch(id); } catch (_) { return; }
+    }
     const final = `${name}: ${name === labelMembers ? total : name === labelHumans ? humans : bots}`;
-    if (ch.name !== final) {
+    if (ch?.name !== final) {
       try { await ch.setName(final); } catch (_) {}
     }
   };
@@ -49,7 +47,7 @@ async function setup(interaction, { type, showTotal, showHumans, showBots, categ
   const everyoneId = guild.id;
 
   const permsVoice = [{ id: everyoneId, deny: [PermissionsBitField.Flags.Connect] }];
-  const permsText = [{ id: everyoneId, deny: [PermissionsBitField.Flags.ViewChannel] }];
+  const permsText = [{ id: everyoneId, deny: [PermissionsBitField.Flags.SendMessages] }];
 
   const createCh = async (baseName) => {
     const name = `${baseName}: 0`;

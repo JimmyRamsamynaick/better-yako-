@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const Guild = require('../../models/Guild');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const LanguageManager = require('../../utils/languageManager');
@@ -34,7 +34,13 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
 
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    try {
+      if (!interaction.deferred && !interaction.replied) {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+      }
+    } catch (_) {
+      try { await interaction.reply({ flags: MessageFlags.Ephemeral }); } catch (_) {}
+    }
     const guildDoc = await Guild.findOne({ guildId: interaction.guild.id }) || { language: 'fr' };
     const lang = guildDoc.language || 'fr';
 
@@ -74,4 +80,3 @@ module.exports = {
     }
   }
 };
-
