@@ -10,7 +10,7 @@ async function computeCounts(guild) {
     try {
       const { REST, Routes } = require('discord.js');
       const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-      const data = await rest.get(Routes.guild(guild.id), { query: { with_counts: true } });
+      const data = await rest.get(`${Routes.guild(guild.id)}?with_counts=true`);
       total = data?.approximate_member_count ?? total;
     } catch (_) {}
   }
