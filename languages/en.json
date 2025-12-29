@@ -43,7 +43,70 @@
         "no_permission": "❌ You don't have permission to use this command.",
         "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action."
     },
-  "commands": {
+        "leveling": {
+            "description": "Configure the leveling system (Admin)",
+            "toggle": {
+                "description": "Enable or disable the leveling system",
+                "enabled_option": "Enable?",
+                "success": "✅ The leveling system has been **{status}**."
+            },
+            "config": {
+                "description": "Configure XP gains",
+                "message_xp": "XP per message (default: 15)",
+                "voice_xp": "XP per voice minute (default: 10)",
+                "levelup_channel": "Channel for level up messages (Empty = current channel)",
+                "success": "✅ Configuration updated:\n- XP Message: {messageXp}\n- XP Voice/min: {voiceXp}\n- Level Up Channel: {channel}"
+            },
+            "rank": {
+                "description": "Displays your level or another user's level",
+                "target_option": "The user whose level you want to see",
+                "disabled": "❌ The leveling system is disabled on this server.",
+                "embed": {
+                    "title": "Profile of {user}",
+                    "level": "Level",
+                    "xp": "XP",
+                    "rank": "Rank",
+                    "progress": "Progress",
+                    "xp_required": "XP Required",
+                    "messages": "Messages",
+                    "voice_time": "Voice Time",
+                    "footer": "Better Yako Leveling System"
+                }
+            },
+            "setlevel": {
+                "description": "Modify a user's level or XP (Admin)",
+                "user_option": "The user to modify",
+                "type_option": "What you want to modify",
+                "amount_option": "The new amount",
+                "success": "✅ {user}'s **{type}** has been set to **{amount}**. (Current Level: {level}, XP: {xp})"
+            },
+            "leaderboard": {
+                "description": "Displays the server leaderboard",
+                "embed": {
+                    "title": "Leaderboards {server}",
+                    "description": "Here are the leaderboards of the most active members of the server!",
+                    "server_stats_title": "📊 Server Stats:",
+                    "total_xp": "Total XP",
+                    "total_messages": "Total messages",
+                    "total_voice": "Total voice",
+                    "user_stats_title": "👤 Your stats:",
+                    "level_xp": "Level {level} ({xp} XP)",
+                    "messages": "messages",
+                    "voice": "in voice",
+                    "footer": "Leaderboards updated in real time",
+                    "select_placeholder": "Choose a leaderboard to display"
+                },
+                "types": {
+                    "messages": "Message Leaderboard",
+                    "voice": "Voice Leaderboard",
+                    "level": "Level Leaderboard",
+                    "home": "Overview"
+                },
+                "empty": "No data available."
+            },
+            "levelup_message_default": "Congratulations {user}, you reached level {level}!"
+        },
+        "commands": {
         "ping": {
             "description": "Shows bot latency",
             "response": "🏓 Pong! Latency: {latency}ms",

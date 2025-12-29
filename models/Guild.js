@@ -20,7 +20,12 @@ const userSchema = new Schema({
     mutedUntil: {
         type: Date,
         default: null
-    }
+    },
+    xp: { type: Number, default: 0 },
+    level: { type: Number, default: 0 },
+    messageCount: { type: Number, default: 0 },
+    voiceTime: { type: Number, default: 0 }, // En minutes
+    lastMessageDate: { type: Date, default: null }
 });
 
 const guildSchema = new Schema({
@@ -32,6 +37,13 @@ const guildSchema = new Schema({
     language: {
         type: String,
         default: 'fr'
+    },
+    leveling: {
+        enabled: { type: Boolean, default: false },
+        xpPerMessage: { type: Number, default: 15 },
+        xpPerVoiceMinute: { type: Number, default: 10 },
+        cooldown: { type: Number, default: 60000 }, // 1 minute
+        levelUpChannelId: { type: String, default: null } // null = current channel
     },
     muteRole: {
         type: String,

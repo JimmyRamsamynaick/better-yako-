@@ -1,5 +1,7 @@
 const Guild = require('../models/Guild');
 const ServerStats = require('../utils/serverStats');
+const LevelingManager = require('../utils/levelingManager');
+const LanguageManager = require('../utils/languageManager');
 const { ActivityType } = require('discord.js');
 
 module.exports = {
@@ -28,8 +30,48 @@ module.exports = {
         setInterval(async () => {
           for (const [id, guild] of client.guilds.cache) {
             const doc = await Guild.findOne({ guildId: id });
+            
+            // Stats update
             if (doc && doc.serverStats && doc.serverStats.enabled) {
               try { await ServerStats.updateForGuild(guild); } catch (_) {}
+            }
+
+            // Voice XP
+            if (doc && doc.leveling && doc.leveling.enabled) {
+                try {
+                    const xpPerMinute = doc.leveling.xpPerVoiceMinute || 10;
+                    
+                    guild.voiceStates.cache.forEach(async (voiceState) => {
+                        const member = voiceState.member;
+                        if (!member || member.user.bot) return;
+                        
+                        // Check if user is muted or deafened (optional, but often requested to avoid AFK farming)
+                        if (voiceState.selfMute || voiceState.selfDeaf || voiceState.serverMute || voiceState.serverDeaf) return;
+                        
+                        // Check if user is in a valid channel (not AFK channel)
+                        if (guild.afkChannelId && voiceState.channelId === guild.afkChannelId) return;
+
+                        const result = await LevelingManager.addXp(id, member.id, xpPerMinute, { voice: 1 });
+                        
+                        if (result && result.leveledUp) {
+                            const channelId = doc.leveling.levelUpChannelId;
+                            const channel = channelId ? guild.channels.cache.get(channelId) : null;
+                            
+                            // If specific channel set, send there. 
+                            // For voice, we can't send to "current channel" easily, so only send if channel is configured
+                            if (channel) {
+                                const lang = doc.language || 'fr';
+                                const defaultMsg = LanguageManager.get(lang, 'leveling.levelup_message_default');
+                                const msg = (doc.leveling.levelUpMessage || defaultMsg)
+                                    .replace('{user}', member.toString())
+                                    .replace('{level}', result.newLevel);
+                                await channel.send(msg);
+                            }
+                        }
+                    });
+                } catch (err) {
+                    console.error('Error updating voice XP:', err);
+                }
             }
           }
         }, 60 * 1000);
@@ -37,3 +79,4 @@ module.exports = {
     } catch (_) {}
   }
 };
+
