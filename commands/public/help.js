@@ -19,6 +19,7 @@ module.exports = {
                 })
                 .addChoices(
                     { name: 'Modération', value: 'moderation' },
+                    { name: 'Niveaux', value: 'levels' },
                     { name: 'Public', value: 'public' },
                     { name: 'Premium', value: 'premium' }
                 )),

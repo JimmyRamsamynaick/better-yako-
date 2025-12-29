@@ -999,6 +999,9 @@ ${base}`;
                 case 'public':
                     categoryContent = `## ${LanguageManager.get(lang, 'commands.help.public_title')}\n${LanguageManager.get(lang, 'commands.help.public_description')}`;
                     break;
+                case 'levels':
+                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.levels_title')}\n${LanguageManager.get(lang, 'commands.help.levels_description')}`;
+                    break;
                 case 'premium':
                     categoryContent = `## ${LanguageManager.get(lang, 'commands.help.premium_title')}\n${LanguageManager.get(lang, 'commands.help.premium_description')}`;
                     break;
@@ -1047,6 +1050,14 @@ ${base}`;
                             description: LanguageManager.get(lang, 'commands.help.public_desc'),
                             emoji: {
                                 name: "👥"
+                            }
+                        },
+                        {
+                            label: LanguageManager.get(lang, 'commands.help.levels_option'),
+                            value: "levels",
+                            description: LanguageManager.get(lang, 'commands.help.levels_desc'),
+                            emoji: {
+                                name: "📊"
                             }
                         },
                         {
