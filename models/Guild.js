@@ -87,6 +87,19 @@ const guildSchema = new Schema({
             default: null
         }
     },
+    serverStats: {
+        enabled: { type: Boolean, default: false },
+        categoryId: { type: String, default: null },
+        type: { type: String, enum: ['voice', 'text'], default: 'voice' },
+        showTotal: { type: Boolean, default: true },
+        showHumans: { type: Boolean, default: false },
+        showBots: { type: Boolean, default: false },
+        channels: {
+            totalId: { type: String, default: null },
+            humansId: { type: String, default: null },
+            botsId: { type: String, default: null }
+        }
+    },
     // tempVoice supprimé
     users: [userSchema],
     premium: {

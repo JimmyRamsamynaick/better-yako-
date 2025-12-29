@@ -983,7 +983,18 @@ class BotEmbeds {
             
             switch (selectedCategory) {
                 case 'moderation':
-                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.moderation_title')}\n${LanguageManager.get(lang, 'commands.help.moderation_description')}`;
+                    {
+                        const base = LanguageManager.get(lang, 'commands.help.moderation_description');
+                        let text = `## ${LanguageManager.get(lang, 'commands.help.moderation_title')}
+${base}`;
+                        if (typeof base === 'string' && !base.includes('/serverstats')) {
+                            const line = lang === 'en'
+                                ? '**`/serverstats`** - Server statistics (auto category, total/humans/bots)'
+                                : '**`/serverstats`** - Statistiques du serveur (catégorie auto, total/humains/bots)';
+                            text = `${text}\n${line}`;
+                        }
+                        categoryContent = text;
+                    }
                     break;
                 case 'public':
                     categoryContent = `## ${LanguageManager.get(lang, 'commands.help.public_title')}\n${LanguageManager.get(lang, 'commands.help.public_description')}`;

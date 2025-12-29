@@ -13,7 +13,7 @@ const GUILD_IDS = (process.env.GUILD_IDS || '')
   .split(',')
   .map(id => id.trim())
   .filter(Boolean);
-const DEPLOY_TARGET = (process.env.DEPLOY_TARGET || 'both').toLowerCase(); // 'global' | 'guild' | 'both'
+const DEPLOY_TARGET = (process.env.DEPLOY_TARGET || 'guild').toLowerCase(); // 'global' | 'guild' | 'both'
 
 // Options CLI facultatives:
 // --global-only       => force déploiement global uniquement
@@ -84,9 +84,28 @@ if (commands.length === 0) {
 // Instance REST
 const rest = new REST().setToken(TOKEN);
 
+async function fetchBotGuildIds() {
+  try {
+    const guilds = await rest.get(Routes.userGuilds());
+    return (Array.isArray(guilds) ? guilds : []).map(g => g.id);
+  } catch (err) {
+    console.warn('⚠️ Impossible de récupérer les guildes du bot:', err?.message || err);
+    return [];
+  }
+}
+
+function applyCommandV2Fields(list) {
+  return list.map((c) => ({
+    ...c,
+    integration_types: Array.isArray(c.integration_types) ? c.integration_types : [0],
+    contexts: Array.isArray(c.contexts) ? c.contexts : [0]
+  }));
+}
+
 async function deployGlobal() {
   console.log('⬆️ Déploiement des commandes globales...');
-  const data = await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
+  const payload = applyCommandV2Fields(commands);
+  const data = await rest.put(Routes.applicationCommands(CLIENT_ID), { body: payload });
   console.log(`✅ ${data.length} commande(s) globale(s) déployée(s).`);
 }
 
@@ -94,9 +113,10 @@ async function deployGuilds(ids) {
   for (const guildId of ids) {
     try {
       console.log(`⬆️ Déploiement des commandes pour la guilde ${guildId}...`);
+      const payload = applyCommandV2Fields(commands);
       const data = await rest.put(
         Routes.applicationGuildCommands(CLIENT_ID, guildId),
-        { body: commands }
+        { body: payload }
       );
       console.log(`✅ ${data.length} commande(s) déployée(s) pour ${guildId}.`);
     } catch (err) {
@@ -109,11 +129,16 @@ async function deployGuilds(ids) {
   try {
     console.log(`🚀 Déploiement lancé (cibles: ${target})`);
     console.log(`📦 Total des commandes à déployer: ${commands.length}`);
-    if (target !== 'global' && guildList.length > 0) {
-      console.log(`🏷️ Guildes ciblées: ${guildList.join(', ')}`);
-      await deployGuilds(guildList);
+    let finalGuildList = guildList;
+    if (target !== 'global' && finalGuildList.length === 0) {
+      console.log('🔎 Aucun ID de guilde fourni, détection automatique des guildes du bot…');
+      finalGuildList = await fetchBotGuildIds();
     }
-    if (target !== 'guild') {
+    if (target !== 'global' && finalGuildList.length > 0) {
+      console.log(`🏷️ Guildes ciblées: ${finalGuildList.join(', ')}`);
+      await deployGuilds(finalGuildList);
+    }
+    if (target === 'global' || target === 'both') {
       await deployGlobal();
     }
     console.log('🎉 Terminé. Les commandes peuvent prendre quelques minutes à apparaître.');

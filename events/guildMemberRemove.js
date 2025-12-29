@@ -5,6 +5,7 @@ module.exports = {
     name: 'guildMemberRemove',
     async execute(member) {
         try {
+            const ServerStats = require('../utils/serverStats');
             const guild = await Guild.findOne({ guildId: member.guild.id });
             if (!guild || !guild.logs.enabled || !guild.logs.types.server) return;
 
@@ -67,6 +68,8 @@ module.exports = {
             }
 
             await logChannel.send({ embeds: [embed] });
+
+            try { await ServerStats.updateForGuild(member.guild); } catch (_) {}
 
         } catch (error) {
             console.error('Erreur dans guildMemberRemove:', error);
