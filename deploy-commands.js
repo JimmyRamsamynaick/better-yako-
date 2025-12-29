@@ -21,11 +21,18 @@ const DEPLOY_TARGET = (process.env.DEPLOY_TARGET || 'guild').toLowerCase(); // '
 // --guild <id>        => ajoute une guilde ciblée (peut être répété)
 const argv = process.argv.slice(2);
 let overrideTarget = null;
+let clearMode = false;
+let clearGlobalFlag = false;
+let clearGuildsFlag = false;
+
 const extraGuilds = [];
 for (let i = 0; i < argv.length; i++) {
   const arg = argv[i];
   if (arg === '--global-only') overrideTarget = 'global';
   else if (arg === '--guild-only') overrideTarget = 'guild';
+  else if (arg === '--clear') clearMode = true;
+  else if (arg === '--clear-global') { clearMode = true; clearGlobalFlag = true; }
+  else if (arg === '--clear-guilds') { clearMode = true; clearGuildsFlag = true; }
   else if (arg === '--guild' && argv[i + 1]) {
     extraGuilds.push(argv[i + 1]);
     i++;
@@ -102,6 +109,24 @@ function applyCommandV2Fields(list) {
   }));
 }
 
+async function clearGlobalCommands() {
+  console.log('🗑️ Suppression des commandes globales...');
+  await rest.put(Routes.applicationCommands(CLIENT_ID), { body: [] });
+  console.log('✅ Commandes globales supprimées.');
+}
+
+async function clearGuildCommands(ids) {
+  for (const guildId of ids) {
+    try {
+      console.log(`🗑️ Suppression des commandes pour la guilde ${guildId}...`);
+      await rest.put(Routes.applicationGuildCommands(CLIENT_ID, guildId), { body: [] });
+      console.log(`✅ Commandes supprimées pour ${guildId}.`);
+    } catch (err) {
+      console.error(`❌ Erreur de suppression pour ${guildId}:`, err);
+    }
+  }
+}
+
 async function deployGlobal() {
   console.log('⬆️ Déploiement des commandes globales...');
   const payload = applyCommandV2Fields(commands);
@@ -127,6 +152,34 @@ async function deployGuilds(ids) {
 
 (async () => {
   try {
+    if (clearMode) {
+      console.log('🧹 Mode nettoyage activé...');
+      
+      // Si aucun flag spécifique n'est donné, on déduit de la cible
+      if (!clearGlobalFlag && !clearGuildsFlag) {
+        if (target === 'global') clearGlobalFlag = true;
+        if (target === 'guild') clearGuildsFlag = true;
+        if (target === 'both') { clearGlobalFlag = true; clearGuildsFlag = true; }
+      }
+
+      let finalGuildList = guildList;
+      if (clearGuildsFlag && finalGuildList.length === 0) {
+        console.log('🔎 Détection automatique des guildes pour le nettoyage...');
+        finalGuildList = await fetchBotGuildIds();
+      }
+
+      if (clearGuildsFlag && finalGuildList.length > 0) {
+        await clearGuildCommands(finalGuildList);
+      }
+      
+      if (clearGlobalFlag) {
+        await clearGlobalCommands();
+      }
+      
+      console.log('🎉 Nettoyage terminé.');
+      return; // On arrête ici si on est en mode clear
+    }
+
     console.log(`🚀 Déploiement lancé (cibles: ${target})`);
     console.log(`📦 Total des commandes à déployer: ${commands.length}`);
     let finalGuildList = guildList;
