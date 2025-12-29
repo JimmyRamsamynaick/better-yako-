@@ -33,7 +33,8 @@ module.exports = {
       const actionLabel = LanguageManager.get(lang, 'events.voice.fields.action') || 'Action';
       const moderatorLabel = LanguageManager.get(lang, 'common.moderator') || 'Modérateur';
 
-      const userTag = `${newState.member?.user ?? oldState.member?.user}`;
+      const member = newState.member || oldState.member;
+      const userTag = member ? `${member} (${member.user.username})` : 'Inconnu';
 
       // Anti-doublons léger (certaines transitions déclenchent des mises à jour multiples)
       const DEDUP_WINDOW_MS = 1500;
@@ -62,7 +63,7 @@ module.exports = {
               if (entry.target.id !== (newState.id || oldState.id)) continue;
               // fenêtre courte pour éviter mauvaises attributions
               if (Math.abs(Date.now() - entry.createdTimestamp) <= 7000) {
-                return entry.executor ? `<@${entry.executor.id}>` : null;
+                return entry.executor ? `${entry.executor} (${entry.executor.username})` : null;
               }
             }
           }
@@ -71,13 +72,21 @@ module.exports = {
       };
 
       // Helper pour envoyer un embed au canal de logs
-      const sendEmbed = async (title, fields, eventKey) => {
+      const sendEmbed = async (title, color, fields, eventKey) => {
         if (eventKey && shouldSkip(eventKey)) return; // évite les doublons proches
+        
+        const dateStr = new Date().toLocaleString('fr-FR', {
+          day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+
         const embed = new EmbedBuilder()
-          .setTitle(title)
-          .setColor(0x5865F2)
+          .setAuthor({ name: title, iconURL: 'https://cdn-icons-png.flaticon.com/512/59/59284.png' }) // Icone générique haut-parleur
+          .setColor(color)
+          .setThumbnail(member?.user?.displayAvatarURL({ dynamic: true }) || null)
           .addFields(fields)
-          .setTimestamp();
+          .setFooter({ text: `ID: ${member?.id} • ${dateStr}` });
+
         try {
           await logChannel.send({ embeds: [embed] });
         } catch (_) {}
@@ -88,85 +97,85 @@ module.exports = {
 
       // 1) Join
       if (!oldChannel && newChannel) {
-        const title = LanguageManager.get(lang, 'events.voice.join.title') || '🔊 Utilisateur a rejoint un salon vocal';
-        await sendEmbed(title, [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: channelLabel, value: `${newChannel}`, inline: true }
+        const title = LanguageManager.get(lang, 'events.voice.join.title') || 'Utilisateur rejoint un canal vocal';
+        await sendEmbed(title, 0x2ecc71, [ // Green
+          { name: userLabel, value: userTag, inline: true },
+          { name: channelLabel, value: `🔊 ${newChannel.name}`, inline: true }
         ], 'join');
       }
 
       // 2) Leave
       if (oldChannel && !newChannel) {
-        const title = LanguageManager.get(lang, 'events.voice.leave.title') || '🔇 Utilisateur a quitté un salon vocal';
+        const title = LanguageManager.get(lang, 'events.voice.leave.title') || 'Utilisateur quitte un canal vocal';
         const moderator = await findModerator([AuditLogEvent.MemberDisconnect, AuditLogEvent.MemberUpdate]);
         const fields = [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: channelLabel, value: `${oldChannel}`, inline: true }
+          { name: userLabel, value: userTag, inline: true },
+          { name: channelLabel, value: `🔊 ${oldChannel.name}`, inline: true }
         ];
         if (moderator) fields.push({ name: moderatorLabel, value: moderator, inline: true });
-        await sendEmbed(title, fields, 'leave');
+        await sendEmbed(title, 0xe74c3c, fields, 'leave'); // Red
       }
 
       // 3) Switch channel
       if (oldChannel && newChannel && oldChannel.id !== newChannel.id) {
-        const title = LanguageManager.get(lang, 'events.voice.switch.title') || '🔄 Utilisateur a changé de salon vocal';
+        const title = LanguageManager.get(lang, 'events.voice.switch.title') || 'Utilisateur change de canal vocal';
         const moderator = await findModerator([AuditLogEvent.MemberMove, AuditLogEvent.MemberUpdate]);
         const fields = [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: oldChannelLabel, value: `${oldChannel}`, inline: true },
-          { name: newChannelLabel, value: `${newChannel}`, inline: true }
+          { name: userLabel, value: userTag, inline: true },
+          { name: oldChannelLabel, value: `🔊 ${oldChannel.name}`, inline: true },
+          { name: newChannelLabel, value: `🔊 ${newChannel.name}`, inline: true }
         ];
         if (moderator) fields.push({ name: moderatorLabel, value: moderator, inline: true });
-        await sendEmbed(title, fields, 'switch');
+        await sendEmbed(title, 0x3498db, fields, 'switch'); // Blue
       }
 
       // 4) Server mute toggles
-      if (oldState.serverMute !== newState.serverMute) {
+      if (oldState.serverMute !== newState.serverMute && oldState.serverDeaf === newState.serverDeaf) {
         const title = newState.serverMute
-          ? (LanguageManager.get(lang, 'events.voice.mute_micro.title_muted') || '🎤 Utilisateur mis en sourdine (micro)')
-          : (LanguageManager.get(lang, 'events.voice.mute_micro.title_unmuted') || '🎤 Utilisateur retiré de sourdine (micro)');
+          ? (LanguageManager.get(lang, 'events.voice.mute_micro.title_muted') || 'Utilisateur mis en sourdine (micro)')
+          : (LanguageManager.get(lang, 'events.voice.mute_micro.title_unmuted') || 'Utilisateur retiré de sourdine (micro)');
         const stateText = newState.serverMute
           ? (LanguageManager.get(lang, 'common.muted') || 'Muted')
           : (LanguageManager.get(lang, 'common.unmuted') || 'Unmuted');
         const moderator = await findModerator(AuditLogEvent.MemberUpdate);
         const fields = [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: channelLabel, value: `${newChannel || oldChannel || '—'}`, inline: true },
+          { name: userLabel, value: userTag, inline: true },
+          { name: channelLabel, value: `🔊 ${newChannel?.name || oldChannel?.name || '—'}`, inline: true },
           { name: stateLabel, value: stateText, inline: true }
         ];
         if (moderator) fields.push({ name: moderatorLabel, value: moderator, inline: true });
-        await sendEmbed(title, fields, newState.serverMute ? 'serverMuteOn' : 'serverMuteOff');
+        await sendEmbed(title, 0xe67e22, fields, newState.serverMute ? 'serverMuteOn' : 'serverMuteOff'); // Orange
       }
 
       // 5) Server deaf toggles
       if (oldState.serverDeaf !== newState.serverDeaf) {
         const title = newState.serverDeaf
-          ? (LanguageManager.get(lang, 'events.voice.deaf.title_deafened') || '🎧 Utilisateur assourdi (casque)')
-          : (LanguageManager.get(lang, 'events.voice.deaf.title_undeafened') || '🎧 Utilisateur non assourdi (casque)');
+          ? (LanguageManager.get(lang, 'events.voice.deaf.title_deafened') || 'Utilisateur assourdi (casque)')
+          : (LanguageManager.get(lang, 'events.voice.deaf.title_undeafened') || 'Utilisateur non assourdi (casque)');
         const stateText = newState.serverDeaf
           ? (LanguageManager.get(lang, 'common.deafened') || 'Deafened')
           : (LanguageManager.get(lang, 'common.undeafened') || 'Undeafened');
         const moderator = await findModerator(AuditLogEvent.MemberUpdate);
         const fields = [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: channelLabel, value: `${newChannel || oldChannel || '—'}`, inline: true },
+          { name: userLabel, value: userTag, inline: true },
+          { name: channelLabel, value: `🔊 ${newChannel?.name || oldChannel?.name || '—'}`, inline: true },
           { name: stateLabel, value: stateText, inline: true }
         ];
         if (moderator) fields.push({ name: moderatorLabel, value: moderator, inline: true });
-        await sendEmbed(title, fields, newState.serverDeaf ? 'serverDeafOn' : 'serverDeafOff');
+        await sendEmbed(title, 0xe67e22, fields, newState.serverDeaf ? 'serverDeafOn' : 'serverDeafOff'); // Orange
       }
 
       // 6) Self mute toggles
-      if (oldState.selfMute !== newState.selfMute) {
+      if (oldState.selfMute !== newState.selfMute && oldState.selfDeaf === newState.selfDeaf) {
         const title = newState.selfMute
-          ? (LanguageManager.get(lang, 'events.voice.self_mute.title_on') || "🎤 Utilisateur s'est mis en sourdine")
-          : (LanguageManager.get(lang, 'events.voice.self_mute.title_off') || "🎤 Utilisateur s'est retiré de sourdine");
+          ? (LanguageManager.get(lang, 'events.voice.self_mute.title_on') || "Utilisateur s'est mis en sourdine")
+          : (LanguageManager.get(lang, 'events.voice.self_mute.title_off') || "Utilisateur s'est retiré de sourdine");
         const action = newState.selfMute
           ? (LanguageManager.get(lang, 'events.voice.self_mute.action_on') || 'Sourdine activée')
           : (LanguageManager.get(lang, 'events.voice.self_mute.action_off') || 'Sourdine désactivée');
-        await sendEmbed(title, [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: channelLabel, value: `${newChannel || oldChannel || '—'}`, inline: true },
+        await sendEmbed(title, 0x95a5a6, [ // Grey
+          { name: userLabel, value: userTag, inline: true },
+          { name: channelLabel, value: `🔊 ${newChannel?.name || oldChannel?.name || '—'}`, inline: true },
           { name: actionLabel, value: action, inline: true }
         ], newState.selfMute ? 'selfMuteOn' : 'selfMuteOff');
       }
@@ -174,14 +183,14 @@ module.exports = {
       // 7) Self deaf toggles
       if (oldState.selfDeaf !== newState.selfDeaf) {
         const title = newState.selfDeaf
-          ? (LanguageManager.get(lang, 'events.voice.self_deaf.title_on') || "🎧 Utilisateur s'est assourdi")
-          : (LanguageManager.get(lang, 'events.voice.self_deaf.title_off') || "🎧 Utilisateur n'est plus assourdi");
+          ? (LanguageManager.get(lang, 'events.voice.self_deaf.title_on') || "Utilisateur s'est assourdi")
+          : (LanguageManager.get(lang, 'events.voice.self_deaf.title_off') || "Utilisateur n'est plus assourdi");
         const action = newState.selfDeaf
           ? (LanguageManager.get(lang, 'events.voice.self_deaf.action_on') || 'Assourdi')
           : (LanguageManager.get(lang, 'events.voice.self_deaf.action_off') || 'Non assourdi');
-        await sendEmbed(title, [
-          { name: userLabel, value: `${userTag}`, inline: true },
-          { name: channelLabel, value: `${newChannel || oldChannel || '—'}`, inline: true },
+        await sendEmbed(title, 0x95a5a6, [ // Grey
+          { name: userLabel, value: userTag, inline: true },
+          { name: channelLabel, value: `🔊 ${newChannel?.name || oldChannel?.name || '—'}`, inline: true },
           { name: actionLabel, value: action, inline: true }
         ], newState.selfDeaf ? 'selfDeafOn' : 'selfDeafOff');
       }
