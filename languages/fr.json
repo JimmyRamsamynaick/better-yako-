@@ -81,9 +81,9 @@
                 "messages": "Messages",
                 "voice_time": "Temps vocal",
             "footer": "Système de niveaux Yako"
-        },     }
-        },
-        "setlevel": {
+        }
+    },
+    "setlevel": {
             "description": "Modifier le niveau ou l'XP d'un utilisateur (Admin)",
             "user_option": "L'utilisateur à modifier",
             "type_option": "Ce que vous voulez modifier",
