@@ -80,8 +80,8 @@
                 "xp_required": "XP Requis",
                 "messages": "Messages",
                 "voice_time": "Temps vocal",
-                "footer": "Yako Leveling System"
-            }
+            "footer": "Système de niveaux Yako"
+        },     }
         },
         "setlevel": {
             "description": "Modifier le niveau ou l'XP d'un utilisateur (Admin)",
