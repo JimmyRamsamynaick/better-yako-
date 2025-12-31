@@ -31,35 +31,57 @@ class LevelingManager {
     }
 
     static async addXp(guildId, userId, amount, stats = {}) {
-        const guildData = await Guild.findOne({ guildId });
-        if (!guildData) return null;
+        // 1. Essayer de mettre à jour l'utilisateur existant (opération atomique)
+        let updatedGuild = await Guild.findOneAndUpdate(
+            { guildId: guildId, 'users.userId': userId },
+            { 
+                $inc: { 
+                    'users.$.xp': amount,
+                    'users.$.voiceTime': stats.voice || 0,
+                    'users.$.messageCount': stats.messages || 0
+                }
+            },
+            { new: true }
+        );
 
-        let user = guildData.users.find(u => u.userId === userId);
-        if (!user) {
-            user = { userId, warnings: [], xp: 0, level: 0, messageCount: 0, voiceTime: 0 };
-            guildData.users.push(user);
+        // 2. Si l'utilisateur n'existe pas, on l'ajoute
+        if (!updatedGuild) {
+            const newUser = { 
+                userId, 
+                xp: amount, 
+                level: 0, 
+                messageCount: stats.messages || 0, 
+                voiceTime: stats.voice || 0,
+                warnings: [] 
+            };
+            
+            updatedGuild = await Guild.findOneAndUpdate(
+                { guildId: guildId },
+                { $push: { users: newUser } },
+                { new: true }
+            );
         }
+
+        if (!updatedGuild) return null;
+
+        // 3. Vérifier le Level Up
+        const user = updatedGuild.users.find(u => u.userId === userId);
+        if (!user) return null; // Should not happen
 
         const oldLevel = user.level || 0;
-        user.xp = (user.xp || 0) + amount;
-        
-        // Update stats
-        if (stats.messages) {
-            user.messageCount = (user.messageCount || 0) + stats.messages;
-        }
-        if (stats.voice) {
-            user.voiceTime = (user.voiceTime || 0) + stats.voice;
-        }
-
-        const newLevel = this.calculateLevel(user.xp);
+        const currentXp = user.xp || 0;
+        const newLevel = this.calculateLevel(currentXp);
 
         let leveledUp = false;
         if (newLevel > oldLevel) {
-            user.level = newLevel;
+            // Mise à jour du niveau si changement
+            await Guild.findOneAndUpdate(
+                { guildId: guildId, 'users.userId': userId },
+                { $set: { 'users.$.level': newLevel } }
+            );
+            user.level = newLevel; // Update local object for return
             leveledUp = true;
         }
-
-        await guildData.save();
 
         return {
             user,

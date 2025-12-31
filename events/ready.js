@@ -46,10 +46,12 @@ module.exports = {
                         if (!member || member.user.bot) return;
                         
                         // Check if user is muted or deafened (optional, but often requested to avoid AFK farming)
-                        if (voiceState.selfMute || voiceState.selfDeaf || voiceState.serverMute || voiceState.serverDeaf) return;
+                        // Désactivé temporairement car l'utilisateur veut que son temps soit compté même s'il est auto-deaf
+                        // if (voiceState.selfMute || voiceState.selfDeaf || voiceState.serverMute || voiceState.serverDeaf) return;
                         
                         // Check if user is in a valid channel (not AFK channel)
-                        if (guild.afkChannelId && voiceState.channelId === guild.afkChannelId) return;
+                        // Désactivé temporairement pour s'assurer que le temps est compté partout
+                        // if (guild.afkChannelId && voiceState.channelId === guild.afkChannelId) return;
 
                         const result = await LevelingManager.addXp(id, member.id, xpPerMinute, { voice: 1 });
                         

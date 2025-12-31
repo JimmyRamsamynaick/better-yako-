@@ -7,8 +7,8 @@ const ComponentsV3 = require('../utils/ComponentsV3');
 module.exports = {
     name: 'messageDelete',
     async execute(message) {
-        // Ignorer les messages des bots et les messages privés
-        if (message.author?.bot || !message.guild) return;
+        // Ignorer les messages dont l'auteur est inconnu (non mis en cache), les bots et les messages privés
+        if (!message.author || message.author.bot || !message.guild) return;
         
         try {
             // Récupérer les données du serveur
@@ -43,8 +43,12 @@ module.exports = {
             const attachmentsLabel = LanguageManager.get(lang, 'common.attachments') || 'Pièces jointes';
 
             let content = `## ${title}\n\n`;
-            content += `**${authorLabel}:** ${message.author.toString()} (${message.author.tag})\n`;
-            content += `**${channelLabel}:** ${message.channel.toString()}\n`;
+            
+            const authorName = message.author ? (message.author.toString() + ` (${message.author.tag})`) : 'Inconnu';
+            const channelName = message.channel ? message.channel.toString() : 'Inconnu';
+
+            content += `**${authorLabel}:** ${authorName}\n`;
+            content += `**${channelLabel}:** ${channelName}\n`;
             content += `**${dateLabel}:** <t:${Math.floor(Date.now() / 1000)}:F>\n\n`;
             
             // Ajouter le contenu du message s'il existe

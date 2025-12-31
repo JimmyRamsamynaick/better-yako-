@@ -26,71 +26,24 @@ module.exports = {
         // 1. LOGIQUE LEVELING / STATS VOCAL
         // ==========================================
         
+        // NOTE: La logique de leveling vocal est désormais gérée par l'intervalle dans events/ready.js
+        // pour permettre une progression en temps réel et éviter les conflits (double comptage).
+        // Le code ci-dessous est conservé uniquement pour la gestion des sessions si besoin futur (logs précis),
+        // mais ne crédite plus d'XP ni de temps vocal pour le moment.
+
         // Ignorer les bots pour le leveling
         if (!newState.member?.user.bot && !oldState.member?.user.bot) {
             const sessionKey = `${guildId}-${userId}`;
             const now = Date.now();
 
-            // CAS 1: L'utilisateur quitte un salon ou change de salon -> On sauvegarde le temps passé
+            // CAS 1: L'utilisateur quitte un salon ou change de salon
             if (oldState.channelId && global.voiceSessions.has(sessionKey)) {
-                const startTime = global.voiceSessions.get(sessionKey);
-                const durationMs = now - startTime;
-                const durationMinutes = durationMs / 1000 / 60;
-
-                // On ne compte que si la durée est significative (> 1 seconde)
-                if (durationMs > 1000) {
-                    const xpPerMinute = guildData.leveling?.xpPerVoiceMinute || 10;
-                    const xpEarned = guildData.leveling?.enabled ? (durationMinutes * xpPerMinute) : 0;
-
-                    try {
-                        // Mise à jour atomique
-                        await Guild.findOneAndUpdate(
-                            { guildId: guildId, 'users.userId': userId },
-                            { 
-                                $inc: { 
-                                    'users.$.voiceTime': durationMinutes,
-                                    'users.$.xp': xpEarned 
-                                }
-                            }
-                        );
-
-                        // Si l'utilisateur n'existe pas encore dans le tableau, on l'ajoute (cas rare si messageCount = 0)
-                        // Note: findOneAndUpdate avec 'users.userId' ne créera pas l'utilisateur s'il manque.
-                        // On doit vérifier si le doc a été modifié, sinon push.
-                        const userExists = guildData.users.some(u => u.userId === userId);
-                        if (!userExists) {
-                            await Guild.findOneAndUpdate(
-                                { guildId: guildId },
-                                {
-                                    $push: {
-                                        users: {
-                                            userId: userId,
-                                            voiceTime: durationMinutes,
-                                            xp: xpEarned,
-                                            level: 0,
-                                            messageCount: 0,
-                                            warnings: []
-                                        }
-                                    }
-                                }
-                            );
-                        }
-                    } catch (err) {
-                        console.error('[VoiceLeveling] Error updating stats:', err);
-                    }
-                }
-                
-                // Nettoyer la session (sera recréée si switch)
+                // Nettoyer la session
                 global.voiceSessions.delete(sessionKey);
             }
 
-            // CAS 2: L'utilisateur rejoint un salon (ou a changé de salon) -> On démarre une session
-            // On ne compte pas si l'utilisateur est mute/deaf serveur (optionnel, ici on compte tout tant qu'il est connecté)
+            // CAS 2: L'utilisateur rejoint un salon (ou a changé de salon)
             if (newState.channelId) {
-                // Vérifier si l'utilisateur n'est pas seul (Anti-Farm optionnel - désactivé pour l'instant pour simplicité)
-                // const channel = newState.channel;
-                // if (channel.members.size > 1) ...
-                
                 global.voiceSessions.set(sessionKey, now);
             }
         }
