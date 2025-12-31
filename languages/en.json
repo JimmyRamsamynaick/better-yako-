@@ -529,25 +529,7 @@
             "description": "Send a ticket panel",
             "title": "🎫 Support Center",
             "content": "Choose a ticket category below.",
-            "footer": "The staff will answer you quickly."
-        },
-        "voice": {
-            "description": "Voice moderation commands",
-            "kick": {
-                "description": "Kick a member from a voice channel",
-                "user_option": "The member to kick from voice",
-                "reason_option": "Reason for the kick"
-            },
-            "ban": {
-                "description": "Ban a member from voice channels",
-                "user_option": "The member to ban from voice",
-                "reason_option": "Reason for the ban"
-            },
-            "unban": {
-                "description": "Unban a member from voice channels",
-                "user_option": "The member to unban from voice",
-                "reason_option": "Reason for the unban"
-            }
+            "footer": "Staff will reply shortly."
         }
     },
     "tempvoice": {
