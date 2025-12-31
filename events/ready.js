@@ -63,8 +63,8 @@ module.exports = {
                         // if (voiceState.selfMute || voiceState.selfDeaf || voiceState.serverMute || voiceState.serverDeaf) return;
                         
                         // Check if user is in a valid channel (not AFK channel)
-                        // Désactivé temporairement pour s'assurer que le temps est compté partout
-                        // if (guild.afkChannelId && voiceState.channelId === guild.afkChannelId) return;
+                        if (!voiceState.channelId) return;
+                        if (guild.afkChannelId && voiceState.channelId === guild.afkChannelId) return;
 
                         const result = await LevelingManager.addXp(id, member.id, xpPerTick, { voice: voiceTimePerTick });
                         
