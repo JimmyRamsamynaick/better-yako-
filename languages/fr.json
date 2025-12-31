@@ -530,9 +530,26 @@
             "title": "🎫 Centre de support",
             "content": "Choisissez une catégorie de ticket ci-dessous.",
             "footer": "Le staff vous répondra rapidement."
-        }
-    },
-    "tempvoice": {
+        },
+        "voice": {
+            "description": "Commandes de modération vocale",
+            "kick": {
+                "description": "Expulser un membre d'un salon vocal",
+                "user_option": "Le membre à expulser du vocal",
+                "reason_option": "Raison de l'expulsion"
+            },
+            "ban": {
+                "description": "Bannir un membre des salons vocaux",
+                "user_option": "Le membre à bannir des vocaux",
+                "reason_option": "Raison du bannissement"
+            },
+            "unban": {
+                "description": "Débannir un membre des salons vocaux",
+                "user_option": "Le membre à débannir des vocaux",
+                "reason_option": "Raison du débannissement"
+            }
+        },
+        "tempvoice": {
         "description": "Configurer les salons vocaux temporaires",
         "addhub_description": "Créer ou modifier un salon hub",
         "removehub_description": "Supprimer un salon hub",

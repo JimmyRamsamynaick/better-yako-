@@ -27,6 +27,7 @@ module.exports = {
       } catch (_) {}
 
       try {
+        // Boucle pour les stats du serveur (Toutes les 10 minutes pour éviter les rate limits)
         setInterval(async () => {
           for (const [id, guild] of client.guilds.cache) {
             const doc = await Guild.findOne({ guildId: id });
@@ -35,12 +36,24 @@ module.exports = {
             if (doc && doc.serverStats && doc.serverStats.enabled) {
               try { await ServerStats.updateForGuild(guild); } catch (_) {}
             }
+          }
+        }, 10 * 60 * 1000);
+
+        // Boucle pour l'XP Vocal (Toutes les 10 secondes pour plus de précision)
+        setInterval(async () => {
+          for (const [id, guild] of client.guilds.cache) {
+            const doc = await Guild.findOne({ guildId: id });
 
             // Voice XP
             if (doc && doc.leveling && doc.leveling.enabled) {
                 try {
                     const xpPerMinute = doc.leveling.xpPerVoiceMinute || 10;
                     
+                    // Calcul pour 10 secondes (1/6 de minute)
+                    // On divise par 6 car la boucle tourne 6 fois par minute
+                    const xpPerTick = xpPerMinute / 6;
+                    const voiceTimePerTick = 10 / 60; // ~0.166 minutes
+
                     guild.voiceStates.cache.forEach(async (voiceState) => {
                         const member = voiceState.member;
                         if (!member || member.user.bot) return;
@@ -53,7 +66,7 @@ module.exports = {
                         // Désactivé temporairement pour s'assurer que le temps est compté partout
                         // if (guild.afkChannelId && voiceState.channelId === guild.afkChannelId) return;
 
-                        const result = await LevelingManager.addXp(id, member.id, xpPerMinute, { voice: 1 });
+                        const result = await LevelingManager.addXp(id, member.id, xpPerTick, { voice: voiceTimePerTick });
                         
                         if (result && result.leveledUp) {
                             const channelId = doc.leveling.levelUpChannelId;
@@ -76,7 +89,7 @@ module.exports = {
                 }
             }
           }
-        }, 60 * 1000);
+        }, 10 * 1000); // 10 secondes
       } catch (_) {}
     } catch (_) {}
   }
