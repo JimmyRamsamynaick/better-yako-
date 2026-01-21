@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const EconomyManager = require('../../utils/economyManager');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const LanguageManager = require('../../utils/languageManager');
@@ -39,7 +39,16 @@ module.exports = {
                 .setName('remove')
                 .setDescription('Retirer des coins (Admin)')
                 .addUserOption(option => option.setName('user').setDescription('Utilisateur').setRequired(true))
-                .addIntegerOption(option => option.setName('amount').setDescription('Montant').setRequired(true))),
+                .addIntegerOption(option => option.setName('amount').setDescription('Montant').setRequired(true)))
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('setlogs')
+                .setDescription('Configurer le salon de logs pour les achats (Admin)')
+                .addChannelOption(option => 
+                    option.setName('channel')
+                        .setDescription('Le salon où envoyer les logs d\'achat')
+                        .addChannelTypes(ChannelType.GuildText)
+                        .setRequired(true))),
     
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
@@ -48,6 +57,24 @@ module.exports = {
         // Récupérer la langue pour les traductions manuelles
         const guildData = await Guild.findOne({ guildId });
         const lang = guildData?.language || 'fr';
+
+        if (subcommand === 'setlogs') {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.no_perm'));
+            }
+
+            const channel = interaction.options.getChannel('channel');
+            
+            // Mise à jour de la configuration
+            if (!guildData.shopLogs) guildData.shopLogs = {};
+            guildData.shopLogs.channelId = channel.id;
+            guildData.shopLogs.enabled = true;
+            await guildData.save();
+
+            return interaction.reply(await ComponentsV3.successEmbed(guildId, 'shop.logs.success_title', 
+                LanguageManager.get(lang, 'shop.logs.success_desc', { channel: channel.toString() })
+            ));
+        }
 
         if (subcommand === 'list') {
             const economy = await EconomyManager.getEconomy(guildId);
@@ -69,6 +96,12 @@ module.exports = {
                 additionalContent.push(roles);
             }
 
+            // Ajout de la note pour les rôles personnalisés
+            if (roles) {
+                additionalContent.push({ type: 'divider' });
+                additionalContent.push({ type: 'text', key: 'shop.list.custom_role_note' });
+            }
+
             const response = await ComponentsV3.createEmbed({
                 guildId,
                 titleKey: 'shop.list.title',
@@ -82,8 +115,9 @@ module.exports = {
 
         if (subcommand === 'buy') {
             const itemId = interaction.options.getInteger('id');
-            const details = interaction.options.getString('details');
-            const colorInput = interaction.options.getString('color');
+            // Les options details et color ne sont plus utilisées pour les rôles custom
+            // const details = interaction.options.getString('details');
+            // const colorInput = interaction.options.getString('color');
             
             const economy = await EconomyManager.getEconomy(guildId);
             const item = economy.shopItems.find(i => i.id === itemId);
@@ -105,7 +139,8 @@ module.exports = {
             // Logique spécifique par type d'item
             if (item.type === 'role_color') {
                 // Vérifier/Créer le rôle couleur
-                let role = interaction.guild.roles.cache.find(r => r.name === item.name && r.color === parseInt(item.color.replace('#', ''), 16));
+                // Modification: Recherche uniquement par nom pour éviter les doublons si la couleur diffère légèrement
+                let role = interaction.guild.roles.cache.find(r => r.name === item.name);
                 
                 if (!role) {
                     try {
@@ -127,32 +162,9 @@ module.exports = {
                     return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
                 }
             } else if (item.type === 'role_custom') {
-                if (!details) {
-                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.no_details'));
-                }
-
-                let color = '#99AAB5'; // Gris par défaut
-                if (item.id === 12 || item.id === 13) { // Gold ou Diamant
-                    if (!colorInput) {
-                        return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.no_color'));
-                    }
-                    if (!/^#[0-9A-F]{6}$/i.test(colorInput)) {
-                        return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.invalid_color'));
-                    }
-                    color = colorInput;
-                }
-
-                try {
-                    const role = await interaction.guild.roles.create({
-                        name: details,
-                        color: color,
-                        reason: `Achat rôle perso par ${interaction.user.tag}`
-                    });
-                    const member = await interaction.guild.members.fetch(interaction.user.id);
-                    await member.roles.add(role);
-                } catch (e) {
-                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
-                }
+                // Pour les rôles personnalisés, on n'ajoute PAS le rôle automatiquement.
+                // L'utilisateur doit ouvrir un ticket.
+                // On ne vérifie plus details ni color
             }
 
             // Débiter l'utilisateur
@@ -164,12 +176,37 @@ module.exports = {
                 await economy.save();
             }
 
-            const successMsg = LanguageManager.get(lang, 'shop.success.desc', { 
+            // Choisir le message de succès approprié
+            const successKey = item.type === 'role_custom' ? 'shop.success.custom_role_desc' : 'shop.success.desc';
+            const successMsg = LanguageManager.get(lang, successKey, { 
                 user: interaction.user.toString(), 
                 item: item.name, 
                 price: item.price, 
                 balance: balance - item.price 
             });
+
+            // Envoi du log d'achat si configuré
+            if (guildData.shopLogs && guildData.shopLogs.enabled && guildData.shopLogs.channelId) {
+                try {
+                    const logChannel = interaction.guild.channels.cache.get(guildData.shopLogs.channelId);
+                    if (logChannel) {
+                        const logEmbed = {
+                            title: '🛒 Nouvel achat boutique',
+                            color: 0xFFA500, // Orange
+                            fields: [
+                                { name: 'Utilisateur', value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
+                                { name: 'Item', value: `${item.name} (ID: ${item.id})`, inline: true },
+                                { name: 'Prix', value: `${item.price} 🪙`, inline: true },
+                                { name: 'Nouveau solde', value: `${balance - item.price} 🪙`, inline: true },
+                                { name: 'Date', value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
+                            ]
+                        };
+                        await logChannel.send({ embeds: [logEmbed] });
+                    }
+                } catch (err) {
+                    console.error('Erreur lors de l\'envoi du log shop:', err);
+                }
+            }
 
             return interaction.reply(await ComponentsV3.successEmbed(guildId, 'shop.success.title', successMsg, false));
         }

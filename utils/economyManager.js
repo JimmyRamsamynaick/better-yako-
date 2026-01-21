@@ -38,7 +38,7 @@ class EconomyManager {
             // Rôles personnalisés
             { id: 11, name: 'Rôle Perso (Simple)', type: 'role_custom', price: 10000, description: 'Nom au choix, couleur par défaut' },
             { id: 12, name: 'Rôle Perso (Gold)', type: 'role_custom', price: 15000, description: 'Nom au choix, couleur simple' },
-            { id: 13, name: 'Rôle Perso (Diamant)', type: 'role_custom', price: 30000, description: 'Nom au choix, couleur dégradée (non supporté par Discord natif, couleur simple pour l\'instant)' }
+            { id: 13, name: 'Rôle Perso (Diamant)', type: 'role_custom', price: 30000, description: 'Nom au choix, couleur dégradée' }
         ];
 
         economy.shopItems = defaultItems;

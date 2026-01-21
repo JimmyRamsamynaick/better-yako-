@@ -99,6 +99,16 @@ const guildSchema = new Schema({
             default: null
         }
     },
+    shopLogs: {
+        channelId: {
+            type: String,
+            default: null
+        },
+        enabled: {
+            type: Boolean,
+            default: false
+        }
+    },
     serverStats: {
         enabled: { type: Boolean, default: false },
         categoryId: { type: String, default: null },

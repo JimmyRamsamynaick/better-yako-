@@ -142,7 +142,12 @@
             "title": "🛒 Boutique Yako",
             "desc": "Utilisez `/shop buy <id>` pour acheter un item.",
             "cosmetics": "🎨 Cosmétiques (Couleurs)",
-            "roles": "🎭 Rôles Personnalisés"
+            "roles": "🎭 Rôles Personnalisés",
+            "custom_role_note": "⚠️ **Note :** Pour les rôles personnalisés, veuillez ouvrir un ticket après votre achat pour nous communiquer les détails (Nom et Couleur)."
+        },
+        "logs": {
+            "success_title": "✅ Configuration sauvegardée",
+            "success_desc": "Le salon de logs pour la boutique a été défini sur {channel}."
         },
         "error": {
             "not_found": "Item introuvable.",
@@ -155,7 +160,8 @@
         },
         "success": {
             "title": "🧾 Achat confirmé !",
-            "desc": "Félicitations {user} !\nVous avez acheté **{item}** pour `{price} 🪙`.\n\n*Votre nouveau solde : {balance} 🪙*"
+            "desc": "Félicitations {user} !\nVous avez acheté **{item}** pour `{price} 🪙`.\n\n*Votre nouveau solde : {balance} 🪙*",
+            "custom_role_desc": "Félicitations {user} !\nVous avez acheté **{item}** pour `{price} 🪙`.\n\n⚠️ **Action requise :**\nVeuillez ouvrir un ticket pour réclamer votre rôle personnalisé et fournir les détails (Nom et Couleur).\n\n*Votre nouveau solde : {balance} 🪙*"
         },
         "admin": {
             "no_perm": "Vous n'avez pas la permission.",
