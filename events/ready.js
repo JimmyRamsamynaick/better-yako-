@@ -79,8 +79,9 @@ module.exports = {
                                 const defaultMsg = LanguageManager.get(lang, 'leveling.levelup_message_default');
                                 const msg = (doc.leveling.levelUpMessage || defaultMsg)
                                     .replace('{user}', member.toString())
-                                    .replace('{level}', result.newLevel);
-                                await channel.send(msg);
+                                    .replace('{level}', result.newLevel)
+                                    .replace('{coins}', result.reward || 0);
+                                try { await channel.send(msg); } catch (_) {}
                             }
                         }
                     });

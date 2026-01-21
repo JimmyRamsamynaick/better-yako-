@@ -1,4 +1,5 @@
 const Guild = require('../models/Guild');
+const EconomyManager = require('./economyManager');
 
 class LevelingManager {
     static calculateLevel(xp) {
@@ -73,6 +74,9 @@ class LevelingManager {
         const newLevel = this.calculateLevel(currentXp);
 
         let leveledUp = false;
+        let reward = 0;
+
+        // On ne notifie et récompense que si le niveau a réellement augmenté
         if (newLevel > oldLevel) {
             // Mise à jour du niveau si changement
             await Guild.findOneAndUpdate(
@@ -81,13 +85,18 @@ class LevelingManager {
             );
             user.level = newLevel; // Update local object for return
             leveledUp = true;
+
+            // Récompense en coins : Niveau * 10
+            reward = newLevel * 10;
+            await EconomyManager.addCoins(guildId, userId, reward);
         }
 
         return {
             user,
             oldLevel,
             newLevel,
-            leveledUp
+            leveledUp,
+            reward
         };
     }
 

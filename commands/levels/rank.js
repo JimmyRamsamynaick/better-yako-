@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Guild = require('../../models/Guild');
 const LevelingManager = require('../../utils/levelingManager');
+const EconomyManager = require('../../utils/economyManager');
 const LanguageManager = require('../../utils/languageManager');
 
 function formatVoiceTime(minutes) {
@@ -52,6 +53,9 @@ module.exports = {
         const messageCount = user ? (user.messageCount || 0) : 0;
         const voiceTime = user ? (user.voiceTime || 0) : 0;
 
+        // Récupérer les coins
+        const coins = await EconomyManager.getBalance(guildId, target.id);
+
         const rank = await LevelingManager.getUserRank(guildId, target.id);
         
         const xpForNextLevel = LevelingManager.calculateXpForLevel(level + 1);
@@ -82,7 +86,8 @@ module.exports = {
                 { name: LanguageManager.get(lang, 'leveling.rank.embed.xp_required'), value: `${Math.floor(xpRemaining)} XP`, inline: true },
                 { name: LanguageManager.get(lang, 'leveling.rank.embed.messages'), value: `${messageCount}`, inline: true },
                 
-                { name: LanguageManager.get(lang, 'leveling.rank.embed.voice_time'), value: formatVoiceTime(voiceTime), inline: true }
+                { name: LanguageManager.get(lang, 'leveling.rank.embed.voice_time'), value: formatVoiceTime(voiceTime), inline: true },
+                { name: LanguageManager.get(lang, 'leveling.rank.embed.coins'), value: `${Math.floor(coins)} 🪙`, inline: true }
             )
             .setFooter({ text: LanguageManager.get(lang, 'leveling.rank.embed.footer') })
             .setTimestamp();

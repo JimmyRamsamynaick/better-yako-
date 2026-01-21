@@ -25,8 +25,9 @@ module.exports = {
                     const lang = guildData.language || 'fr';
                     const defaultMsg = LanguageManager.get(lang, 'leveling.levelup_message_default');
                     const msg = (guildData.leveling.levelUpMessage || defaultMsg)
-                        .replace('{user}', message.author.toString())
-                        .replace('{level}', result.newLevel);
+                        .replaceAll('{user}', message.author.toString())
+                        .replaceAll('{level}', result.newLevel)
+                        .replaceAll('{coins}', result.reward || 0);
                     
                     await channel.send(msg);
                 }

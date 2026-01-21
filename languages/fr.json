@@ -80,10 +80,11 @@
                 "xp_required": "XP Requis",
                 "messages": "Messages",
                 "voice_time": "Temps vocal",
-            "footer": "Système de niveaux Yako"
-        }
-    },
-    "setlevel": {
+                "coins": "Coins",
+                "footer": "Système de niveaux Yako"
+            }
+        },
+        "setlevel": {
             "description": "Modifier le niveau ou l'XP d'un utilisateur (Admin)",
             "user_option": "L'utilisateur à modifier",
             "type_option": "Ce que vous voulez modifier",
@@ -99,10 +100,12 @@
                 "total_xp": "XP total",
                 "total_messages": "Total messages",
                 "total_voice": "Total vocal",
+                "total_coins": "Total coins",
                 "user_stats_title": "👤 Vos statistiques:",
                 "level_xp": "Niveau {level} ({xp} XP)",
                 "messages": "messages",
                 "voice": "en vocal",
+                "coins": "coins",
                 "footer": "Classements mis à jour en temps réel",
                 "select_placeholder": "Choisissez un classement à afficher"
             },
@@ -110,11 +113,56 @@
                 "messages": "Classement Messages",
                 "voice": "Classement Vocal",
                 "level": "Classement Niveaux",
+                "coins": "Classement Économie",
                 "home": "Vue d'ensemble"
             },
             "empty": "Aucune donnée disponible."
         },
-        "levelup_message_default": "Félicitations {user}, tu es passé niveau {level} !"
+        "levelup_message_default": "Félicitations {user}, tu es passé niveau {level} ! (+{coins} 🪙)"
+    },
+    "pay": {
+        "description": "Transférer des coins à un autre utilisateur",
+        "error": {
+            "self_transfer": "Vous ne pouvez pas vous donner de l'argent à vous-même.",
+            "bot_transfer": "Vous ne pouvez pas donner de l'argent à un bot.",
+            "insufficient_funds": "Solde insuffisant. Vous avez {balance} 🪙, vous essayez d'envoyer {amount} 🪙.",
+            "transaction_failed": "La transaction a échoué. Veuillez réessayer."
+        },
+        "success": {
+            "title": "✅ Succès",
+            "desc": "**{amount} 🪙** envoyés à {target} !"
+        }
+    },
+    "balance": {
+        "title": "💰 Solde de {user}",
+        "content": "**{amount}** coins"
+    },
+    "shop": {
+        "list": {
+            "title": "🛒 Boutique Yako",
+            "desc": "Utilisez `/shop buy <id>` pour acheter un item.",
+            "cosmetics": "🎨 Cosmétiques (Couleurs)",
+            "roles": "🎭 Rôles Personnalisés"
+        },
+        "error": {
+            "not_found": "Item introuvable.",
+            "insufficient_funds": "Solde insuffisant. Vous avez {balance} 🪙, il vous en faut {price}.",
+            "out_of_stock": "Cet item est en rupture de stock.",
+            "role_create": "Erreur lors de la création du rôle. Vérifiez mes permissions.",
+            "no_details": "Vous devez spécifier un nom pour votre rôle personnalisé dans l'option `details`.",
+            "no_color": "Vous devez spécifier une couleur hex (ex: #FF0000) pour ce rôle.",
+            "invalid_color": "Format de couleur invalide. Utilisez le format hexadécimal (ex: #FF0000)."
+        },
+        "success": {
+            "title": "🧾 Achat confirmé !",
+            "desc": "Félicitations {user} !\nVous avez acheté **{item}** pour `{price} 🪙`.\n\n*Votre nouveau solde : {balance} 🪙*"
+        },
+        "admin": {
+            "no_perm": "Vous n'avez pas la permission.",
+            "give_success": "**{amount} 🪙** ajoutés au compte de {user}.",
+            "remove_success": "**{amount} 🪙** retirés du compte de {user}.",
+            "remove_fail": "Impossible de retirer ce montant (solde insuffisant ou erreur)."
+        }
     },
     "commands": {
         "ping": {
@@ -221,13 +269,17 @@
             "description": "Afficher la liste des commandes",
             "category_option": "Catégorie de commandes",
             "main_title": "📚 Centre d'aide YAKO",
-            "main_description": "Voici la liste de toutes les commandes disponibles. Sélectionnez une catégorie dans le menu déroulant ci-dessous pour voir les détails.\n\n**Catégories disponibles :**\n🛡️ **Modération** - Commandes de gestion du serveur\n👥 **Public** - Commandes accessibles à tous\n📊 **Niveaux** - Système de leveling et classement\n⭐ **Premium** - Commandes premium exclusives",
+            "main_description": "Voici la liste de toutes les commandes disponibles. Sélectionnez une catégorie dans le menu déroulant ci-dessous pour voir les détails.\n\n**Catégories disponibles :**\n🛡️ **Modération** - Commandes de gestion du serveur\n💰 **Économie** - Boutique et gestion des coins\n👥 **Public** - Commandes accessibles à tous\n📊 **Niveaux** - Système de leveling et classement\n⭐ **Premium** - Commandes premium exclusives",
             "default_instructions": "**💡 Instructions :**\n• Utilisez le menu déroulant ci-dessous pour choisir une catégorie\n• Chaque catégorie contient des commandes spécifiques\n• Toutes les commandes sont disponibles selon vos permissions",
             "select_placeholder": "🔍 Sélectionnez une catégorie...",
             "moderation_title": "🛡️ Commandes de Modération",
             "moderation_description": "**`/ban`** - Bannir un membre\n**`/unban`** - Débannir un membre\n**`/kick`** - Expulser un membre\n**`/mute`** - Rendre muet (temporaire)\n**`/unmute`** - Rendre la parole\n**`/warn`** - Avertir un membre\n**`/unwarn`** - Retirer un avertissement\n**`/warnlist`** - Liste des avertissements\n**`/clear`** - Supprimer des messages\n**`/lock`** - Verrouiller un salon\n**`/unlock`** - Déverrouiller un salon\n**`/voice ban`** - Interdit l’accès à tous les salons vocaux et de scène sur tout le serveur (global par défaut). Si le membre est en vocal, il est immédiatement déconnecté.\n**`/voice unban`** - Restaure l’accès à tous les salons vocaux et de scène (global).\n**`/voice kick`** - Expulse un membre de son salon vocal (déconnexion immédiate).\n**`/serverstats`** - Statistiques du serveur (catégorie auto, total/humains/bots)\n**`/setupmute`** - Configurer le système de mute\n**`/setlogs`** - Configurer les logs\n**`/settickets`** - Configurer les tickets\n**`/setlang`** - Changer la langue\n**`/setwelcome`** - Configurer le message de bienvenue (admin, salon)\n**`/reloadlangs`** - Recharger les fichiers de langue (Admin)",
             "moderation_option": "Modération",
             "moderation_desc": "Outils de gestion du serveur",
+            "economy_title": "💰 Commandes d'Économie",
+            "economy_description": "**`/balance`** - Afficher votre solde\n**`/shop`** - Accéder à la boutique (items, rôles)\n**`/shop give`** - Donner des coins (Admin)\n**`/shop remove`** - Retirer des coins (Admin)",
+            "economy_option": "Économie",
+            "economy_desc": "Boutique et gestion des coins",
             "public_title": "👥 Commandes Publiques",
             "public_description": "**`/help`** - Afficher cette aide\n**`/ping`** - Vérifier la latence\n**`/serverinfo`** - Informations du serveur\n**`/userinfo`** - Informations d'un utilisateur\n**`/ticketpanel`** - Envoyer un panneau de tickets\n**`/vote`** - Voter pour le bot sur Top.gg",
             "public_option": "Public",
@@ -242,6 +294,7 @@
             "premium_desc": "Fonctionnalités premium exclusives",
             "footer_text": "Besoin d'aide ? Contactez le staff ou utilisez les commandes appropriées !"
         },
+
         "setwelcome": {
             "description": "Configurer le système de bienvenue (activer/désactiver)",
             "enabled_option": "Activer ou désactiver le message de bienvenue",

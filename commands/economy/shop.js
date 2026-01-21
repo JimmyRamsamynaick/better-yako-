@@ -1,5 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const EconomyManager = require('../../utils/economyManager');
+const { ComponentsV3 } = require('../../utils/ComponentsV3');
+const LanguageManager = require('../../utils/languageManager');
+const Guild = require('../../models/Guild');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -42,22 +45,39 @@ module.exports = {
         const subcommand = interaction.options.getSubcommand();
         const guildId = interaction.guild.id;
 
+        // Récupérer la langue pour les traductions manuelles
+        const guildData = await Guild.findOne({ guildId });
+        const lang = guildData?.language || 'fr';
+
         if (subcommand === 'list') {
             const economy = await EconomyManager.getEconomy(guildId);
             const items = economy.shopItems.sort((a, b) => a.id - b.id);
 
-            const embed = new EmbedBuilder()
-                .setTitle('🛒 Boutique Yako')
-                .setColor('#FFD700')
-                .setDescription('Utilisez `/shop buy <id>` pour acheter un item.');
-
             let cosmetics = items.filter(i => i.type === 'role_color').map(i => `**ID ${i.id}** - ${i.name} : \`${i.price} 🪙\``).join('\n');
             let roles = items.filter(i => i.type === 'role_custom').map(i => `**ID ${i.id}** - ${i.name} : \`${i.price} 🪙\`\n*${i.description}*`).join('\n\n');
 
-            if (cosmetics) embed.addFields({ name: '🎨 Cosmétiques (Couleurs)', value: cosmetics });
-            if (roles) embed.addFields({ name: '🎭 Rôles Personnalisés', value: roles });
+            const additionalContent = [];
+            
+            if (cosmetics) {
+                additionalContent.push({ type: 'text', key: 'shop.list.cosmetics' });
+                additionalContent.push(cosmetics);
+            }
+            
+            if (roles) {
+                if (cosmetics) additionalContent.push({ type: 'divider' });
+                additionalContent.push({ type: 'text', key: 'shop.list.roles' });
+                additionalContent.push(roles);
+            }
 
-            return interaction.reply({ embeds: [embed] });
+            const response = await ComponentsV3.createEmbed({
+                guildId,
+                titleKey: 'shop.list.title',
+                contentKey: 'shop.list.desc',
+                additionalContent,
+                ephemeral: false
+            });
+
+            return interaction.reply(response);
         }
 
         if (subcommand === 'buy') {
@@ -69,17 +89,17 @@ module.exports = {
             const item = economy.shopItems.find(i => i.id === itemId);
 
             if (!item) {
-                return interaction.reply({ content: '❌ Item introuvable.', ephemeral: true });
+                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.not_found'));
             }
 
             const balance = await EconomyManager.getBalance(guildId, interaction.user.id);
             if (balance < item.price) {
-                return interaction.reply({ content: `❌ Solde insuffisant. Vous avez ${balance} 🪙, il vous en faut ${item.price}.`, ephemeral: true });
+                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.insufficient_funds', { balance, price: item.price }));
             }
 
             // Gestion des stocks (si != -1)
             if (item.stock !== -1 && item.stock <= 0) {
-                return interaction.reply({ content: '❌ Cet item est en rupture de stock.', ephemeral: true });
+                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.out_of_stock'));
             }
 
             // Logique spécifique par type d'item
@@ -95,30 +115,29 @@ module.exports = {
                             reason: `Achat boutique par ${interaction.user.tag}`
                         });
                     } catch (e) {
-                        return interaction.reply({ content: '❌ Erreur lors de la création du rôle. Vérifiez mes permissions.', ephemeral: true });
+                        return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
                     }
                 }
 
                 // Attribuer le rôle
                 try {
                     const member = await interaction.guild.members.fetch(interaction.user.id);
-                    // Retirer les autres rôles couleur si nécessaire ? (Optionnel, ici on ajoute juste)
                     await member.roles.add(role);
                 } catch (e) {
-                    return interaction.reply({ content: '❌ Impossible de vous donner le rôle.', ephemeral: true });
+                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
                 }
             } else if (item.type === 'role_custom') {
                 if (!details) {
-                    return interaction.reply({ content: '❌ Vous devez spécifier un nom pour votre rôle personnalisé dans l\'option `details`.', ephemeral: true });
+                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.no_details'));
                 }
 
                 let color = '#99AAB5'; // Gris par défaut
                 if (item.id === 12 || item.id === 13) { // Gold ou Diamant
                     if (!colorInput) {
-                        return interaction.reply({ content: '❌ Vous devez spécifier une couleur hex (ex: #FF0000) pour ce rôle.', ephemeral: true });
+                        return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.no_color'));
                     }
                     if (!/^#[0-9A-F]{6}$/i.test(colorInput)) {
-                        return interaction.reply({ content: '❌ Format de couleur invalide. Utilisez le format hexadécimal (ex: #FF0000).', ephemeral: true });
+                        return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.invalid_color'));
                     }
                     color = colorInput;
                 }
@@ -132,7 +151,7 @@ module.exports = {
                     const member = await interaction.guild.members.fetch(interaction.user.id);
                     await member.roles.add(role);
                 } catch (e) {
-                    return interaction.reply({ content: '❌ Erreur lors de la création du rôle personnalisé.', ephemeral: true });
+                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
                 }
             }
 
@@ -145,18 +164,19 @@ module.exports = {
                 await economy.save();
             }
 
-            const embed = new EmbedBuilder()
-                .setTitle('🧾 Achat confirmé !')
-                .setColor('#00FF00')
-                .setDescription(`Félicitations ${interaction.user} !\nVous avez acheté **${item.name}** pour \`${item.price} 🪙\`.\n\n*Votre nouveau solde : ${balance - item.price} 🪙*`)
-                .setThumbnail(interaction.user.displayAvatarURL());
+            const successMsg = LanguageManager.get(lang, 'shop.success.desc', { 
+                user: interaction.user.toString(), 
+                item: item.name, 
+                price: item.price, 
+                balance: balance - item.price 
+            });
 
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply(await ComponentsV3.successEmbed(guildId, 'shop.success.title', successMsg, false));
         }
 
         if (subcommand === 'give' || subcommand === 'remove') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({ content: '❌ Vous n\'avez pas la permission.', ephemeral: true });
+                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.no_perm'));
             }
 
             const target = interaction.options.getUser('user');
@@ -164,13 +184,25 @@ module.exports = {
 
             if (subcommand === 'give') {
                 await EconomyManager.addCoins(guildId, target.id, amount);
-                return interaction.reply({ content: `✅ **${amount} 🪙** ajoutés au compte de ${target}.` });
+                const msg = LanguageManager.get(lang, 'shop.admin.give_success', { amount, user: target.toString() });
+                
+                return interaction.reply(await ComponentsV3.createEmbed({
+                    guildId,
+                    additionalContent: [msg],
+                    ephemeral: false
+                }));
             } else {
                 const result = await EconomyManager.removeCoins(guildId, target.id, amount);
                 if (result === false) {
-                    return interaction.reply({ content: `❌ Impossible de retirer ce montant (solde insuffisant ou erreur).`, ephemeral: true });
+                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.remove_fail'));
                 }
-                return interaction.reply({ content: `✅ **${amount} 🪙** retirés du compte de ${target}.` });
+                const msg = LanguageManager.get(lang, 'shop.admin.remove_success', { amount, user: target.toString() });
+                
+                return interaction.reply(await ComponentsV3.createEmbed({
+                    guildId,
+                    additionalContent: [msg],
+                    ephemeral: false
+                }));
             }
         }
     }

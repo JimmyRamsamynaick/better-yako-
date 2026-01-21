@@ -985,7 +985,7 @@ class BotEmbeds {
                 case 'moderation':
                     {
                         const base = LanguageManager.get(lang, 'commands.help.moderation_description');
-                        let text = `## ${LanguageManager.get(lang, 'commands.help.moderation_title')}
+                        let text = `## 🛡️ ${LanguageManager.get(lang, 'commands.help.moderation_title')}
 ${base}`;
                         if (typeof base === 'string' && !base.includes('/serverstats')) {
                             const line = lang === 'en'
@@ -996,14 +996,17 @@ ${base}`;
                         categoryContent = text;
                     }
                     break;
+                case 'economy':
+                    categoryContent = `## 💰 ${LanguageManager.get(lang, 'commands.help.economy_title')}\n${LanguageManager.get(lang, 'commands.help.economy_description')}`;
+                    break;
                 case 'public':
-                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.public_title')}\n${LanguageManager.get(lang, 'commands.help.public_description')}`;
+                    categoryContent = `## 👥 ${LanguageManager.get(lang, 'commands.help.public_title')}\n${LanguageManager.get(lang, 'commands.help.public_description')}`;
                     break;
                 case 'levels':
-                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.levels_title')}\n${LanguageManager.get(lang, 'commands.help.levels_description')}`;
+                    categoryContent = `## 📊 ${LanguageManager.get(lang, 'commands.help.levels_title')}\n${LanguageManager.get(lang, 'commands.help.levels_description')}`;
                     break;
                 case 'premium':
-                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.premium_title')}\n${LanguageManager.get(lang, 'commands.help.premium_description')}`;
+                    categoryContent = `## ⭐ ${LanguageManager.get(lang, 'commands.help.premium_title')}\n${LanguageManager.get(lang, 'commands.help.premium_description')}`;
                     break;
             }
             
@@ -1042,6 +1045,14 @@ ${base}`;
                             description: LanguageManager.get(lang, 'commands.help.moderation_desc'),
                             emoji: {
                                 name: "🛡️"
+                            }
+                        },
+                        {
+                            label: LanguageManager.get(lang, 'commands.help.economy_option'),
+                            value: "economy",
+                            description: LanguageManager.get(lang, 'commands.help.economy_desc'),
+                            emoji: {
+                                name: "💰"
                             }
                         },
                         {

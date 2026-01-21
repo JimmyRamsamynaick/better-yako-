@@ -80,6 +80,7 @@
                 "xp_required": "XP Required",
                 "messages": "Messages",
                 "voice_time": "Voice Time",
+                "coins": "Coins",
                 "footer": "Yako Leveling System"
             }
         },
@@ -99,10 +100,12 @@
                 "total_xp": "Total XP",
                 "total_messages": "Total messages",
                 "total_voice": "Total voice",
+                "total_coins": "Total coins",
                 "user_stats_title": "👤 Your stats:",
                 "level_xp": "Level {level} ({xp} XP)",
                 "messages": "messages",
                 "voice": "in voice",
+                "coins": "coins",
                 "footer": "Leaderboards updated in real time",
                 "select_placeholder": "Choose a leaderboard to display"
             },
@@ -110,11 +113,56 @@
                 "messages": "Message Leaderboard",
                 "voice": "Voice Leaderboard",
                 "level": "Level Leaderboard",
+                "coins": "Economy Leaderboard",
                 "home": "Overview"
             },
             "empty": "No data available."
         },
-        "levelup_message_default": "Congratulations {user}, you reached level {level}!"
+        "levelup_message_default": "Congratulations {user}, you reached level {level}! (+{coins} 🪙)"
+    },
+    "pay": {
+        "description": "Transfer coins to another user",
+        "error": {
+            "self_transfer": "You cannot give money to yourself.",
+            "bot_transfer": "You cannot give money to a bot.",
+            "insufficient_funds": "Insufficient funds. You have {balance} 🪙, trying to send {amount} 🪙.",
+            "transaction_failed": "Transaction failed. Please try again."
+        },
+        "success": {
+            "title": "✅ Success",
+            "desc": "**{amount} 🪙** sent to {target}!"
+        }
+    },
+    "balance": {
+        "title": "💰 Balance of {user}",
+        "content": "**{amount}** coins"
+    },
+    "shop": {
+        "list": {
+            "title": "🛒 Yako Shop",
+            "desc": "Use `/shop buy <id>` to buy an item.",
+            "cosmetics": "🎨 Cosmetics (Colors)",
+            "roles": "🎭 Custom Roles"
+        },
+        "error": {
+            "not_found": "Item not found.",
+            "insufficient_funds": "Insufficient funds. You have {balance} 🪙, you need {price}.",
+            "out_of_stock": "This item is out of stock.",
+            "role_create": "Error creating role. Check my permissions.",
+            "no_details": "You must specify a name for your custom role in the `details` option.",
+            "no_color": "You must specify a hex color (ex: #FF0000) for this role.",
+            "invalid_color": "Invalid color format. Use hex format (ex: #FF0000)."
+        },
+        "success": {
+            "title": "🧾 Purchase confirmed!",
+            "desc": "Congratulations {user}!\nYou bought **{item}** for `{price} 🪙`.\n\n*Your new balance: {balance} 🪙*"
+        },
+        "admin": {
+            "no_perm": "You do not have permission.",
+            "give_success": "**{amount} 🪙** added to {user}'s account.",
+            "remove_success": "**{amount} 🪙** removed from {user}'s account.",
+            "remove_fail": "Impossible to remove this amount (insufficient balance or error)."
+        }
     },
     "commands": {
         "ping": {
@@ -221,13 +269,17 @@
             "description": "Show commands list",
             "category_option": "Commands category",
             "main_title": "📚 Help - YAKO",
-            "main_description": "Here is the list of all available commands. Select a category from the dropdown menu below to see details.\n\n**Available categories:**\n🛡️ **Moderation** - Server management commands\n👥 **Public** - Commands accessible to everyone\n📊 **Levels** - Leveling and ranking system\n⭐ **Premium** - Exclusive premium commands",
+            "main_description": "Here is the list of all available commands. Select a category from the dropdown menu below to see details.\n\n**Available categories:**\n🛡️ **Moderation** - Server management commands\n💰 **Economy** - Shop and coins management\n👥 **Public** - Commands accessible to everyone\n📊 **Levels** - Experience and ranking system\n⭐ **Premium** - Exclusive premium features",
             "default_instructions": "**💡 Instructions:**\n• Use the dropdown menu below to choose a category\n• Each category contains specific commands\n• All commands are available according to your permissions",
             "select_placeholder": "🔍 Choose a category...",
             "moderation_title": "🛡️ Moderation Commands",
             "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member (temporary)\n**`/unmute`** - Unmute a member\n**`/warn`** - Warn a member\n**`/unwarn`** - Remove a warning\n**`/warnlist`** - List warnings\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/serverstats`** - Server statistics (auto category, total/humans/bots)\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/settickets`** - Configure tickets\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)\n**`/reloadlangs`** - Reload language files (Admin)",
             "moderation_option": "Moderation",
             "moderation_desc": "Server management commands",
+            "economy_title": "💰 Economy Commands",
+            "economy_description": "**`/balance`** - Show your balance\n**`/shop`** - Access the shop (items, roles)\n**`/shop give`** - Give coins (Admin)\n**`/shop remove`** - Remove coins (Admin)",
+            "economy_option": "Economy",
+            "economy_desc": "Shop and coins management",
             "public_title": "👥 Public Commands",
             "public_description": "**`/help`** - Show this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/ticketpanel`** - Send a ticket panel\n**`/vote`** - Vote for the bot on Top.gg",
             "public_option": "Public",
@@ -242,6 +294,7 @@
             "premium_desc": "Exclusive premium features",
             "footer_text": "Need help? Contact the staff or use the appropriate commands!"
         },
+
         "setwelcome": {
             "description": "Configure the welcome system (enable/disable)",
             "enabled_option": "Enable or disable the welcome message",

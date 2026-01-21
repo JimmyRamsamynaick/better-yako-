@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const EconomyManager = require('../../utils/economyManager');
+const { ComponentsV3 } = require('../../utils/ComponentsV3');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,9 +14,15 @@ module.exports = {
         const target = interaction.options.getUser('user') || interaction.user;
         const balance = await EconomyManager.getBalance(interaction.guild.id, target.id);
         
-        await interaction.reply({ 
-            content: `💰 **Solde de ${target.username}** : ${Math.floor(balance)} coins`,
-            ephemeral: false 
+        const response = await ComponentsV3.createEmbed({
+            guildId: interaction.guild.id,
+            titleKey: 'balance.title',
+            titlePlaceholders: { user: target.username },
+            contentKey: 'balance.content',
+            contentPlaceholders: { amount: Math.floor(balance) },
+            ephemeral: false
         });
+
+        await interaction.reply(response);
     }
 };
