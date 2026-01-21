@@ -211,6 +211,8 @@ class ComponentsV3 {
                         LanguageManager.get(lang, item.key, item.placeholders || {}) : 
                         item.content;
                     descriptionParts.push(text);
+                } else if (item.type === 'divider') {
+                    descriptionParts.push('');
                 }
             });
             if (descriptionParts.length > 0) embed.description = descriptionParts.join('\n');
