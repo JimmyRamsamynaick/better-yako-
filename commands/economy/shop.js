@@ -51,6 +51,10 @@ module.exports = {
                         .setRequired(true))),
     
     async execute(interaction) {
+        // Defer l'interaction immédiatement pour éviter les timeouts (10062)
+        // ephemeral: false car la plupart des commandes sont publiques
+        await interaction.deferReply({ ephemeral: false });
+
         const subcommand = interaction.options.getSubcommand();
         const guildId = interaction.guild.id;
 
@@ -60,7 +64,7 @@ module.exports = {
 
         if (subcommand === 'setlogs') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.no_perm'));
+                return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.no_perm'));
             }
 
             const channel = interaction.options.getChannel('channel');
@@ -71,7 +75,7 @@ module.exports = {
             guildData.shopLogs.enabled = true;
             await guildData.save();
 
-            return interaction.reply(await ComponentsV3.successEmbed(guildId, 'shop.logs.success_title', 
+            return interaction.editReply(await ComponentsV3.successEmbed(guildId, 'shop.logs.success_title', 
                 LanguageManager.get(lang, 'shop.logs.success_desc', { channel: channel.toString() })
             ));
         }
@@ -110,7 +114,7 @@ module.exports = {
                 ephemeral: false
             });
 
-            return interaction.reply(response);
+            return interaction.editReply(response);
         }
 
         if (subcommand === 'buy') {
@@ -123,17 +127,17 @@ module.exports = {
             const item = economy.shopItems.find(i => i.id === itemId);
 
             if (!item) {
-                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.not_found'));
+                return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.error.not_found'));
             }
 
             const balance = await EconomyManager.getBalance(guildId, interaction.user.id);
             if (balance < item.price) {
-                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.insufficient_funds', { balance, price: item.price }));
+                return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.error.insufficient_funds', { balance, price: item.price }));
             }
 
             // Gestion des stocks (si != -1)
             if (item.stock !== -1 && item.stock <= 0) {
-                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.out_of_stock'));
+                return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.error.out_of_stock'));
             }
 
             // Logique spécifique par type d'item
@@ -150,7 +154,7 @@ module.exports = {
                             reason: `Achat boutique par ${interaction.user.tag}`
                         });
                     } catch (e) {
-                        return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
+                        return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
                     }
                 }
 
@@ -159,7 +163,7 @@ module.exports = {
                     const member = await interaction.guild.members.fetch(interaction.user.id);
                     await member.roles.add(role);
                 } catch (e) {
-                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
+                    return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.error.role_create'));
                 }
             } else if (item.type === 'role_custom') {
                 // Pour les rôles personnalisés, on n'ajoute PAS le rôle automatiquement.
@@ -208,12 +212,12 @@ module.exports = {
                 }
             }
 
-            return interaction.reply(await ComponentsV3.successEmbed(guildId, 'shop.success.title', successMsg, false));
+            return interaction.editReply(await ComponentsV3.successEmbed(guildId, 'shop.success.title', successMsg, false));
         }
 
         if (subcommand === 'give' || subcommand === 'remove') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.no_perm'));
+                return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.no_perm'));
             }
 
             const target = interaction.options.getUser('user');
@@ -223,7 +227,29 @@ module.exports = {
                 await EconomyManager.addCoins(guildId, target.id, amount);
                 const msg = LanguageManager.get(lang, 'shop.admin.give_success', { amount, user: target.toString() });
                 
-                return interaction.reply(await ComponentsV3.createEmbed({
+                // Logs
+                if (guildData?.shopLogs?.enabled && guildData.shopLogs.channelId) {
+                    try {
+                        const logChannel = interaction.guild.channels.cache.get(guildData.shopLogs.channelId);
+                        if (logChannel) {
+                            const logEmbed = {
+                                title: '💰 Don d\'argent (Admin)',
+                                color: 0x2ECC71, // Vert
+                                fields: [
+                                    { name: 'Admin', value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
+                                    { name: 'Bénéficiaire', value: `${target.tag} (${target.id})`, inline: true },
+                                    { name: 'Montant', value: `+${amount} 🪙`, inline: true },
+                                    { name: 'Date', value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
+                                ]
+                            };
+                            await logChannel.send({ embeds: [logEmbed] });
+                        }
+                    } catch (err) {
+                        console.error('Erreur log shop give:', err);
+                    }
+                }
+
+                return interaction.editReply(await ComponentsV3.createEmbed({
                     guildId,
                     additionalContent: [msg],
                     ephemeral: false
@@ -231,11 +257,33 @@ module.exports = {
             } else {
                 const result = await EconomyManager.removeCoins(guildId, target.id, amount);
                 if (result === false) {
-                    return interaction.reply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.remove_fail'));
+                    return interaction.editReply(await ComponentsV3.errorEmbed(guildId, 'shop.admin.remove_fail'));
                 }
                 const msg = LanguageManager.get(lang, 'shop.admin.remove_success', { amount, user: target.toString() });
                 
-                return interaction.reply(await ComponentsV3.createEmbed({
+                // Logs
+                if (guildData?.shopLogs?.enabled && guildData.shopLogs.channelId) {
+                    try {
+                        const logChannel = interaction.guild.channels.cache.get(guildData.shopLogs.channelId);
+                        if (logChannel) {
+                            const logEmbed = {
+                                title: '💸 Retrait d\'argent (Admin)',
+                                color: 0xE74C3C, // Rouge
+                                fields: [
+                                    { name: 'Admin', value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
+                                    { name: 'Cible', value: `${target.tag} (${target.id})`, inline: true },
+                                    { name: 'Montant', value: `-${amount} 🪙`, inline: true },
+                                    { name: 'Date', value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
+                                ]
+                            };
+                            await logChannel.send({ embeds: [logEmbed] });
+                        }
+                    } catch (err) {
+                        console.error('Erreur log shop remove:', err);
+                    }
+                }
+
+                return interaction.editReply(await ComponentsV3.createEmbed({
                     guildId,
                     additionalContent: [msg],
                     ephemeral: false
