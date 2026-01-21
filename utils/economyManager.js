@@ -4,9 +4,18 @@ class EconomyManager {
     static async getEconomy(guildId) {
         let economy = await Economy.findOne({ guildId });
         if (!economy) {
-            economy = new Economy({ guildId, users: [], shopItems: [] });
-            await this.seedDefaultItems(economy);
-            await economy.save();
+            try {
+                economy = new Economy({ guildId, users: [], shopItems: [] });
+                await this.seedDefaultItems(economy);
+                await economy.save();
+            } catch (err) {
+                if (err.code === 11000) {
+                    // Si déjà créé par un autre processus, on le récupère
+                    economy = await Economy.findOne({ guildId });
+                } else {
+                    throw err;
+                }
+            }
         }
         return economy;
     }
@@ -36,29 +45,47 @@ class EconomyManager {
     }
 
     static async addCoins(guildId, userId, amount) {
-        const economy = await this.getEconomy(guildId);
-        const userIndex = economy.users.findIndex(u => u.userId === userId);
-        
-        if (userIndex === -1) {
-            economy.users.push({ userId, balance: amount });
-        } else {
-            economy.users[userIndex].balance += amount;
+        // S'assurer que le document économie existe
+        await this.getEconomy(guildId);
+
+        // Tentative de mise à jour atomique (si l'utilisateur existe)
+        const result = await Economy.updateOne(
+            { guildId, "users.userId": userId },
+            { $inc: { "users.$.balance": amount } }
+        );
+
+        // Si l'utilisateur n'a pas été trouvé dans le tableau, on l'ajoute
+        if (result.matchedCount === 0) {
+            // On essaie d'ajouter l'utilisateur seulement s'il n'existe pas déjà
+            const pushResult = await Economy.updateOne(
+                { guildId, "users.userId": { $ne: userId } },
+                { $push: { users: { userId, balance: amount } } }
+            );
+
+            // Si le push a échoué, c'est que l'utilisateur a été ajouté entre temps, on réessaie l'incrément
+            if (pushResult.matchedCount === 0) {
+                await Economy.updateOne(
+                    { guildId, "users.userId": userId },
+                    { $inc: { "users.$.balance": amount } }
+                );
+            }
         }
         
-        await economy.save();
-        return economy.users.find(u => u.userId === userId).balance;
+        return true;
     }
 
     static async removeCoins(guildId, userId, amount) {
-        const economy = await this.getEconomy(guildId);
-        const userIndex = economy.users.findIndex(u => u.userId === userId);
-        
-        if (userIndex === -1) return false;
-        if (economy.users[userIndex].balance < amount) return false;
+        // Mise à jour atomique seulement si le solde est suffisant
+        const result = await Economy.updateOne(
+            { 
+                guildId, 
+                "users.userId": userId, 
+                "users.balance": { $gte: amount } 
+            },
+            { $inc: { "users.$.balance": -amount } }
+        );
 
-        economy.users[userIndex].balance -= amount;
-        await economy.save();
-        return economy.users[userIndex].balance;
+        return result.modifiedCount > 0;
     }
 
     static async getBalance(guildId, userId) {
