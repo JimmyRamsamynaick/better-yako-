@@ -19,15 +19,7 @@ module.exports = {
                 .addIntegerOption(option =>
                     option.setName('id')
                         .setDescription('ID de l\'item à acheter')
-                        .setRequired(true))
-                .addStringOption(option =>
-                    option.setName('details')
-                        .setDescription('Nom du rôle (pour les items personnalisés)')
-                        .setRequired(false))
-                .addStringOption(option =>
-                    option.setName('color')
-                        .setDescription('Couleur hexadécimale (ex: #FF0000) (pour rôle perso Gold)')
-                        .setRequired(false)))
+                        .setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('give')
@@ -119,9 +111,6 @@ module.exports = {
 
         if (subcommand === 'buy') {
             const itemId = interaction.options.getInteger('id');
-            // Les options details et color ne sont plus utilisées pour les rôles custom
-            // const details = interaction.options.getString('details');
-            // const colorInput = interaction.options.getString('color');
             
             const economy = await EconomyManager.getEconomy(guildId);
             const item = economy.shopItems.find(i => i.id === itemId);
