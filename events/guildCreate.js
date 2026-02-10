@@ -1,7 +1,7 @@
 const Guild = require('../models/Guild');
 const BotEmbeds = require('../utils/embeds');
 const LanguageManager = require('../utils/languageManager');
-const { ActivityType } = require('discord.js');
+const { ActivityType, REST, Routes } = require('discord.js');
 
 // Fonction pour détecter la langue du serveur
 function detectServerLanguage(guild) {
@@ -44,7 +44,8 @@ module.exports = {
 
         console.log(`✅ Ajouté au serveur: ${guild.name} (${guild.id}) - Langue: ${detectedLanguage}`);
 
-        // Envoyer un message de bienvenue dans la langue détectée
+        // Le message de bienvenue a été désactivé à la demande de l'utilisateur
+        /*
         const welcomeEmbed = BotEmbeds.createWelcomeEmbed(client.guilds.cache.size, detectedLanguage);
 
         const channel = guild.channels.cache
@@ -54,6 +55,7 @@ module.exports = {
         if (channel) {
             channel.send({ embeds: [welcomeEmbed] });
         }
+        */
 
         // Mettre à jour la présence pour refléter le nouveau nombre de serveurs
         try {
@@ -67,6 +69,31 @@ module.exports = {
             });
         } catch (err) {
             console.error('Erreur mise à jour présence (guildCreate):', err);
+        }
+
+        // Déployer les commandes sur le nouveau serveur
+        try {
+            console.log(`🚀 Déploiement des commandes pour le nouveau serveur: ${guild.name} (${guild.id})...`);
+            
+            const commands = [];
+            client.commands.forEach(cmd => {
+                if (cmd.data && typeof cmd.data.toJSON === 'function') {
+                    commands.push(cmd.data.toJSON());
+                }
+            });
+
+            if (commands.length > 0) {
+                const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+                await rest.put(
+                    Routes.applicationGuildCommands(client.user.id, guild.id),
+                    { body: commands }
+                );
+                console.log(`✅ Commandes déployées avec succès sur ${guild.name} !`);
+            } else {
+                console.warn(`⚠️ Aucune commande à déployer pour ${guild.name}.`);
+            }
+        } catch (error) {
+            console.error(`❌ Erreur lors du déploiement des commandes sur ${guild.name}:`, error);
         }
     }
 };
