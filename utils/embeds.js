@@ -1114,14 +1114,10 @@ ${base}`;
         });
 
         return {
-            components: [{
-                type: 17,
-                components: [{
-                    type: 10,
-                    content: `## ${welcomeTitle}\n\n${welcomeDescription}`
-                }]
-            }],
-            flags: 32768
+            title: welcomeTitle,
+            description: welcomeDescription,
+            color: 0x5865F2, // Blurple
+            timestamp: new Date().toISOString()
         };
     }
 
