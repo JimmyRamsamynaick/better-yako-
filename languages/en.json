@@ -580,9 +580,30 @@
         "settickets": {
             "description": "Configure the ticket system",
             "setcategory_description": "Set the parent category for tickets",
+            "settranscript_description": "Set the channel for ticket transcripts",
             "category_option": "Category that will contain tickets",
+            "channel_option": "The channel where transcripts will be sent",
             "success_title": "✅ Tickets Configured",
-            "success": "Ticket category set to {category}"
+            "success": "Ticket category set to {category}",
+            "transcript_success": "Transcript channel set to {channel}"
+        },
+        "transcript": {
+            "description": "Generate a transcript of the current ticket",
+            "error_no_channel": "❌ Transcript channel is not configured. Use `/settickets settranscript`.",
+            "error_not_ticket": "❌ This command must be used in a ticket channel.",
+            "generating": "⏳ Generating transcript...",
+            "success": "✅ Transcript generated and sent to {channel}.",
+            "log_title": "📄 Ticket Transcript",
+            "log_fields": {
+                "ticket_name": "Ticket name",
+                "creator": "Creator",
+                "closed_by": "Closed by",
+                "date": "Date",
+                "sent_at": "Sent",
+                "saved_at": "Saved",
+                "channel": "Channel",
+                "server": "Server"
+            }
         },
         "ticketpanel": {
             "description": "Send a ticket panel",

@@ -1,10 +1,12 @@
-const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType, EmbedBuilder } = require('discord.js');
 const Guild = require('../../models/Guild');
 const LanguageManager = require('../../utils/languageManager');
 const { ComponentsV3 } = require('../../utils/ComponentsV3');
 const { appendSystemLine, initTranscript, getTranscriptFilePath } = require('../../utils/ticketTranscripts');
 const { setClosedBy, setTicketMeta, updateOnClose } = require('../../utils/ticketsRegistry');
 const path = require('path');
+const transcript = require('discord-html-transcripts');
+const fs = require('fs');
 
 const CATEGORIES = [
     { key: 'recrutement', emoji: { name: '📝' } },
@@ -281,6 +283,114 @@ module.exports = {
             };
 
             await interaction.reply({ embeds: [closeEmbed] });
+
+            // --- NOUVEAU : GÉNÉRATION DU TRANSCRIPT HTML ---
+            try {
+                if (guildData?.tickets?.transcriptChannelId) {
+                    const transcriptChannel = interaction.guild.channels.cache.get(guildData.tickets.transcriptChannelId);
+                    if (transcriptChannel) {
+                        // Détection du créateur
+                        let ticketCreator = "Inconnu";
+                        const channelNameParts = channel.name.split('-');
+                        if (channelNameParts.length > 2) {
+                            ticketCreator = channelNameParts[2];
+                        } else if (channelNameParts.length > 1) {
+                            ticketCreator = channelNameParts[1];
+                        }
+
+                        const now = new Date();
+                        const fullDate = now.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        const dateFileName = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                        
+                        // 1. Détection du créateur
+                        let openerName = "Utilisateur";
+                        let openerMention = "Inconnu";
+                        try {
+                            const registryEntry = require('../../utils/ticketsRegistry').get(channel.id);
+                            if (registryEntry && registryEntry.meta && registryEntry.meta.openerId) {
+                                const member = await interaction.guild.members.fetch(registryEntry.meta.openerId).catch(() => null);
+                                if (member) {
+                                    openerName = member.user.username;
+                                    openerMention = member.toString();
+                                }
+                            } else {
+                                const parts = channel.name.split('-');
+                                openerName = parts[parts.length - 1];
+                            }
+                        } catch (_) {}
+
+                        const safeUserName = openerName.replace(/[^\w\s-]/gi, '').trim();
+                        const finalFileName = `ticket-${safeUserName}-${dateFileName}.html`;
+
+                        // 2. Récupération des messages
+                        const messages = await channel.messages.fetch({ limit: 100 });
+                        const sortedMessages = Array.from(messages.values()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+                        
+                        // 3. Génération du LOG BRUT (Enveloppé dans un commentaire HTML pour être invisible au navigateur mais visible sur Discord)
+                        let textLog = `<!-- TRANSCRIPT LOG\n`;
+                        textLog += `${"Envoyé".padEnd(12)} : ${fullDate}\n`;
+                        textLog += `${"Sauvegardé".padEnd(12)} : ${fullDate}\n`;
+                        textLog += `${"Salon".padEnd(12)} : ${channel.name}\n`;
+                        textLog += `${"Serveur".padEnd(12)} : ${interaction.guild.name}\n`;
+                        textLog += `\n---------------- MESSAGE HISTORY ----------------\n\n`;
+
+                        sortedMessages.forEach(msg => {
+                            const msgDate = msg.createdAt.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            textLog += `[${msg.author.tag}] : ${msgDate}\n`;
+                            if (msg.content) textLog += `${msg.content}\n`;
+                            if (msg.embeds.length > 0) {
+                                msg.embeds.forEach(embed => {
+                                    textLog += `(Embed : ${embed.title || 'Sans titre'})\n`;
+                                    if (embed.description) textLog += `> ${embed.description.replace(/\n/g, '\n> ')}\n`;
+                                });
+                            }
+                            textLog += `\n`;
+                        });
+                        textLog += `\n---------------- END OF LOG ----------------\n-->`;
+
+                        // 4. Intégration du RENDERER HTML/CSS (Caché, pour navigateur)
+                        const htmlAttachment = await transcript.createTranscript(channel, {
+                            limit: -1,
+                            fileName: finalFileName,
+                            returnType: 'attachment',
+                            poweredBy: false,
+                            saveImages: true
+                        });
+
+                        const htmlBase = htmlAttachment.attachment.toString('utf-8');
+                        
+                        // On combine sans sauts de ligne excessifs pour éviter la bande blanche
+                        const finalFileContent = textLog + htmlBase;
+
+                        const buffer = Buffer.from(finalFileContent, 'utf-8');
+                        const fileAttachment = { attachment: buffer, name: finalFileName };
+
+                        // 5. Envoi STRICT
+                        // Message 1 : Uniquement le fichier
+                        await transcriptChannel.send({
+                            files: [fileAttachment]
+                        });
+
+                        // Message 2 : Embed "Ticket Fermé"
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(`📕 Ticket Fermé`)
+                            .setColor(0xFF0000)
+                            .addFields(
+                                { name: '🎫 Ticket', value: channel.name, inline: true },
+                                { name: '👤 Ouvert par', value: openerMention, inline: true },
+                                { name: '🔒 Fermé par', value: interaction.user.toString(), inline: true }
+                            )
+                            .setFooter({ text: `${interaction.guild.name} • ${fullDate}`, iconURL: interaction.guild.iconURL() });
+
+                        await transcriptChannel.send({
+                            embeds: [logEmbed]
+                        });
+                    }
+                }
+            } catch (transcriptErr) {
+                console.error('[Tickets] Auto-transcript failed:', transcriptErr);
+            }
+            // -----------------------------------------------
 
             appendSystemLine(channel, `Closed by ${interaction.user.tag}`);
             const transcriptPath = getTranscriptFilePath(channel.name);

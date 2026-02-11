@@ -580,9 +580,31 @@
         "settickets": {
             "description": "Configurer le système de tickets",
             "setcategory_description": "Définir la catégorie parente pour les tickets",
+            "settranscript_description": "Définir le salon d'envoi des transcripts",
             "category_option": "Catégorie qui contiendra les tickets",
+            "channel_option": "Le salon où seront envoyés les transcripts",
             "success_title": "✅ Tickets configurés",
-            "success": "Catégorie de tickets définie sur {category}"
+            "success": "Catégorie de tickets définie sur {category}",
+            "transcript_success": "Salon des transcripts défini sur {channel}"
+        },
+        "transcript": {
+            "description": "Générer un transcript du ticket actuel",
+            "error_no_channel": "❌ Le salon des transcripts n'est pas configuré. Utilisez `/settickets settranscript`.",
+            "error_not_ticket": "❌ Cette commande doit être utilisée dans un salon de ticket.",
+            "generating": "⏳ Génération du transcript en cours...",
+            "success": "✅ Transcript généré et envoyé dans {channel}.",
+            "log_title": "📕 Ticket Fermé",
+            "log_fields": {
+                "ticket_name": "Ticket",
+                "creator": "Ouvert par",
+                "closed_by": "Fermé par",
+                "date": "Date",
+                "sent_at": "Envoyé",
+                "saved_at": "Sauvegardé",
+                "channel": "Salon",
+                "server": "Serveur",
+                "reason": "Raison"
+            }
         },
         "ticketpanel": {
             "description": "Envoyer un panneau de tickets",

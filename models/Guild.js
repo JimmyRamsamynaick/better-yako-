@@ -97,6 +97,10 @@ const guildSchema = new Schema({
         staffRoleId: {
             type: String,
             default: null
+        },
+        transcriptChannelId: {
+            type: String,
+            default: null
         }
     },
     shopLogs: {
