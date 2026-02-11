@@ -581,7 +581,9 @@
         },
         "welcome": {
             "message": "Welcome {user}! 🎉",
-            "reaction_emoji": "🎉"
+            "reaction_emoji": "🎉",
+            "react_appended_sg": "also welcomes you!",
+            "react_appended_pl": "also welcome you!"
         }
     }
 }

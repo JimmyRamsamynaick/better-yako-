@@ -806,7 +806,9 @@
         },
         "welcome": {
             "message": "Bienvenue {user} ! 🎉",
-            "reaction_emoji": "🎉"
+            "reaction_emoji": "🎉",
+            "react_appended_sg": "souhaite également la bienvenue !",
+            "react_appended_pl": "souhaitent également la bienvenue !"
         }
     },
     "logs": {
