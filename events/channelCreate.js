@@ -60,43 +60,43 @@ module.exports = {
 
             const lang = guild.language || 'fr';
             const channelTypeName = {
-                [ChannelType.GuildText]: LanguageManager.get(lang, 'common.channel_types.text') || 'Textuel',
-                [ChannelType.GuildVoice]: LanguageManager.get(lang, 'common.channel_types.voice') || 'Vocal',
-                [ChannelType.GuildCategory]: LanguageManager.get(lang, 'common.channel_types.category') || 'Catégorie',
-                [ChannelType.GuildNews]: LanguageManager.get(lang, 'common.channel_types.announcements') || 'Annonces',
-                [ChannelType.GuildStageVoice]: LanguageManager.get(lang, 'common.channel_types.stage') || 'Scène',
-                [ChannelType.GuildForum]: LanguageManager.get(lang, 'common.channel_types.forum') || 'Forum'
+                [ChannelType.GuildText]: LanguageManager.get(lang, 'events.common.channel_types.text') || 'Textuel',
+                [ChannelType.GuildVoice]: LanguageManager.get(lang, 'events.common.channel_types.voice') || 'Vocal',
+                [ChannelType.GuildCategory]: LanguageManager.get(lang, 'events.common.channel_types.category') || 'Catégorie',
+                [ChannelType.GuildNews]: LanguageManager.get(lang, 'events.common.channel_types.announcements') || 'Annonces',
+                [ChannelType.GuildStageVoice]: LanguageManager.get(lang, 'events.common.channel_types.stage') || 'Scène',
+                [ChannelType.GuildForum]: LanguageManager.get(lang, 'events.common.channel_types.forum') || 'Forum'
             };
 
             const fields = [
-                { name: LanguageManager.get(lang, 'events.channels.created.fields.channel') || '📍 Canal', value: `${channel} (\`${channel.name}\`)`, inline: false },
-                { name: LanguageManager.get(lang, 'events.channels.created.fields.type') || '🏷️ Type', value: channelTypeName[channel.type] || (LanguageManager.get(lang, 'common.unknown') || 'Inconnu'), inline: true },
-                { name: LanguageManager.get(lang, 'events.channels.created.fields.position') || '📍 Position', value: `${channel.position}`, inline: true }
+                { name: LanguageManager.get(lang, 'events.common.fields.channel') || '📍 Canal', value: `${channel} (\`${channel.name}\`)`, inline: false },
+                { name: LanguageManager.get(lang, 'events.common.fields.type') || '🏷️ Type', value: channelTypeName[channel.type] || (LanguageManager.get(lang, 'events.common.unknown') || 'Inconnu'), inline: true },
+                { name: LanguageManager.get(lang, 'events.common.fields.position') || '📍 Position', value: `${channel.position}`, inline: true }
             ];
 
             if (channel.parent) {
-                fields.push({ name: LanguageManager.get(lang, 'events.channels.created.fields.category') || '📁 Catégorie', value: channel.parent.name, inline: true });
+                fields.push({ name: LanguageManager.get(lang, 'events.common.fields.category') || '📁 Catégorie', value: channel.parent.name, inline: true });
             }
 
             if (channel.topic) {
-                fields.push({ name: LanguageManager.get(lang, 'events.channels.created.fields.topic') || '📋 Sujet', value: channel.topic, inline: false });
+                fields.push({ name: LanguageManager.get(lang, 'events.common.fields.topic') || '📋 Sujet', value: channel.topic, inline: false });
             }
 
             // Informations spécifiques aux canaux vocaux
             if (channel.type === ChannelType.GuildVoice) {
-                fields.push({ name: LanguageManager.get(lang, 'events.channels.created.fields.audio_bitrate') || '🎵 Débit audio', value: `${channel.bitrate}kbps`, inline: true });
+                fields.push({ name: LanguageManager.get(lang, 'events.common.fields.audio_bitrate') || '🎵 Débit audio', value: `${channel.bitrate}kbps`, inline: true });
                 if (channel.userLimit > 0) {
-                    fields.push({ name: LanguageManager.get(lang, 'events.channels.created.fields.user_limit') || '👥 Limite d\'utilisateurs', value: `${channel.userLimit}`, inline: true });
+                    fields.push({ name: LanguageManager.get(lang, 'events.common.fields.user_limit') || '👥 Limite d\'utilisateurs', value: `${channel.userLimit}`, inline: true });
                 }
             }
 
             // Informations spécifiques aux canaux texte
             if (channel.type === ChannelType.GuildText) {
                 if (channel.nsfw) {
-                    fields.push({ name: LanguageManager.get(lang, 'events.channels.created.fields.nsfw') || '🔞 NSFW', value: LanguageManager.get(lang, 'common.enabled') || 'Activé', inline: true });
+                    fields.push({ name: LanguageManager.get(lang, 'events.common.fields.nsfw') || '🔞 NSFW', value: LanguageManager.get(lang, 'events.common.enabled') || 'Activé', inline: true });
                 }
                 if (channel.rateLimitPerUser > 0) {
-                    fields.push({ name: LanguageManager.get(lang, 'events.channels.created.fields.rate_limit') || '⏱️ Limite de débit', value: `${channel.rateLimitPerUser}s`, inline: true });
+                    fields.push({ name: LanguageManager.get(lang, 'events.common.fields.rate_limit') || '⏱️ Limite de débit', value: `${channel.rateLimitPerUser}s`, inline: true });
                 }
             }
 

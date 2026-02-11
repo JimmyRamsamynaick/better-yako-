@@ -1,13 +1,5 @@
 {
     "common": {
-        "moderator": "Moderator",
-        "no_reason": "No reason provided",
-        "permanent": "Permanent",
-        "messages_deleted": "Messages deleted",
-        "date": "Date",
-        "deleted_messages_list": "Deleted messages",
-        "no_content": "*[Message without content]*",
-        "more_messages": "other message(s)",
         "server": "Server",
         "channel": "Channel",
         "message_count": "Message count",
@@ -17,242 +9,78 @@
         "yes": "Yes",
         "no": "No",
         "none": "None",
-        "attachments": "Attachments",
-        "enabled": "Enabled",
-        "disabled": "Disabled",
-        "unlimited": "Unlimited",
         "unknown": "Unknown",
+        "moderator": "Moderator",
+        "reason": "Reason",
+        "date": "Date",
+        "user": "User",
+        "status": "Status",
+        "activity": "Activity",
+        "joined_at": "Joined at",
+        "created_at": "Created at",
+        "roles": "Roles",
+        "permissions": "Permissions",
         "muted": "Muted",
         "unmuted": "Unmuted",
         "deafened": "Deafened",
         "undeafened": "Undeafened",
-        "channel_types": {
-            "text": "Text",
-            "voice": "Voice",
-            "category": "Category",
-            "announcements": "News",
-            "stage": "Stage",
-            "forum": "Forum"
-        }
-    },
-    "welcome": {
-        "title": "👋 Thanks for adding me!",
-        "description": "Hello! I'm your new moderation bot.\n\n**Main commands:**\n• `/help` - See all commands\n• `/setupmute` - Configure moderation\n• `/setlogs` - Configure logs\n\nTo get started, use `/help`!\n\n*Servers: {serverCount}*"
-    },
-    "errors": {
-        "no_permission": "❌ You don't have permission to use this command.",
-        "bot_no_permission": "❌ The bot doesn't have the necessary permissions to perform this action.",
-        "no_permission_title": "❌ Insufficient permissions",
-        "user_not_found": "❌ User not found.",
-        "invalid_duration": "❌ Invalid duration.",
-        "bot_no_permission_title": "❌ Insufficient bot permissions",
-        "premium_required": "❌ This feature requires a Premium subscription.",
-        "command_execution": "An error occurred while executing this command.",
-        "cooldown": {
-            "title": "⏰ Cooldown",
-            "message": "You must wait {timeLeft} seconds before using this command again."
-        }
-    },
-    "leveling": {
-        "description": "Configure the leveling system (Admin)",
-        "toggle": {
-            "description": "Enable or disable the leveling system",
-            "enabled_option": "Enable?",
-            "success": "✅ The leveling system has been **{status}**."
-        },
-        "config": {
-            "description": "Configure XP gains",
-            "message_xp": "XP per message (default: 15)",
-            "voice_xp": "XP per voice minute (default: 10)",
-            "levelup_channel": "Channel for level up messages (Empty = current channel)",
-            "success": "✅ Configuration updated:\n- XP Message: {messageXp}\n- XP Voice/min: {voiceXp}\n- Level Up Channel: {channel}"
-        },
-        "rank": {
-            "description": "Displays your level or another user's level",
-            "target_option": "The user whose level you want to see",
-            "disabled": "❌ The leveling system is disabled on this server.",
-            "embed": {
-                "title": "Profile of {user}",
-                "level": "Level",
-                "xp": "XP",
-                "rank": "Rank",
-                "progress": "Progress",
-                "xp_required": "XP Required",
-                "messages": "Messages",
-                "voice_time": "Voice Time",
-                "coins": "Coins",
-                "footer": "Yako Leveling System"
-            }
-        },
-        "setlevel": {
-            "description": "Modify a user's level or XP (Admin)",
-            "user_option": "The user to modify",
-            "type_option": "What you want to modify",
-            "amount_option": "The new amount",
-            "success": "✅ {user}'s **{type}** has been set to **{amount}**. (Current Level: {level}, XP: {xp})"
-        },
-        "leaderboard": {
-            "description": "Displays the server leaderboard",
-            "embed": {
-                "title": "Leaderboards {server}",
-                "description": "Here are the leaderboards of the most active members of the server!",
-                "server_stats_title": "📊 Server Stats:",
-                "total_xp": "Total XP",
-                "total_messages": "Total messages",
-                "total_voice": "Total voice",
-                "total_coins": "Total coins",
-                "user_stats_title": "👤 Your stats:",
-                "level_xp": "Level {level} ({xp} XP)",
-                "messages": "messages",
-                "voice": "in voice",
-                "coins": "coins",
-                "footer": "Leaderboards updated in real time",
-                "select_placeholder": "Choose a leaderboard to display"
-            },
-            "types": {
-                "messages": "Message Leaderboard",
-                "voice": "Voice Leaderboard",
-                "level": "Level Leaderboard",
-                "coins": "Economy Leaderboard",
-                "home": "Overview"
-            },
-            "empty": "No data available."
-        },
-        "levelup_message_default": "Congratulations {user}, you reached level {level}! (+{coins} 🪙)"
-    },
-    "pay": {
-        "description": "Transfer coins to another user",
-        "error": {
-            "self_transfer": "You cannot give money to yourself.",
-            "bot_transfer": "You cannot give money to a bot.",
-            "insufficient_funds": "Insufficient funds. You have {balance} 🪙, trying to send {amount} 🪙.",
-            "transaction_failed": "Transaction failed. Please try again."
-        },
-        "success": {
-            "title": "✅ Success",
-            "desc": "**{amount} 🪙** sent to {target}!"
-        }
-    },
-    "balance": {
-        "title": "💰 Balance of {user}",
-        "content": "**{amount}** coins"
-    },
-    "shop": {
-        "list": {
-            "title": "🛒 Yako Shop",
-            "desc": "Use `/shop buy <id>` to buy an item.",
-            "cosmetics": "🎨 Cosmetics (Colors)",
-            "roles": "🎭 Custom Roles",
-            "custom_role_note": "⚠️ **Note:** For custom roles, please open a ticket after your purchase to provide details (Name and Color)."
-        },
-        "logs": {
-            "success_title": "✅ Configuration saved",
-            "success_desc": "The shop log channel has been set to {channel}."
-        },
-        "error": {
-            "not_found": "Item not found.",
-            "insufficient_funds": "Insufficient funds. You have {balance} 🪙, you need {price}.",
-            "out_of_stock": "This item is out of stock.",
-            "role_create": "Error creating role. Check my permissions.",
-            "no_details": "You must specify a name for your custom role in the `details` option.",
-            "no_color": "You must specify a hex color (ex: #FF0000) for this role.",
-            "invalid_color": "Invalid color format. Use hex format (ex: #FF0000)."
-        },
-        "success": {
-            "title": "🧾 Purchase confirmed!",
-            "desc": "Congratulations {user}!\nYou bought **{item}** for `{price} 🪙`.\n\n*Your new balance: {balance} 🪙*",
-            "custom_role_desc": "Congratulations {user}!\nYou bought **{item}** for `{price} 🪙`.\n\n⚠️ **Action required:**\nPlease open a ticket to claim your custom role and provide details (Name and Color).\n\n*Your new balance: {balance} 🪙*"
-        },
-        "admin": {
-            "no_perm": "You do not have permission.",
-            "give_success": "**{amount} 🪙** added to {user}'s account.",
-            "remove_success": "**{amount} 🪙** removed from {user}'s account.",
-            "remove_fail": "Impossible to remove this amount (insufficient balance or error)."
-        }
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "missing_permissions": "Missing permissions"
     },
     "commands": {
         "ping": {
-            "description": "Shows bot latency",
-            "response": "🏓 Pong! Latency: {latency}ms",
+            "description": "Check the bot's latency",
             "title": "🏓 Pong!",
-            "footer": "Bot performance",
-            "details": "**Bot Latency:** {latency}ms",
-            "api_latency_label": "API Latency"
-        },
-        "serverinfo": {
-            "description": "Shows server information",
-            "title": "📊 Server Information",
-            "owner": "Owner",
-            "members": "Members",
-            "channels": "Channels",
-            "roles": "Roles",
-            "created": "Created on",
-            "footer": "Information updated in real time",
-            "description_embed": "👑 **Owner:** {owner}\n📅 **Created on:** {createdAt}\n🏷️ **ID:** {guildId}\n👥 **Members:** {memberCount}\n📝 **Channels:** {channelCount}\n🎭 **Roles:** {roleCount}\n😀 **Emojis:** {emojiCount}\n🚀 **Boost Level:** Level {boostLevel} ({boostCount} boosts)\n🔒 **Verification Level:** {verificationLevel}{guildDescription}"
+            "latency": "Bot latency",
+            "api_latency": "API latency"
         },
         "ban": {
             "description": "Ban a member from the server",
             "user_option": "The member to ban",
             "reason_option": "Reason for the ban",
-            "days_option": "Number of days of messages to delete (0-7)",
-            "success_title": "✅ User banned",
+            "delete_messages_option": "Delete messages from the last 7 days",
+            "success_title": "✅ Member banned",
             "success": "{executor} banned {user} for {reason}",
             "error_title": "❌ Ban error",
-            "error": "An error occurred while banning",
-            "error_self": "You cannot ban yourself",
-            "error_hierarchy_title": "⚠️ Insufficient hierarchy",
-            "error_hierarchy": "You cannot ban {user} (higher or equal role)",
-            "error_bot_permissions_title": "❌ Insufficient bot permissions",
-            "error_bot_permissions": "I don't have the necessary permissions to ban this member",
-            "error_already_banned": "This user is already banned"
+            "error": "An error occurred while banning the member",
+            "error_hierarchy": "I cannot ban this member because they have a higher or equal role than me.",
+            "no_permission": "❌ You do not have permission to ban members."
         },
         "kick": {
             "description": "Kick a member from the server",
             "user_option": "The member to kick",
             "reason_option": "Reason for the kick",
-            "success_title": "✅ User kicked",
+            "success_title": "✅ Member kicked",
             "success": "{executor} kicked {user} for {reason}",
-            "error": "An error occurred while kicking",
-            "error_self": "You cannot kick yourself",
-            "error_bot": "I cannot kick myself",
-            "error_hierarchy": "You cannot kick this member (higher or equal role)",
-            "error_not_found_title": "❌ User not found",
-            "error_not_found": "This user is not a member of this server.",
-            "error_not_kickable_title": "❌ Cannot kick user",
-            "error_not_kickable": "I cannot kick {user}. They may have higher permissions than me."
+            "error_title": "❌ Kick error",
+            "error": "An error occurred while kicking the member",
+            "error_hierarchy": "I cannot kick this member because they have a higher or equal role than me.",
+            "no_permission": "❌ You do not have permission to kick members."
         },
         "mute": {
-            "description": "Temporarily mute a member",
+            "description": "Mute a member (timeout)",
             "user_option": "The member to mute",
-            "duration_option": "Duration of the mute (ex: 10m, 1h, 1d)",
+            "duration_option": "Duration of the mute (e.g., 60s, 5m, 1h, 1d)",
             "reason_option": "Reason for the mute",
-            "success_title": "✅ User muted",
-            "success": "{executor} muted {user} for {reason} (Duration: {duration})",
-            "auto_unmute_title": "🔓 Mute expired",
-            "auto_unmute": "{user} is no longer muted (duration expired)",
-            "user_unmute_notification_title": "🔓 You are no longer muted",
-            "user_unmute_notification": "Your mute on the server **{server}** has expired. You can now speak again.",
-            "error": "An error occurred while muting",
-            "error_self": "You cannot mute yourself",
-            "error_no_setup": "The mute system is not configured. Use `/setupmute` first",
-            "error_role_not_found": "The mute role cannot be found. Reconfigure with `/setupmute`",
-            "error_already_muted": "This member is already muted",
-            "error_invalid_duration": "Invalid duration. Use a format like `10m`, `1h`, `1d` (max 28 days)",
-            "error_bot_missing_moderate": "I cannot apply a timeout to this user. Please ensure I have the **Moderate Members** permission.",
-            "error_bot_missing_manage_roles": "I cannot manage the muted role. Please ensure I have the **Manage Roles** permission.",
-            "error_bot_role_position": "I cannot assign the muted role because it is above my highest role. Please move my role above the muted role or lower the muted role.",
+            "success_title": "🔇 Member muted",
+            "success": "{executor} muted {user} for {duration}. Reason: {reason}",
+            "error": "An error occurred while muting the member",
+            "error_invalid_duration": "Invalid duration. Use s, m, h, or d (e.g., 10m).",
+            "error_duration_too_long": "Duration cannot exceed 28 days.",
+            "error_bot_role_position": "I cannot assign the Muted role because it is above my highest role. Move my role above the Muted role or lower the Muted role.",
             "error_member_hierarchy": "I cannot modify this member's roles because their highest role is higher or equal to mine.",
-            "error_effective_mute_failed": "Mute could not be applied effectively. Check role order and permissions."
+            "error_effective_mute_failed": "Unable to apply mute effectively. Check role order and permissions."
         },
         "unmute": {
             "description": "Unmute a member",
             "user_option": "The member to unmute",
             "reason_option": "Reason for the unmute",
-            "success_title": "🔊 User unmuted",
+            "success_title": "🔊 Member unmuted",
             "success": "{executor} unmuted {user} for {reason}",
-            "error": "An error occurred while unmuting",
-            "error_no_setup": "The mute system is not configured",
-            "error_role_not_found": "The mute role cannot be found",
+            "error": "An error occurred while unmuting the member",
+            "error_no_setup": "Mute system is not configured",
+            "error_role_not_found": "Mute role not found",
             "error_not_muted": "This member is not muted"
         },
         "clear": {
@@ -260,38 +88,38 @@
             "amount_option": "Number of messages to delete (1-100)",
             "user_option": "Delete only messages from this user",
             "success_title": "✅ Messages deleted",
-            "success": "{user} cleared {count} message(s)",
-            "success_user": "{user} cleared {count} message(s) from {target}",
+            "success": "{user} deleted {count} message(s)",
+            "success_user": "{user} deleted {count} message(s) from {target}",
             "error": "An error occurred while deleting messages",
             "no_messages_found": "No messages found for {user} in the last 100 messages."
         },
         "setupmute": {
             "description": "Configure the mute system",
             "success": "✅ Mute system configured successfully!",
-            "no_permission": "❌ You don't have permission to manage roles.",
+            "no_permission": "❌ You do not have permission to manage roles.",
             "error": "❌ An error occurred during configuration."
         },
         "help": {
-            "description": "Show commands list",
-            "category_option": "Commands category",
-            "main_title": "📚 Help - YAKO",
-            "main_description": "Here is the list of all available commands. Select a category from the dropdown menu below to see details.\n\n**Available categories:**\n🛡️ **Moderation** - Server management commands\n💰 **Economy** - Shop and coins management\n👥 **Public** - Commands accessible to everyone\n📊 **Levels** - Experience and ranking system\n⭐ **Premium** - Exclusive premium features",
-            "default_instructions": "**💡 Instructions:**\n• Use the dropdown menu below to choose a category\n• Each category contains specific commands\n• All commands are available according to your permissions",
-            "select_placeholder": "🔍 Choose a category...",
+            "description": "Display the list of commands",
+            "category_option": "Command category",
+            "main_title": "📚 YAKO Help Center",
+            "main_description": "Here is the list of all available commands. Select a category from the dropdown menu below to see the details.\n\n**Available Categories:**\n🛡️ **Moderation** - Server management commands\n💰 **Economy** - Shop and coin management\n👥 **Public** - Commands accessible to all\n📊 **Levels** - Leveling system and leaderboard\n⭐ **Premium** - Exclusive premium commands",
+            "default_instructions": "**💡 Instructions:**\n• Use the dropdown menu below to choose a category\n• Each category contains specific commands\n• All commands are available based on your permissions",
+            "select_placeholder": "🔍 Select a category...",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute a member (temporary)\n**`/unmute`** - Unmute a member\n**`/warn`** - Warn a member\n**`/unwarn`** - Remove a warning\n**`/warnlist`** - List warnings\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Denies access to all voice and stage channels server‑wide (global by default). If the user is in voice, they are disconnected immediately.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Disconnects a member from their current voice channel immediately.\n**`/serverstats`** - Server statistics (auto category, total/humans/bots)\n**`/setupmute`** - Configure mute system\n**`/setlogs`** - Configure logs\n**`/settickets`** - Configure tickets\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome (admin, channel)\n**`/reloadlangs`** - Reload language files (Admin)",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute (temporary)\n**`/unmute`** - Unmute\n**`/warn`** - Warn a member\n**`/unwarn`** - Remove a warning\n**`/warnlist`** - Warning list\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Forbids access to all voice and stage channels throughout the server (global by default). If the member is in voice, they are immediately disconnected.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Kicks a member from their voice channel (immediate disconnection).\n**`/serverstats`** - Server statistics (auto category, total/humans/bots)\n**`/setupmute`** - Configure the mute system\n**`/setlogs`** - Configure logs\n**`/settickets`** - Configure tickets\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome message (admin, channel)\n**`/reloadlangs`** - Reload language files (Admin)",
             "moderation_option": "Moderation",
-            "moderation_desc": "Server management commands",
+            "moderation_desc": "Server management tools",
             "economy_title": "💰 Economy Commands",
             "economy_description": "**`/balance`** - Show your balance\n**`/shop`** - Access the shop (items, roles)\n**`/shop give`** - Give coins (Admin)\n**`/shop remove`** - Remove coins (Admin)",
             "economy_option": "Economy",
-            "economy_desc": "Shop and coins management",
+            "economy_desc": "Shop and coin management",
             "public_title": "👥 Public Commands",
-            "public_description": "**`/help`** - Show this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/ticketpanel`** - Send a ticket panel\n**`/vote`** - Vote for the bot on Top.gg",
+            "public_description": "**`/help`** - Show this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/ticketpanel`** - Send ticket panel\n**`/vote`** - Vote for the bot on Top.gg",
             "public_option": "Public",
-            "public_desc": "Commands accessible to everyone",
+            "public_desc": "Commands for all members",
             "levels_title": "📊 Leveling System",
-            "levels_description": "**`/rank`** - Display your level or another user's level\n**`/leaderboard`** - Display server leaderboard\n**`/leveling`** - Configure leveling system (Admin)\n**`/setlevel`** - Modify a user's level (Admin)",
+            "levels_description": "**`/rank`** - Show your level or a member's level\n**`/leaderboard`** - Show the server leaderboard\n**`/leveling`** - Configure the leveling system (Admin)\n**`/setlevel`** - Change a member's level (Admin)",
             "levels_option": "Levels",
             "levels_desc": "Experience and ranking system",
             "premium_title": "⭐ Premium Commands",
@@ -300,7 +128,6 @@
             "premium_desc": "Exclusive premium features",
             "footer_text": "Need help? Contact the staff or use the appropriate commands!"
         },
-
         "setwelcome": {
             "description": "Configure the welcome system (enable/disable)",
             "enabled_option": "Enable or disable the welcome message",
@@ -308,14 +135,14 @@
             "success_title": "✅ Welcome system updated",
             "enabled_success": "✅ Welcome system **enabled**.",
             "disabled_success": "❌ Welcome system **disabled**.",
-            "channel_set_success": "✅ Welcome channel configured to {channel}.",
+            "channel_set_success": "✅ Welcome channel configured on {channel}.",
             "no_permission": "❌ You must be an **administrator** to use this command.",
             "error": "❌ An error occurred while configuring the welcome system."
         },
         "serverstats": {
             "success_title": "✅ Server Statistics",
             "setup_success": "Category created: {category}",
-            "disabled_success": "Statistics channels removed",
+            "disabled_success": "Statistic channels deleted",
             "error_no_counter": "Select at least one counter",
             "error_not_configured": "No statistics configuration is active",
             "default_category_name": "SERVER STATS",
@@ -327,8 +154,8 @@
         },
         "userinfo": {
             "description": "Display user information",
-            "user_option": "The user whose information you want to see",
-            "title": "👤 Information of {user}",
+            "user_option": "The user you want to see information about",
+            "title": "👤 {user}'s Information",
             "fields": {
                 "user_id": "🆔 User ID",
                 "account_created": "📅 Account created",
@@ -339,48 +166,32 @@
                 "permissions": "🔐 Key permissions",
                 "status": "🟢 Status",
                 "activity": "🎮 Activity",
-                "boost_since": "💎 Boost since",
-                "avatar": "🖼️ Avatar",
-                "banner": "🎨 Banner"
-            },
-            "status": {
-                "online": "🟢 Online",
-                "idle": "🟡 Idle",
-                "dnd": "🔴 Do Not Disturb",
-                "offline": "⚫ Offline"
-            },
-            "no_nickname": "None",
-            "no_roles": "No roles",
-            "no_activity": "No activity",
-            "not_boosting": "Not boosting the server",
-            "permissions_admin": "Administrator",
-            "permissions_mod": "Moderator",
-            "permissions_member": "Member",
-            "view_avatar": "View avatar",
-            "view_banner": "View banner",
-            "no_banner": "No banner"
+                "boost_since": "💎 Boosting since"
+            }
         },
-        "ask": {
-            "description": "Ask a question to the AI",
-            "message_option": "Your question",
-            "title": "🤖 AI Assistant",
-            "question": "Question",
-            "response": "Response",
-            "error_title": "❌ AI Error",
-            "error": "An error occurred while generating the response.",
-            "premium_required": "This command requires a premium server. ⭐\nContact the support team for more information.",
-            "footer": "Question asked by {username}"
+        "serverinfo": {
+            "description": "Display server information",
+            "title": "🏰 {guild}'s Information",
+            "fields": {
+                "owner": "👑 Owner",
+                "created_at": "📅 Created at",
+                "members": "👥 Members",
+                "channels": "📍 Channels",
+                "roles": "🎭 Roles",
+                "boosts": "💎 Boosts",
+                "security": "🛡️ Security Level"
+            }
         },
         "unban": {
             "description": "Unban a user from the server",
-            "userid_option": "User ID to unban",
+            "userid_option": "ID of the user to unban",
             "reason_option": "Reason for the unban",
             "success_title": "✅ User unbanned",
             "success": "{executor} unbanned {user} for {reason}",
             "error_title": "❌ Unban error",
             "error": "An error occurred while unbanning",
             "error_not_banned": "This user is not banned from the server",
-            "no_permission": "❌ You don't have permission to unban members.",
+            "no_permission": "❌ You do not have permission to unban members.",
             "not_banned": "❌ This user is not banned."
         },
         "voice": {
@@ -414,7 +225,7 @@
         "vote": {
             "description": "Vote for the bot on Top.gg",
             "title": "⭐ Vote for YAKO",
-            "content": "Thanks for your support! Here is the vote page:\n{url}\n\nNote: the vote is done on Top.gg and may require signing in.",
+            "content": "Thank you for your support! Here is the voting page:\n{url}\n\nNote: voting takes place on Top.gg and may require a login.",
             "button_label": "Vote on Top.gg"
         },
         "reloadlangs": {
@@ -429,7 +240,7 @@
             "reason_option": "Reason for the lock",
             "success_title": "🔒 Channel locked",
             "success": "{executor} locked {channel} for {reason}",
-            "no_permission": "❌ You don't have permission to manage channels.",
+            "no_permission": "❌ You do not have permission to manage channels.",
             "error": "❌ An error occurred while locking the channel."
         },
         "unlock": {
@@ -438,60 +249,42 @@
             "reason_option": "Reason for the unlock",
             "success_title": "🔓 Channel unlocked",
             "success": "{executor} unlocked {channel} for {reason}",
-            "no_permission": "❌ You don't have permission to manage channels.",
+            "no_permission": "❌ You do not have permission to manage channels.",
             "error": "❌ An error occurred while unlocking the channel."
         },
         "setlogs": {
-            "description": "Configure server logs",
-            "enable_description": "Enable logs in a channel",
-            "disable_description": "Disable logs",
-            "config_description": "Configure log types",
-            "setchannel_description": "Configure a specific channel for a log type",
-            "removechannel_description": "Remove a specific log channel",
-            "status_description": "Show current logs configuration",
+            "description": "Configures server logs",
+            "enable_description": "Enables logs in a channel",
+            "disable_description": "Disables logs",
+            "config_description": "Configures log types",
+            "setchannel_description": "Configures a specific channel for a log type",
+            "removechannel_description": "Removes a specific log channel",
+            "status_description": "Displays current log configuration",
             "channel_option": "Channel for logs",
             "type_option": "Log type to configure",
             "enabled_option": "Enable or disable this log type",
             "setchannel_channel_option": "Channel for this log type",
-            "types_option": "Log types for this channel (comma separated)",
+            "types_option": "Log types for this channel (separated by commas)",
             "removechannel_channel_option": "Channel to remove from logs",
-            "no_permission": "❌ You don't have permission to manage the server.",
+            "no_permission": "❌ You do not have permission to manage the server.",
             "error": "❌ An error occurred while configuring logs.",
             "disabled_success": "✅ Logs disabled for this server.",
-            "enabled_success": "✅ Logs enabled in {channel}\n\n**Active log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channel: {channels}\n🎭 Role: {roles}\n⚙️ Server: {server}",
+            "enabled_success": "✅ Logs enabled in {channel}\n\n**Active log types:**\n🔊 Voice: {voice}\n💬 Message: {message}\n📁 Channels: {channels}\n🎭 Roles: {roles}\n⚙️ Server: {server}",
             "config_success": "✅ Log type **{type}** {status}.",
-            "status_title": "📊 Logs Configuration",
+            "status_title": "📊 Log Configuration",
             "status": {
-                "global_state": "Global status:",
+                "global_state": "Global state:",
                 "main_channel": "Main channel:",
                 "global_types": "Global log types:",
                 "configured_channels": "Configured specific channels:",
                 "no_specific_channels": "Specific channels: None configured",
                 "useful_commands": "Useful commands:",
                 "cmd_setchannel": "• `/setlogs setchannel` - Configure a specific channel",
-                "cmd_config": "• `/setlogs config` - Modify global log types",
-                "cmd_removechannel": "• `/setlogs removechannel` - Remove a specific channel",
-                "enabled_label": "✅ Enabled",
-                "disabled_label": "❌ Disabled",
-                "deleted_channel": "Deleted channel ({id})"
-            },
-            "invalid_types": "❌ Invalid log types. Available types: {validTypes}",
-            "types": {
-                "voice": "🔊 Voice",
-                "message": "💬 Message",
-                "channels": "📁 Channel",
-                "roles": "🎭 Role",
-                "server": "⚙️ Server"
-            },
-            "channel_set_success": "✅ Channel {channel} configured for types: {types}",
-            "channel_removed_success": "✅ Channel {channel} removed from logs",
-            "channel_configured": "✅ Channel {channel} configured for log types: {types}",
-            "no_channels_configured": "❌ No specific channels are configured for logs.",
-            "channel_not_found": "❌ Channel {channel} is not configured for logs.",
-            "channel_removed": "✅ Channel {channel} removed from logs configuration."
+                "cmd_config": "• `/setlogs config` - Change global log types"
+            }
         },
         "setlang": {
-            "description": "Change bot language",
+            "description": "Change the bot's language",
             "language_option": "Language to use",
             "success": "✅ Bot language changed to **{language}**.",
             "success_title": "✅ Language changed",
@@ -500,54 +293,54 @@
         },
         "antiraid": {
             "description": "Configure and manage anti-raid protections",
-            "panel_description": "Show the anti-raid configuration panel",
+            "panel_description": "Display the anti-raid configuration panel",
             "panel": {
                 "title": "🛡️ Anti-Raid Panel",
                 "header": "Enable/disable protections below.",
-                "info": "Only administrators, server managers, or allowed roles/users can modify these settings.",
-                "global_state": "Global State",
-                "warn_config": "Warning Configuration",
-                "rate_limit": "Default Rate-Limit",
-                "mass_mentions_limit": "Mass Mentions Limit",
-                "roles": "Allowed Roles",
-                "users": "Allowed Users",
-                "descriptions_header": "Protection Descriptions",
+                "info": "Only administrators, server managers, or authorized roles/users can modify these settings.",
+                "global_state": "Global state",
+                "warn_config": "Warning configuration",
+                "rate_limit": "Default rate-limit",
+                "mass_mentions_limit": "Mass mentions limit",
+                "roles": "Authorized roles",
+                "users": "Authorized users",
+                "descriptions_header": "Protection descriptions",
                 "protections_header": "Protections"
             },
             "features": {
-                "join_spike": "Join Spike Detection",
-                "mass_mentions": "Mass Mentions",
-                "link_spam": "Link Spam",
-                "captcha": "Light Captcha",
-                "rate_limit": "Rate-Limit per Channel"
+                "join_spike": "Join spike detection",
+                "mass_mentions": "Mass mentions",
+                "link_spam": "Link spam",
+                "captcha": "Light captcha",
+                "rate_limit": "Per-channel rate-limit"
             },
             "features_desc": {
-                "join_spike": "Detects abnormal influx of joins and activates anti-raid measures.",
-                "mass_mentions": "Limits or blocks messages containing too many concurrent mentions.",
-                "link_spam": "Reduces repeated or malicious link spam.",
-                "captcha": "Requests light verification for suspicious new arrivals.",
-                "rate_limit_per_channel": "Applies a message per minute cap in each channel."
+                "join_spike": "Detects an abnormal influx of joins and activates anti-raid measures.",
+                "mass_mentions": "Limits or blocks messages containing too many simultaneous mentions.",
+                "link_spam": "Reduces spam of repeated or malicious links.",
+                "captcha": "Requests light verification for suspicious newcomers.",
+                "rate_limit_per_channel": "Applies a message ceiling per minute in each channel."
             },
             "no_permission": "You do not have permission to use this command.",
-            "allowrole_description": "Allow a role to modify the panel",
-            "allowuser_description": "Allow a member to modify the panel",
+            "allowrole_description": "Authorize a role to modify the panel",
+            "allowuser_description": "Authorize a member to modify the panel",
             "denyrole_description": "Remove authorization from a role",
             "denyuser_description": "Remove authorization from a user",
             "panel_no_permission": "You are not authorized to modify this panel.",
-            "allowrole_success": "✅ Role authorized: {role}",
-            "allowuser_success": "✅ User authorized: {user}",
+            "allowrole_success": "✅ Authorized role: {role}",
+            "allowuser_success": "✅ Authorized user: {user}",
             "denyrole_success": "✅ Role removed: {role}",
             "denyuser_success": "✅ User removed: {user}",
-            "setmassmentions_description": "Set mass mentions limit per message",
+            "setmassmentions_description": "Set the limit of mentions per message",
             "setmassmentions_limit_option": "Limit of mentions per message",
-            "setmassmentions_delete_message_option": "Delete message above limit",
+            "setmassmentions_delete_message_option": "Delete message beyond the limit",
             "setmassmentions_success": "✅ Mass mentions limit updated: {limit} (delete: {delete})",
             "massmentions_blocked": "Message blocked for mass mentions (limit: {limit}, mentions: {count}).",
             "setwarn_description": "Configure automatic timeout after warnings",
             "setwarn_after_option": "Number of warnings before timeout",
             "setwarn_minutes_option": "Timeout duration in minutes",
             "setwarn_success": "Auto timeout configured: after {after} warnings, {minutes} minutes",
-            "setratelimit_description": "Set default rate-limit (messages/min)",
+            "setratelimit_description": "Set the default rate-limit (messages/min)",
             "setratelimit_mpm_option": "Default messages per minute",
             "setratelimit_success": "Default rate-limit set to {mpm} msg/min",
             "error": "An error occurred while managing the anti-raid panel."
@@ -555,19 +348,19 @@
         "warn": {
             "description": "Add a warning to a member",
             "user_option": "User to warn",
-            "reason_option": "Reason for warning",
+            "reason_option": "Reason for the warning",
             "no_permission": "You do not have permission to issue warnings.",
-            "success_title": "Warning Added",
-            "success": "{user} has received a warning (total: {count}).\nReason: {reason}",
+            "success_title": "Warning added",
+            "success": "{user} received a warning (total: {count}).\nReason: {reason}",
             "auto_timeout": "⏱️ Automatic timeout applied: {minutes} minutes."
         },
         "unwarn": {
             "description": "Remove a warning from a member",
-            "user_option": "Target user",
-            "index_option": "Index of warning to remove (default last)",
+            "user_option": "Targeted user",
+            "index_option": "Index of the warning to remove (last by default)",
             "no_permission": "You do not have permission to remove warnings.",
             "no_warnings": "This user has no warnings.",
-            "success_title": "Warning Removed",
+            "success_title": "Warning removed",
             "success": "Warning removed for {user}. Total remaining: {count}"
         },
         "warnlist": {
@@ -579,11 +372,11 @@
         },
         "settickets": {
             "description": "Configure the ticket system",
-            "setcategory_description": "Set the parent category for tickets",
-            "settranscript_description": "Set the channel for ticket transcripts",
+            "setcategory_description": "Define the parent category for tickets",
+            "settranscript_description": "Define the transcript delivery channel",
             "category_option": "Category that will contain tickets",
             "channel_option": "The channel where transcripts will be sent",
-            "success_title": "✅ Tickets Configured",
+            "success_title": "✅ Tickets configured",
             "success": "Ticket category set to {category}",
             "transcript_success": "Transcript channel set to {channel}"
         },
@@ -592,306 +385,203 @@
             "error_no_channel": "❌ Transcript channel is not configured. Use `/settickets settranscript`.",
             "error_not_ticket": "❌ This command must be used in a ticket channel.",
             "generating": "⏳ Generating transcript...",
-            "success": "✅ Transcript generated and sent to {channel}.",
-            "log_title": "📄 Ticket Transcript",
-            "log_fields": {
-                "ticket_name": "Ticket name",
-                "creator": "Creator",
-                "closed_by": "Closed by",
-                "date": "Date",
-                "sent_at": "Sent",
-                "saved_at": "Saved",
-                "channel": "Channel",
-                "server": "Server"
-            }
+            "success": "✅ Transcript generated and sent to {channel}."
         },
         "ticketpanel": {
             "description": "Send a ticket panel",
             "title": "🎫 Support Center",
             "content": "Choose a ticket category below.",
-            "footer": "Staff will reply shortly."
+            "footer": "The staff will answer you quickly.",
+            "close_button_label": "Close ticket",
+            "created_confirmation": "Ticket created: {channel}",
+            "created_confirmation_description": "Your ticket has been created.",
+            "staff_ping": "{role} New ticket {category}!",
+            "errors": {
+                "no_category_setup": "Ticket category not configured. Use /settickets.",
+                "invalid_category": "Configured category not found.",
+                "channel_not_found": "Ticket channel not found."
+            },
+            "logs": {
+                "created": "Ticket created by {user} in #{channel} ({category})",
+                "created_reason": "Ticket {category} opened by {user}",
+                "closed": "Ticket closed by {user} in #{channel}"
+            },
+            "categories": {
+                "support": {
+                    "label": "Support",
+                    "description": "Ask the staff for help"
+                },
+                "report": {
+                    "label": "Report",
+                    "description": "Report a problem or user"
+                },
+                "other": {
+                    "label": "Other",
+                    "description": "Other request"
+                },
+                "recrutement": {
+                    "label": "Recruitment",
+                    "description": "Want to join us?"
+                },
+                "partenariat": {
+                    "label": "Partnership",
+                    "description": "Collaborate with us"
+                },
+                "fondateur": {
+                    "label": "Founders",
+                    "description": "Directly contact the founders"
+                }
+            }
         }
     },
-    "tempvoice": {
-        "description": "Configure temporary voice channels",
-        "addhub_description": "Create or modify a hub channel",
-        "removehub_description": "Remove a hub channel",
-        "setcategory_description": "Set category for temporary channels",
-        "defaults_description": "Configure default values",
-        "roles_description": "Manage allowed/denied roles for embed",
-        "embed_description": "Enable/Disable configuration embed",
-        "hub_channel_option": "Hub voice channel",
-        "category_option": "Temporary channels category",
-        "text_channel_option": "Linked text channel for embed",
-        "name_template_option": "Name template (ex: {username} • {count})",
-        "limit_option": "User limit (0-99)",
-        "permanent_option": "Permanent by default",
-        "allow_option": "Allow role",
-        "deny_option": "Deny role",
-        "role_option": "Role to manage",
-        "embed_enabled_option": "Enable embed",
-        "buttons": {
-            "rename": "Rename",
-            "limit": "Set Limit",
-            "permanent": "Toggle Permanent"
-        },
-        "config_title": "⚙️ Temporary Channel Configuration",
-        "config_content": "Use the buttons below to manage your temporary channel.",
-        "config_footer": "Changes are applied instantly.",
-        "msg": {
-            "hub_created": "✅ Hub configured: {channel}",
-            "hub_removed": "✅ Hub removed: {channel}",
-            "category_set": "✅ Temporary channels category: {category}",
-            "text_channel_set": "✅ Linked text channel: {channel}",
-            "defaults_set": "✅ Default values updated",
-            "role_allowed_added": "✅ Allowed role added: {role}",
-            "role_denied_added": "✅ Denied role added: {role}",
-            "role_allowed_removed": "✅ Allowed role removed: {role}",
-            "role_denied_removed": "✅ Denied role removed: {role}",
-            "embed_enabled": "✅ Configuration embed enabled",
-            "embed_disabled": "✅ Configuration embed disabled",
-            "channel_created": "✅ Temporary channel created: {channel}",
-            "channel_deleted": "🗑️ Temporary channel deleted: {channel}"
-        },
-        "errors": {
-            "no_category": "❌ No category configured for temporary channels.",
-            "not_hub": "❌ This channel is not a hub.",
-            "not_authorized": "❌ You are not authorized to use the embed.",
-            "invalid_limit": "❌ Invalid limit (0-99).",
-            "not_found": "❌ Element not found.",
-            "no_text_channel": "❌ No linked text channel is configured.",
-            "no_temp_channel": "❌ This channel is not managed by the temporary system."
+    "transcript": {
+        "log_title": "📕 Ticket Closed",
+        "log_fields": {
+            "ticket": "🎫 Ticket",
+            "opened_by": "👤 Opened by",
+            "closed_by": "🔒 Closed by",
+            "messages": "💬 Messages",
+            "category": "📁 Category",
+            "sent_at": "Sent at",
+            "saved_at": "Saved at",
+            "channel": "Channel",
+            "server": "Server"
         }
     },
     "events": {
-        "roles": {
-            "created": {
-                "title": "🎭 New role created",
-                "fields": {
-                    "role": "Role",
-                    "color": "Color",
-                    "position": "Position",
-                    "mentionable": "Mentionable"
-                }
+        "common": {
+            "unknown": "Unknown",
+            "none": "None",
+            "enabled": "Enabled",
+            "disabled": "Disabled",
+            "unlimited": "Unlimited",
+            "channel_types": {
+                "text": "Text",
+                "voice": "Voice",
+                "category": "Category",
+                "announcements": "Announcements",
+                "stage": "Stage",
+                "forum": "Forum"
             },
-            "deleted": {
-                "title": "🎭 Role deleted",
-                "fields": {
-                    "role": "Role",
-                    "color": "Color",
-                    "position": "Position"
-                }
-            },
-            "updated": {
-                "title": "🎭 Role updated",
-                "fields": {
-                    "role": "Role",
-                    "name": "Name",
-                    "color": "Color",
-                    "hoist": "Displayed separately",
-                    "mentionable": "Mentionable",
-                    "position": "Position",
-                    "perms_added": "Permissions added",
-                    "perms_removed": "Permissions removed"
+            "fields": {
+                "user": "👤 User",
+                "moderator": "👮 Moderator",
+                "reason": "📝 Reason",
+                "channel": "📍 Channel",
+                "date": "📅 Date",
+                "role": "🎭 Role",
+                "position": "📍 Position",
+                "type": "🏷️ Type",
+                "count": "🔢 Count",
+                "category": "📁 Category",
+                "topic": "📋 Topic",
+                "audio_bitrate": "🎵 Audio bitrate",
+                "user_limit": "👥 User limit",
+                "nsfw": "🔞 NSFW",
+                "rate_limit": "⏱️ Rate limit",
+                "joined_at": "📥 Joined at",
+                "account_created": "📅 Account created",
+                "member_count": "👥 Member count",
+                "name": "📝 Name",
+                "color": "🎨 Color",
+                "mentionable": "🔔 Mentionable",
+                "hoist": "🎭 Hoisted",
+                "permissions": "🔐 Permissions",
+                "old_content": "📝 Old content",
+                "new_content": "📝 New content",
+                "author": "👤 Author",
+                "nickname": "📝 Nickname",
+                "old_nickname": "📜 Old nickname",
+                "new_nickname": "📝 New nickname",
+                "state": "State",
+                "action": "Action",
+                "old_channel": "📍 Old channel",
+                "new_channel": "📍 New channel",
+                "icon": "Icon",
+                "content_title": "📝 Content",
+                "attachments_title": "📎 Attachments",
+                "attachments": "📎 Attachments",
+                "perms_added": "✅ Permissions added",
+                "perms_removed": "❌ Permissions removed"
+            }
+        },
+        "channels": {
+            "created": { "title": "➕ Channel created" },
+            "deleted": { "title": "➖ Channel deleted" },
+            "updated": { 
+                "title": "🔄 Channel modified",
+                "changes": {
+                    "perms_added": "✅ Permissions added for",
+                    "perms_removed": "❌ Permissions removed for",
+                    "perms_modified": "🔄 Permissions modified for"
                 }
             }
         },
-        "server": {
-            "updated": {
-                "title": "⚙️ Server updated",
-                "fields": {
-                    "name": "Server name",
-                    "icon": "Server icon"
+        "roles": {
+            "created": { "title": "🎭 New role created" },
+            "deleted": { "title": "🎭 Role deleted" },
+            "updated": { 
+                "title": "🎭 Role updated",
+                "changes": {
+                    "perms_added": "✅ Permissions added",
+                    "perms_removed": "❌ Permissions removed"
                 }
             }
+        },
+        "members": {
+            "added": { "title": "📥 Member joined" },
+            "removed": { "title": "📤 Member left" },
+            "kicked": { "title": "👢 Member kicked" },
+            "banned": { "title": "🔨 Member banned" },
+            "unbanned": { "title": "🔓 Member unbanned" },
+            "updated": { "title": "👤 Member updated" },
+            "roles_added": { "title": "🎭 Role(s) added" },
+            "roles_removed": { "title": "🎭 Role(s) removed" },
+            "nickname_updated": { "title": "📝 Nickname modified" }
         },
         "messages": {
-            "deleted": {
-                "title": "🗑️ Message deleted",
-                "fields": {
-                    "author": "Author",
-                    "channel": "Channel",
-                    "date": "Date",
-                    "content_title": "📝 Message content",
-                    "attachments_title": "📎 Attachments"
-                }
-            },
-            "bulk_deleted": {
+            "deleted": { "title": "🗑️ Message deleted" },
+            "bulk_deleted": { 
                 "title": "🗑️ Bulk messages deleted",
-                "description": "**Channel:** {channel}\n**Message count:** {count}\n**Date:** {date}\n\nA `.txt` file listing deleted messages will be sent below and automatically deleted after 24h.",
+                "description": "**Channel:** {channel}\n**Count:** {count}\n**Date:** {date}\n\nA `.txt` file listing the deleted messages will be sent below.",
                 "file": {
                     "title": "=== DELETED MESSAGES ===",
                     "empty_content": "(no content)"
                 }
-            }
+            },
+            "updated": { "title": "📝 Message modified" }
         },
-        "channels": {
-            "created": {
-                "title_base": "Channel created",
-                "fields": {
-                    "channel": "📍 Channel",
-                    "type": "🏷️ Type",
-                    "position": "📍 Position",
-                    "category": "📁 Category",
-                    "topic": "📋 Topic",
-                    "audio_bitrate": "🎵 Audio bitrate",
-                    "user_limit": "👥 User limit",
-                    "nsfw": "🔞 NSFW",
-                    "rate_limit": "⏱️ Rate limit"
-                }
-            },
-            "deleted": {
-                "title_base": "Channel deleted",
-                "fields": {
-                    "channel": "📍 Channel",
-                    "type": "🏷️ Type",
-                    "position": "📍 Position",
-                    "category": "📁 Category",
-                    "topic": "📋 Topic",
-                    "audio_bitrate": "🎵 Audio bitrate",
-                    "user_limit": "👥 User limit",
-                    "nsfw": "🔞 NSFW",
-                    "rate_limit": "⏱️ Rate limit"
-                }
-            },
-            "updated": {
-                "title_base": "Channel modified",
-                "fields": {
-                    "channel": "📍 Channel"
-                },
-                "changes": {
-                    "name": "📝 Name",
-                    "topic": "📋 Topic",
-                    "position": "📍 Position",
-                    "category": "📁 Category",
-                    "perms_added": "✅ Permissions added for",
-                    "perms_removed": "❌ Permissions removed for",
-                    "perms_modified": "🔄 Permissions modified for",
-                    "audio_bitrate": "🎵 Audio bitrate",
-                    "user_limit": "👥 User limit",
-                    "nsfw": "🔞 NSFW",
-                    "rate_limit": "⏱️ Rate limit"
-                }
-            }
+        "server": {
+            "updated": { "title": "⚙️ Server updated" }
         },
         "voice": {
             "join": { "title": "🔊 User joined a voice channel" },
             "leave": { "title": "🔇 User left a voice channel" },
             "switch": { "title": "🔄 User switched voice channel" },
             "mute_micro": {
-                "title_muted": "🎤 User muted (micro)",
-                "title_unmuted": "🎤 User unmuted (micro)"
+                "title_muted": "🎤 User muted (mic)",
+                "title_unmuted": "🎤 User unmuted (mic)"
             },
             "deaf": {
                 "title_deafened": "🎧 User deafened (headset)",
                 "title_undeafened": "🎧 User undeafened (headset)"
             },
             "self_mute": {
-                "title_on": "🎤 User self-muted",
-                "title_off": "🎤 User self-unmuted",
-                "action_on": "Self-mute",
-                "action_off": "Self-unmute"
+                "title_on": "🎤 User muted themselves",
+                "title_off": "🎤 User unmuted themselves",
+                "action_on": "Mute enabled",
+                "action_off": "Mute disabled"
             },
             "self_deaf": {
-                "title_on": "🎧 User self-deafened",
-                "title_off": "🎧 User self-undeafened",
-                "action_on": "Self-deaf",
-                "action_off": "Self-undeaf"
-            },
-            "fields": {
-                "user": "👤 User",
-                "channel": "📍 Channel",
-                "old_channel": "📍 Old channel",
-                "new_channel": "📍 New channel",
-                "state": "State",
-                "action": "Action"
+                "title_on": "🎧 User deafened themselves",
+                "title_off": "🎧 User undeafened themselves",
+                "action_on": "Deafened",
+                "action_off": "Undeafened"
             }
         },
         "welcome": {
             "message": "Welcome {user}! 🎉",
-            "react_appended": "{reactor} also welcomes you!",
-            "react_appended_sg": "also welcomes you!",
-            "react_appended_pl": "also welcome you!",
             "reaction_emoji": "🎉"
-        }
-    },
-    "logs": {
-        "voice_join": "🔊 {user} joined voice channel {channel}",
-        "voice_leave": "🔇 {user} left voice channel {channel}",
-        "message_delete": "🗑️ Message deleted in {channel} by {user}",
-        "message_edit": "✏️ Message edited in {channel} by {user}",
-        "channel_create": "➕ Channel {channel} created",
-        "channel_delete": "➖ Channel {channel} deleted",
-        "role_create": "➕ Role {role} created",
-        "role_delete": "➖ Role {role} deleted",
-        "role_add": "➕ Role {role} added to {user}",
-        "role_remove": "➖ Role {role} removed from {user}",
-        "server_update": "⚙️ Server updated: {changes}",
-        "member_join": "👋 {user} joined the server",
-        "member_join_details": "**User:** {user}\n**ID:** {userId}\n**Account created:** {accountCreated}\n**Total members:** {memberCount}",
-        "member_leave": "👋 {user} left the server",
-        "member_leave_details": "**User:** {user}\n**ID:** {userId}\n**Joined on:** {joinedAt}\n**Remaining members:** {memberCount}",
-        "member_kick": "👢 {user} was kicked from the server",
-        "member_kick_details": "**User:** {user}\n**ID:** {userId}\n**Moderator:** {moderator}\n**Reason:** {reason}\n**Remaining members:** {memberCount}",
-        "member_ban": "🔨 {user} was banned from the server",
-        "member_ban_details": "**User:** {user}\n**ID:** {userId}\n**Moderator:** {moderator}\n**Reason:** {reason}",
-        "member_unban": "🔓 {user} was unbanned from the server",
-        "member_unban_details": "**User:** {user}\n**ID:** {userId}\n**Moderator:** {moderator}\n**Reason:** {reason}",
-        "channel_lock": "🔒 Channel {channel} locked",
-        "channel_lock_details": "**Channel:** {channel}\n**Moderator:** {moderator}\n**Reason:** {reason}",
-        "channel_unlock": "🔓 Channel {channel} unlocked",
-        "channel_unlock_details": "**Channel:** {channel}\n**Moderator:** {moderator}\n**Reason:** {reason}"
-    },
-    "tickets": {
-        "open_title": "🎫 Ticket Open",
-        "open_title_template": "Ticket {category}",
-        "open_description": "Hello {user}, welcome to your ticket!\nA staff member will reply shortly.",
-        "open_fields": {
-            "category": "Category",
-            "created": "Created on"
-        },
-        "open_reminders_label": "Reminders",
-        "open_reminders_content": "→ Be specific in your request\n→ Stay polite and courteous\n→ Please wait, we reply quickly\n→ Do not spam the ticket",
-        "open_footer": "Ticket created on {date}",
-        "panel_title": "Support",
-        "panel_content": "Tickets are here to help you!\nOur team strives to keep this server calm and pleasant for everyone.\nThis system was created to facilitate contact.\n\n⚠️ A ticket may take time to be processed — please be patient!\nAny abuse (spam, useless requests, etc.) will be severely sanctioned.\n\n**Other topics**\n• Recruitment: Want to join us?\n• Report: Something to report?\n• Partnership: Let's collaborate!\n• Founders: Need the founders directly?",
-        "select_category_placeholder": "Choose your request category",
-        "close_button_label": "Close Ticket",
-        "created_confirmation": "Ticket created",
-        "errors": {
-            "no_category_setup": "Ticket category not configured. Use /settickets.",
-            "invalid_category": "Configured category not found.",
-            "channel_not_found": "Ticket channel not found."
-        },
-        "logs": {
-            "created": "Ticket created by {user} in #{channel} ({category})",
-            "closed": "Ticket closed by {user} in #{channel}"
-        },
-        "categories": {
-            "support": {
-                "label": "Support",
-                "description": "Ask for help from staff"
-            },
-            "report": {
-                "label": "Report",
-                "description": "Report an issue or user"
-            },
-            "other": {
-                "label": "Other",
-                "description": "Other request"
-            },
-            "recrutement": {
-                "label": "Recruitment",
-                "description": "Want to join us?"
-            },
-            "partenariat": {
-                "label": "Partnership",
-                "description": "Let's collaborate!"
-            },
-            "owners": {
-                "label": "Founders",
-                "description": "Need the founders directly?"
-            }
         }
     }
 }

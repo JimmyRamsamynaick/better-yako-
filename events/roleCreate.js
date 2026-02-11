@@ -23,13 +23,13 @@ module.exports = {
 
             const lang = guild.language || 'fr';
             const embed = new EmbedBuilder()
-                .setTitle(LanguageManager.get(lang, 'events.roles.created.title'))
+                .setTitle(LanguageManager.get(lang, 'events.roles.created.title') || '🎭 Nouveau rôle créé')
                 .setColor(0x00FF00)
                 .addFields(
-                    { name: LanguageManager.get(lang, 'events.roles.created.fields.role'), value: `<@&${role.id}> (\`${role.name}\`)`, inline: false },
-                    { name: LanguageManager.get(lang, 'events.roles.created.fields.color'), value: role.hexColor || '#000000', inline: true },
-                    { name: LanguageManager.get(lang, 'events.roles.created.fields.position'), value: `${role.position}`, inline: true },
-                    { name: LanguageManager.get(lang, 'events.roles.created.fields.mentionable'), value: role.mentionable ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no'), inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.role') || '🎭 Rôle', value: `<@&${role.id}> (\`${role.name}\`)`, inline: false },
+                    { name: LanguageManager.get(lang, 'events.common.fields.color') || '🎨 Couleur', value: role.hexColor || '#000000', inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.position') || '📍 Position', value: `${role.position}`, inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.mentionable') || '🔔 Mentionnable', value: role.mentionable ? (LanguageManager.get(lang, 'events.common.enabled') || 'Oui') : (LanguageManager.get(lang, 'events.common.disabled') || 'Non'), inline: true },
                 )
                 .setTimestamp()
                 .setFooter({ text: `ID: ${role.id}` });

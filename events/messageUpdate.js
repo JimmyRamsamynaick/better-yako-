@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
 const ComponentsV3 = require('../utils/ComponentsV3');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'messageUpdate',
@@ -28,24 +29,26 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
+
             // Créer le message avec le format components
-            let content = `## 📝 Message modifié\n\n`;
-            content += `**Utilisateur:** ${newMessage.author.toString()} (${newMessage.author.tag})\n`;
-            content += `**Canal:** ${newMessage.channel.toString()}\n`;
-            content += `**Date:** <t:${Math.floor(Date.now() / 1000)}:F>\n`;
+            let content = `## ${LanguageManager.get(lang, 'events.messages.updated.title') || '📝 Message modifié'}\n\n`;
+            content += `**${LanguageManager.get(lang, 'events.common.fields.user') || 'Utilisateur'}:** ${newMessage.author.toString()} (${newMessage.author.tag})\n`;
+            content += `**${LanguageManager.get(lang, 'events.common.fields.channel') || 'Canal'}:** ${newMessage.channel.toString()}\n`;
+            content += `**${LanguageManager.get(lang, 'events.common.fields.date') || 'Date'}:** <t:${Math.floor(Date.now() / 1000)}:F>\n`;
             content += `**Lien:** [Aller au message](${newMessage.url})\n\n`;
             
             // Ancien contenu
-            const oldContent = oldMessage.content.length > 800 
+            const oldContentStr = oldMessage.content.length > 800 
                 ? oldMessage.content.substring(0, 797) + '...' 
-                : oldMessage.content || '*Contenu vide*';
-            content += `### 📜 Ancien contenu:\n\`\`\`\n${oldContent}\n\`\`\`\n\n`;
+                : oldMessage.content || (LanguageManager.get(lang, 'events.common.none') || '*Contenu vide*');
+            content += `### ${LanguageManager.get(lang, 'events.common.fields.old_content') || '📜 Ancien contenu'}:\n\`\`\`\n${oldContentStr}\n\`\`\`\n\n`;
             
             // Nouveau contenu
-            const newContent = newMessage.content.length > 800 
+            const newContentStr = newMessage.content.length > 800 
                 ? newMessage.content.substring(0, 797) + '...' 
-                : newMessage.content || '*Contenu vide*';
-            content += `### 📝 Nouveau contenu:\n\`\`\`\n${newContent}\n\`\`\``;
+                : newMessage.content || (LanguageManager.get(lang, 'events.common.none') || '*Contenu vide*');
+            content += `### ${LanguageManager.get(lang, 'events.common.fields.new_content') || '📝 Nouveau contenu'}:\n\`\`\`\n${newContentStr}\n\`\`\``;
             
             const componentMessage = {
                 flags: 32768,

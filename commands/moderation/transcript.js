@@ -71,13 +71,13 @@ module.exports = {
 
             // 5. Envoi dans le salon de logs
             const logEmbed = new EmbedBuilder()
-                .setTitle(LanguageManager.get(lang, 'transcript.log_title') || '📄 Transcript de Ticket')
+                .setTitle(LanguageManager.get(lang, 'transcript.log_title') || '📕 Ticket Fermé')
                 .setColor(0x5865F2)
                 .addFields(
-                    { name: LanguageManager.get(lang, 'transcript.log_fields.ticket_name') || 'Nom du ticket', value: channel.name, inline: true },
-                    { name: LanguageManager.get(lang, 'transcript.log_fields.creator') || 'Créateur', value: ticketCreator, inline: true },
-                    { name: LanguageManager.get(lang, 'transcript.log_fields.closed_by') || 'Fermé par', value: user.tag, inline: true },
-                    { name: LanguageManager.get(lang, 'transcript.log_fields.date') || 'Date', value: dateStr, inline: true }
+                    { name: LanguageManager.get(lang, 'transcript.log_fields.ticket') || '🎫 Ticket', value: channel.name, inline: true },
+                    { name: LanguageManager.get(lang, 'transcript.log_fields.opened_by') || '👤 Ouvert par', value: ticketCreator, inline: true },
+                    { name: LanguageManager.get(lang, 'transcript.log_fields.closed_by') || '🔒 Fermé par', value: user.tag, inline: true },
+                    { name: LanguageManager.get(lang, 'common.date') || 'Date', value: dateStr, inline: true }
                 )
                 .setTimestamp();
 

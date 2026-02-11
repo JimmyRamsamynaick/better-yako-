@@ -28,7 +28,7 @@ module.exports = {
             // Vérifier le changement de nom
             if (oldChannel.name !== newChannel.name) {
                 changes.push({
-                    name: LanguageManager.get(lang, 'events.channels.updated.changes.name') || '📝 Nom',
+                    name: LanguageManager.get(lang, 'events.common.fields.name') || '📝 Nom',
                     value: `\`${oldChannel.name}\` → \`${newChannel.name}\``,
                     inline: false
                 });
@@ -36,11 +36,11 @@ module.exports = {
 
             // Vérifier le changement de topic (pour les canaux texte)
             if (oldChannel.topic !== newChannel.topic) {
-                const noneLabel = LanguageManager.get(lang, 'common.none') || '*Aucun*';
+                const noneLabel = LanguageManager.get(lang, 'events.common.none') || '*Aucun*';
                 const oldTopic = oldChannel.topic || `${noneLabel} sujet`;
                 const newTopic = newChannel.topic || `${noneLabel} sujet`;
                 changes.push({
-                    name: LanguageManager.get(lang, 'events.channels.updated.changes.topic') || '📋 Sujet',
+                    name: LanguageManager.get(lang, 'events.common.fields.topic') || '📋 Sujet',
                     value: `\`${oldTopic}\` → \`${newTopic}\``,
                     inline: false
                 });
@@ -49,7 +49,7 @@ module.exports = {
             // Vérifier le changement de position
             if (oldChannel.position !== newChannel.position) {
                 changes.push({
-                    name: LanguageManager.get(lang, 'events.channels.updated.changes.position') || '📍 Position',
+                    name: LanguageManager.get(lang, 'events.common.fields.position') || '📍 Position',
                     value: `\`${oldChannel.position}\` → \`${newChannel.position}\``,
                     inline: true
                 });
@@ -57,11 +57,11 @@ module.exports = {
 
             // Vérifier le changement de catégorie
             if (oldChannel.parentId !== newChannel.parentId) {
-                const noneCat = LanguageManager.get(lang, 'common.none') || '*Aucune*';
+                const noneCat = LanguageManager.get(lang, 'events.common.none') || '*Aucune*';
                 const oldParent = oldChannel.parent ? oldChannel.parent.name : `${noneCat} catégorie`;
                 const newParent = newChannel.parent ? newChannel.parent.name : `${noneCat} catégorie`;
                 changes.push({
-                    name: LanguageManager.get(lang, 'events.channels.updated.changes.category') || '📁 Catégorie',
+                    name: LanguageManager.get(lang, 'events.common.fields.category') || '📁 Catégorie',
                     value: `\`${oldParent}\` → \`${newParent}\``,
                     inline: false
                 });
@@ -75,7 +75,7 @@ module.exports = {
             const addedPermissions = newPermissions.filter(perm => !oldPermissions.has(perm.id));
             if (addedPermissions.size > 0) {
                 const permList = addedPermissions.map(perm => {
-                    const unknownLabel = LanguageManager.get(lang, 'common.unknown') || 'Inconnu';
+                    const unknownLabel = LanguageManager.get(lang, 'events.common.unknown') || 'Inconnu';
                     const target = perm.type === 0 ? `@${newChannel.guild.roles.cache.get(perm.id)?.name || `${unknownLabel}`}` : `${newChannel.guild.members.cache.get(perm.id)?.user.tag || `${unknownLabel}`}`;
                     return target;
                 }).join(', ');
@@ -90,7 +90,7 @@ module.exports = {
             const removedPermissions = oldPermissions.filter(perm => !newPermissions.has(perm.id));
             if (removedPermissions.size > 0) {
                 const permList = removedPermissions.map(perm => {
-                    const unknownLabel = LanguageManager.get(lang, 'common.unknown') || 'Inconnu';
+                    const unknownLabel = LanguageManager.get(lang, 'events.common.unknown') || 'Inconnu';
                     const target = perm.type === 0 ? `@${newChannel.guild.roles.cache.get(perm.id)?.name || `${unknownLabel}`}` : `${newChannel.guild.members.cache.get(perm.id)?.user.tag || `${unknownLabel}`}`;
                     return target;
                 }).join(', ');
@@ -109,7 +109,7 @@ module.exports = {
 
             if (modifiedPermissions.size > 0) {
                 const permList = modifiedPermissions.map(perm => {
-                    const unknownLabel = LanguageManager.get(lang, 'common.unknown') || 'Inconnu';
+                    const unknownLabel = LanguageManager.get(lang, 'events.common.unknown') || 'Inconnu';
                     const target = perm.type === 0 ? `@${newChannel.guild.roles.cache.get(perm.id)?.name || `${unknownLabel}`}` : `${newChannel.guild.members.cache.get(perm.id)?.user.tag || `${unknownLabel}`}`;
                     return target;
                 }).join(', ');
@@ -124,18 +124,18 @@ module.exports = {
             if (newChannel.type === ChannelType.GuildVoice) {
                 if (oldChannel.bitrate !== newChannel.bitrate) {
                     changes.push({
-                        name: LanguageManager.get(lang, 'events.channels.updated.changes.audio_bitrate') || '🎵 Débit audio',
+                        name: LanguageManager.get(lang, 'events.common.fields.audio_bitrate') || '🎵 Débit audio',
                         value: `\`${oldChannel.bitrate}kbps\` → \`${newChannel.bitrate}kbps\``,
                         inline: true
                     });
                 }
 
                 if (oldChannel.userLimit !== newChannel.userLimit) {
-                    const unlimitedLabel = LanguageManager.get(lang, 'common.unlimited') || 'Illimité';
+                    const unlimitedLabel = LanguageManager.get(lang, 'events.common.unlimited') || 'Illimité';
                     const oldLimit = oldChannel.userLimit === 0 ? unlimitedLabel : oldChannel.userLimit;
                     const newLimit = newChannel.userLimit === 0 ? unlimitedLabel : newChannel.userLimit;
                     changes.push({
-                        name: LanguageManager.get(lang, 'events.channels.updated.changes.user_limit') || '👥 Limite d\'utilisateurs',
+                        name: LanguageManager.get(lang, 'events.common.fields.user_limit') || '👥 Limite d\'utilisateurs',
                         value: `\`${oldLimit}\` → \`${newLimit}\``,
                         inline: true
                     });
@@ -145,21 +145,21 @@ module.exports = {
             // Vérifications spécifiques aux canaux texte
             if (newChannel.type === ChannelType.GuildText) {
                 if (oldChannel.nsfw !== newChannel.nsfw) {
-                    const enabled = LanguageManager.get(lang, 'common.enabled') || 'Activé';
-                    const disabled = LanguageManager.get(lang, 'common.disabled') || 'Désactivé';
+                    const enabled = LanguageManager.get(lang, 'events.common.enabled') || 'Activé';
+                    const disabled = LanguageManager.get(lang, 'events.common.disabled') || 'Désactivé';
                     changes.push({
-                        name: LanguageManager.get(lang, 'events.channels.updated.changes.nsfw') || '🔞 NSFW',
+                        name: LanguageManager.get(lang, 'events.common.fields.nsfw') || '🔞 NSFW',
                         value: `\`${oldChannel.nsfw ? enabled : disabled}\` → \`${newChannel.nsfw ? enabled : disabled}\``,
                         inline: true
                     });
                 }
 
                 if (oldChannel.rateLimitPerUser !== newChannel.rateLimitPerUser) {
-                    const noneLabel = LanguageManager.get(lang, 'common.none') || 'Aucune';
+                    const noneLabel = LanguageManager.get(lang, 'events.common.none') || 'Aucune';
                     const oldLimit = oldChannel.rateLimitPerUser === 0 ? noneLabel : `${oldChannel.rateLimitPerUser}s`;
                     const newLimit = newChannel.rateLimitPerUser === 0 ? noneLabel : `${newChannel.rateLimitPerUser}s`;
                     changes.push({
-                        name: LanguageManager.get(lang, 'events.channels.updated.changes.rate_limit') || '⏱️ Limite de débit',
+                        name: LanguageManager.get(lang, 'events.common.fields.rate_limit') || '⏱️ Limite de débit',
                         value: `\`${oldLimit}\` → \`${newLimit}\``,
                         inline: true
                     });
@@ -177,10 +177,10 @@ module.exports = {
                 };
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`${channelTypeEmoji[newChannel.type] || '📝'} ${LanguageManager.get(lang, 'events.channels.updated.title_base') || 'Canal modifié'}`)
+                    .setTitle(`${channelTypeEmoji[newChannel.type] || '📝'} ${LanguageManager.get(lang, 'events.channels.updated.title') || 'Canal modifié'}`)
                     .setColor(0xFFA500)
                     .addFields(
-                        { name: LanguageManager.get(lang, 'events.channels.updated.fields.channel') || '📍 Canal', value: `${newChannel} (\`${newChannel.name}\`)`, inline: false },
+                        { name: LanguageManager.get(lang, 'events.common.fields.channel') || '📍 Canal', value: `${newChannel} (\`${newChannel.name}\`)`, inline: false },
                         ...changes
                     )
                     .setTimestamp()

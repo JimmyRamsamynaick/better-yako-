@@ -22,6 +22,13 @@
         "disabled": "Désactivé",
         "unlimited": "Illimité",
         "unknown": "Inconnu",
+        "permissions": {
+            "send_messages": "Envoyer des messages",
+            "embed_links": "Intégrer des liens"
+        },
+        "errors": {
+            "missing_permissions": "Permissions manquantes"
+        },
         "muted": "Sourdine activée",
         "unmuted": "Sourdine désactivée",
         "deafened": "Assourdi",
@@ -592,19 +599,7 @@
             "error_no_channel": "❌ Le salon des transcripts n'est pas configuré. Utilisez `/settickets settranscript`.",
             "error_not_ticket": "❌ Cette commande doit être utilisée dans un salon de ticket.",
             "generating": "⏳ Génération du transcript en cours...",
-            "success": "✅ Transcript généré et envoyé dans {channel}.",
-            "log_title": "📕 Ticket Fermé",
-            "log_fields": {
-                "ticket_name": "Ticket",
-                "creator": "Ouvert par",
-                "closed_by": "Fermé par",
-                "date": "Date",
-                "sent_at": "Envoyé",
-                "saved_at": "Sauvegardé",
-                "channel": "Salon",
-                "server": "Serveur",
-                "reason": "Raison"
-            }
+            "success": "✅ Transcript généré et envoyé dans {channel}."
         },
         "ticketpanel": {
             "description": "Envoyer un panneau de tickets",
@@ -664,116 +659,125 @@
             "no_temp_channel": "❌ Ce salon n'est pas géré par le système temporaire."
         }
     },
+    "transcript": {
+        "log_title": "📕 Ticket Fermé",
+        "log_fields": {
+            "ticket": "🎫 Ticket",
+            "opened_by": "👤 Ouvert par",
+            "closed_by": "🔒 Fermé par",
+            "messages": "💬 Messages",
+            "category": "📁 Catégorie",
+            "sent_at": "Envoyé",
+            "saved_at": "Sauvegardé",
+            "channel": "Salon",
+            "server": "Serveur"
+        }
+    },
     "events": {
-        "roles": {
-            "created": {
-                "title": "🎭 Nouveau rôle créé",
-                "fields": {
-                    "role": "Rôle",
-                    "color": "Couleur",
-                    "position": "Position",
-                    "mentionable": "Mentionnable"
-                }
+        "common": {
+            "unknown": "Inconnu",
+            "none": "Aucun(e)",
+            "enabled": "Activé",
+            "disabled": "Désactivé",
+            "unlimited": "Illimité",
+            "channel_types": {
+                "text": "Textuel",
+                "voice": "Vocal",
+                "category": "Catégorie",
+                "announcements": "Annonces",
+                "stage": "Scène",
+                "forum": "Forum"
             },
-            "deleted": {
-                "title": "🎭 Rôle supprimé",
-                "fields": {
-                    "role": "Rôle",
-                    "color": "Couleur",
-                    "position": "Position"
-                }
-            },
-            "updated": {
-                "title": "🎭 Rôle mis à jour",
-                "fields": {
-                    "role": "Rôle",
-                    "name": "Nom",
-                    "color": "Couleur",
-                    "hoist": "Affiché séparément",
-                    "mentionable": "Mentionnable",
-                    "position": "Position",
-                    "perms_added": "Permissions ajoutées",
-                    "perms_removed": "Permissions retirées"
+            "fields": {
+                "user": "👤 Utilisateur",
+                "moderator": "👮 Modérateur",
+                "reason": "📝 Raison",
+                "channel": "📍 Salon",
+                "date": "📅 Date",
+                "role": "🎭 Rôle",
+                "position": "📍 Position",
+                "type": "🏷️ Type",
+                "count": "🔢 Nombre",
+                "category": "📁 Catégorie",
+                "topic": "📋 Sujet",
+                "audio_bitrate": "🎵 Débit audio",
+                "user_limit": "👥 Limite d'utilisateurs",
+                "nsfw": "🔞 NSFW",
+                "rate_limit": "⏱️ Limite de débit",
+                "joined_at": "📥 A rejoint",
+                "account_created": "📅 Compte créé",
+                "member_count": "👥 Nombre de membres",
+                "name": "📝 Nom",
+                "color": "🎨 Couleur",
+                "mentionable": "🔔 Mentionnable",
+                "hoist": "🎭 Affiché séparément",
+                "permissions": "🔐 Permissions",
+                "old_content": "📝 Ancien contenu",
+                "new_content": "📝 Nouveau contenu",
+                "author": "👤 Auteur",
+                "nickname": "📝 Surnom",
+                "old_nickname": "📜 Ancien surnom",
+                "new_nickname": "📝 Nouveau surnom",
+                "state": "État",
+                "action": "Action",
+                "old_channel": "📍 Ancien salon",
+                "new_channel": "📍 Nouveau salon",
+                "icon": "Icône",
+                "content_title": "📝 Contenu",
+                "attachments_title": "📎 Pièces jointes",
+                "attachments": "📎 Pièces jointes",
+                "perms_added": "✅ Permissions ajoutées",
+                "perms_removed": "❌ Permissions retirées"
+            }
+        },
+        "channels": {
+            "created": { "title": "➕ Canal créé" },
+            "deleted": { "title": "➖ Canal supprimé" },
+            "updated": { 
+                "title": "🔄 Canal modifié",
+                "changes": {
+                    "perms_added": "✅ Permissions ajoutées pour",
+                    "perms_removed": "❌ Permissions retirées pour",
+                    "perms_modified": "🔄 Permissions modifiées pour"
                 }
             }
         },
-        "server": {
-            "updated": {
-                "title": "⚙️ Serveur mis à jour",
-                "fields": {
-                    "name": "Nom du serveur",
-                    "icon": "Icône du serveur"
+        "roles": {
+            "created": { "title": "🎭 Nouveau rôle créé" },
+            "deleted": { "title": "🎭 Rôle supprimé" },
+            "updated": { 
+                "title": "🎭 Rôle mis à jour",
+                "changes": {
+                    "perms_added": "✅ Permissions ajoutées",
+                    "perms_removed": "❌ Permissions retirées"
                 }
             }
+        },
+        "members": {
+            "added": { "title": "📥 Membre rejoint" },
+            "removed": { "title": "📤 Membre parti" },
+            "kicked": { "title": "👢 Membre expulsé" },
+            "banned": { "title": "🔨 Membre banni" },
+            "unbanned": { "title": "🔓 Membre débanni" },
+            "updated": { "title": "👤 Membre mis à jour" },
+            "roles_added": { "title": "🎭 Rôle(s) ajouté(s)" },
+            "roles_removed": { "title": "🎭 Rôle(s) retiré(s)" },
+            "nickname_updated": { "title": "📝 Pseudo modifié" }
         },
         "messages": {
-            "deleted": {
-                "title": "🗑️ Message supprimé",
-                "fields": {
-                    "author": "Auteur",
-                    "channel": "Canal",
-                    "date": "Date",
-                    "content_title": "📝 Contenu du message",
-                    "attachments_title": "📎 Pièces jointes"
-                }
-            },
-            "bulk_deleted": {
+            "deleted": { "title": "🗑️ Message supprimé" },
+            "bulk_deleted": { 
                 "title": "🗑️ Messages supprimés en masse",
-                "description": "**Canal :** {channel}\n**Nombre de messages :** {count}\n**Date :** {date}\n\nUn fichier `.txt` listant les messages supprimés sera envoyé ci-dessous et sera automatiquement supprimé après 24h.",
+                "description": "**Salon :** {channel}\n**Nombre de messages :** {count}\n**Date :** {date}\n\nUn fichier `.txt` listant les messages supprimés sera envoyé ci-dessous.",
                 "file": {
                     "title": "=== MESSAGES SUPPRIMÉS ===",
                     "empty_content": "(aucun contenu)"
                 }
-            }
+            },
+            "updated": { "title": "📝 Message modifié" }
         },
-        "channels": {
-            "created": {
-                "title_base": "Canal créé",
-                "fields": {
-                    "channel": "📍 Canal",
-                    "type": "🏷️ Type",
-                    "position": "📍 Position",
-                    "category": "📁 Catégorie",
-                    "topic": "📋 Sujet",
-                    "audio_bitrate": "🎵 Débit audio",
-                    "user_limit": "👥 Limite d'utilisateurs",
-                    "nsfw": "🔞 NSFW",
-                    "rate_limit": "⏱️ Limite de débit"
-                }
-            },
-            "deleted": {
-                "title_base": "Canal supprimé",
-                "fields": {
-                    "channel": "📍 Canal",
-                    "type": "🏷️ Type",
-                    "position": "📍 Position",
-                    "category": "📁 Catégorie",
-                    "topic": "📋 Sujet",
-                    "audio_bitrate": "🎵 Débit audio",
-                    "user_limit": "👥 Limite d'utilisateurs",
-                    "nsfw": "🔞 NSFW",
-                    "rate_limit": "⏱️ Limite de débit"
-                }
-            },
-            "updated": {
-                "title_base": "Canal modifié",
-                "fields": {
-                    "channel": "📍 Canal"
-                },
-                "changes": {
-                    "name": "📝 Nom",
-                    "topic": "📋 Sujet",
-                    "position": "📍 Position",
-                    "category": "📁 Catégorie",
-                    "perms_added": "✅ Permissions ajoutées pour",
-                    "perms_removed": "❌ Permissions retirées pour",
-                    "perms_modified": "🔄 Permissions modifiées pour",
-                    "audio_bitrate": "🎵 Débit audio",
-                    "user_limit": "👥 Limite d'utilisateurs",
-                    "nsfw": "🔞 NSFW",
-                    "rate_limit": "⏱️ Limite de débit"
-                }
-            }
+        "server": {
+            "updated": { "title": "⚙️ Serveur mis à jour" }
         },
         "voice": {
             "join": { "title": "🔊 Utilisateur a rejoint un salon vocal" },
@@ -788,31 +792,20 @@
                 "title_undeafened": "🎧 Utilisateur undeaf (casque)"
             },
             "self_mute": {
-                "title_on": "🎤 Utilisateur auto-mute",
-                "title_off": "🎤 Utilisateur auto-unmute",
-                "action_on": "Auto-mute",
-                "action_off": "Auto-unmute"
+                "title_on": "🎤 Utilisateur s'est mis en sourdine",
+                "title_off": "🎤 Utilisateur s'est retiré de sourdine",
+                "action_on": "Sourdine activée",
+                "action_off": "Sourdine désactivée"
             },
             "self_deaf": {
-                "title_on": "🎧 Utilisateur auto-deaf",
-                "title_off": "🎧 Utilisateur auto-undeaf",
-                "action_on": "Auto-deaf",
-                "action_off": "Auto-undeaf"
-            },
-            "fields": {
-                "user": "👤 Utilisateur",
-                "channel": "📍 Salon",
-                "old_channel": "📍 Ancien salon",
-                "new_channel": "📍 Nouveau salon",
-                "state": "État",
-                "action": "Action"
+                "title_on": "🎧 Utilisateur s'est assourdi",
+                "title_off": "🎧 Utilisateur n'est plus assourdi",
+                "action_on": "Assourdi",
+                "action_off": "Non assourdi"
             }
         },
         "welcome": {
             "message": "Bienvenue {user} ! 🎉",
-            "react_appended": "{reactor} te souhaite aussi la bienvenue !",
-            "react_appended_sg": "te souhaite aussi la bienvenue !",
-            "react_appended_pl": "te souhaitent aussi la bienvenue !",
             "reaction_emoji": "🎉"
         }
     },
@@ -857,8 +850,19 @@
         "panel_title": "Assistance",
         "panel_content": "Les tickets sont là pour vous aider !\nNotre équipe s'efforce de maintenir ce serveur calme et agréable pour tous.\nCe système a été créé pour faciliter la prise de contact.\n\n⚠️ Un ticket peut prendre du temps à être traité — merci de patienter !\nTout abus (spam, demandes inutiles, etc.) sera sévèrement sanctionné.\n\n**Autres rubriques**\n• Recrutement : Envie de nous rejoindre ?\n• Signaler : Quelque chose à rapporter ?\n• Partenariat : Collaborons ensemble !\n• Fondateurs : Besoin des fondateurs directement ?",
         "select_category_placeholder": "Choisissez votre catégorie de demande",
+        "closing": {
+            "title": "🗑️ Ticket en cours de fermeture",
+            "description": "Ce ticket sera supprimé dans 5 secondes.",
+            "summary": "Résumé",
+            "category": "Catégorie",
+            "closed_by": "Fermé par",
+            "transcript": "Transcript",
+            "auto_saved": "Sauvegardé automatiquement"
+        },
         "close_button_label": "Fermer le ticket",
-        "created_confirmation": "Ticket créé",
+        "created_confirmation": "Ticket créé: {channel}",
+        "created_confirmation_description": "Votre ticket a été créé.",
+        "staff_ping": "{role} Nouveau ticket {category} !",
         "errors": {
             "no_category_setup": "Catégorie de tickets non configurée. Utilisez /settickets.",
             "invalid_category": "Catégorie configurée introuvable.",
@@ -866,6 +870,7 @@
         },
         "logs": {
             "created": "Ticket créé par {user} dans #{channel} ({category})",
+            "created_reason": "Ticket {category} ouvert par {user}",
             "closed": "Ticket fermé par {user} dans #{channel}"
         },
         "categories": {

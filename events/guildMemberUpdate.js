@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'guildMemberUpdate',
@@ -21,17 +22,19 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
+
             // Vérifier les changements de rôles
             const addedRoles = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id));
             const removedRoles = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id));
 
             if (addedRoles.size > 0) {
                 const embed = new EmbedBuilder()
-                    .setTitle('🎭 Rôle(s) ajouté(s)')
+                    .setTitle(LanguageManager.get(lang, 'events.members.roles_added.title') || '🎭 Rôle(s) ajouté(s)')
                     .setColor(0x00FF00)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${newMember.user} (${newMember.user.tag})`, inline: true },
-                        { name: '🎭 Rôle(s) ajouté(s)', value: addedRoles.map(role => `<@&${role.id}>`).join(', '), inline: false }
+                        { name: LanguageManager.get(lang, 'events.common.fields.user') || '👤 Utilisateur', value: `${newMember.user} (${newMember.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.common.fields.role') || '🎭 Rôle(s)', value: addedRoles.map(role => `<@&${role.id}>`).join(', '), inline: false }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${newMember.user.id}` });
@@ -45,11 +48,11 @@ module.exports = {
 
             if (removedRoles.size > 0) {
                 const embed = new EmbedBuilder()
-                    .setTitle('🎭 Rôle(s) retiré(s)')
+                    .setTitle(LanguageManager.get(lang, 'events.members.roles_removed.title') || '🎭 Rôle(s) retiré(s)')
                     .setColor(0xFF0000)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${newMember.user} (${newMember.user.tag})`, inline: true },
-                        { name: '🎭 Rôle(s) retiré(s)', value: removedRoles.map(role => `<@&${role.id}>`).join(', '), inline: false }
+                        { name: LanguageManager.get(lang, 'events.common.fields.user') || '👤 Utilisateur', value: `${newMember.user} (${newMember.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.common.fields.role') || '🎭 Rôle(s)', value: removedRoles.map(role => `<@&${role.id}>`).join(', '), inline: false }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${newMember.user.id}` });
@@ -63,13 +66,14 @@ module.exports = {
 
             // Vérifier les changements de pseudo
             if (oldMember.nickname !== newMember.nickname) {
+                const noneLabel = LanguageManager.get(lang, 'events.common.none') || '*Aucun pseudo*';
                 const embed = new EmbedBuilder()
-                    .setTitle('📝 Pseudo modifié')
+                    .setTitle(LanguageManager.get(lang, 'events.members.nickname_updated.title') || '📝 Pseudo modifié')
                     .setColor(0xFFA500)
                     .addFields(
-                        { name: '👤 Utilisateur', value: `${newMember.user} (${newMember.user.tag})`, inline: true },
-                        { name: '📜 Ancien pseudo', value: oldMember.nickname || '*Aucun pseudo*', inline: true },
-                        { name: '📝 Nouveau pseudo', value: newMember.nickname || '*Aucun pseudo*', inline: true }
+                        { name: LanguageManager.get(lang, 'events.common.fields.user') || '👤 Utilisateur', value: `${newMember.user} (${newMember.user.tag})`, inline: true },
+                        { name: LanguageManager.get(lang, 'events.common.fields.old_nickname') || '📜 Ancien pseudo', value: oldMember.nickname || noneLabel, inline: true },
+                        { name: LanguageManager.get(lang, 'events.common.fields.new_nickname') || '📝 Nouveau pseudo', value: newMember.nickname || noneLabel, inline: true }
                     )
                     .setTimestamp()
                     .setFooter({ text: `ID: ${newMember.user.id}` });

@@ -1,5 +1,6 @@
 const { EmbedBuilder, AuditLogEvent } = require('discord.js');
 const Guild = require('../models/Guild');
+const LanguageManager = require('../utils/languageManager');
 
 module.exports = {
     name: 'guildBanRemove',
@@ -21,9 +22,11 @@ module.exports = {
 
             if (!logChannel) return;
 
+            const lang = guild.language || 'fr';
+
             // Vérifier les logs d'audit pour obtenir plus d'informations
             let executor = null;
-            let reason = 'Aucune raison fournie';
+            let reason = LanguageManager.get(lang, 'events.common.none') || 'Aucune raison fournie';
 
             try {
                 const auditLogs = await ban.guild.fetchAuditLogs({
@@ -44,16 +47,16 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('🔓 Membre débanni')
+                .setTitle(LanguageManager.get(lang, 'events.members.unbanned.title') || '🔓 Membre débanni')
                 .setColor(0x00FF00)
                 .addFields(
-                    { name: '👤 Utilisateur', value: `${ban.user} (${ban.user.tag})`, inline: true },
-                    { name: '📝 Raison', value: reason, inline: false }
+                    { name: LanguageManager.get(lang, 'events.common.fields.user') || '👤 Utilisateur', value: `${ban.user} (${ban.user.tag})`, inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.reason') || '📝 Raison', value: reason, inline: false }
                 );
 
             if (executor) {
                 embed.addFields(
-                    { name: '👮 Modérateur', value: `${executor} (${executor.tag})`, inline: true }
+                    { name: LanguageManager.get(lang, 'events.common.fields.moderator') || '👮 Modérateur', value: `${executor} (${executor.tag})`, inline: true }
                 );
             }
 

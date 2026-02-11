@@ -40,11 +40,11 @@ module.exports = {
             const sorted = Array.from(messages.values()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
             const fileTitle = LanguageManager.get(lang, 'events.messages.bulk_deleted.file.title') || '=== MESSAGES SUPPRIMÉS ===';
             const serverLabel = LanguageManager.get(lang, 'common.server') || 'Serveur';
-            const channelLabel = LanguageManager.get(lang, 'common.channel') || 'Canal';
-            const dateLabel = LanguageManager.get(lang, 'common.date') || 'Date';
-            const messageCountLabel = LanguageManager.get(lang, 'common.message_count') || 'Nombre de messages';
-            const unknownLabel = LanguageManager.get(lang, 'common.unknown') || 'Inconnu';
-            const attachmentsLabel = LanguageManager.get(lang, 'common.attachments') || 'Pièces jointes';
+            const channelLabel = LanguageManager.get(lang, 'events.common.fields.channel') || '📍 Salon';
+            const dateLabel = LanguageManager.get(lang, 'events.common.fields.date') || '📅 Date';
+            const messageCountLabel = LanguageManager.get(lang, 'events.common.fields.count') || '🔢 Nombre';
+            const unknownLabel = LanguageManager.get(lang, 'events.common.unknown') || 'Inconnu';
+            const attachmentsLabel = LanguageManager.get(lang, 'events.common.fields.attachments') || '📎 Pièces jointes';
             const emptyContentLabel = LanguageManager.get(lang, 'events.messages.bulk_deleted.file.empty_content') || '(contenu vide)';
 
             let txt = `${fileTitle}\n`;

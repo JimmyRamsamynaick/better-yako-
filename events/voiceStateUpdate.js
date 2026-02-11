@@ -68,13 +68,13 @@ module.exports = {
         }
         if (!logChannel) return;
 
-        const userLabel = LanguageManager.get(lang, 'events.voice.fields.user') || '👤 Utilisateur';
-        const channelLabel = LanguageManager.get(lang, 'events.voice.fields.channel') || '📍 Canal';
-        const oldChannelLabel = LanguageManager.get(lang, 'events.voice.fields.old_channel') || '📍 Ancien canal';
-        const newChannelLabel = LanguageManager.get(lang, 'events.voice.fields.new_channel') || '📍 Nouveau canal';
-        const stateLabel = LanguageManager.get(lang, 'events.voice.fields.state') || 'État';
-        const actionLabel = LanguageManager.get(lang, 'events.voice.fields.action') || 'Action';
-        const moderatorLabel = LanguageManager.get(lang, 'common.moderator') || 'Modérateur';
+        const userLabel = LanguageManager.get(lang, 'events.common.fields.user') || '👤 Utilisateur';
+        const channelLabel = LanguageManager.get(lang, 'events.common.fields.channel') || '📍 Canal';
+        const oldChannelLabel = LanguageManager.get(lang, 'events.common.fields.old_channel') || '📍 Ancien canal';
+        const newChannelLabel = LanguageManager.get(lang, 'events.common.fields.new_channel') || '📍 Nouveau canal';
+        const stateLabel = LanguageManager.get(lang, 'events.common.fields.state') || 'État';
+        const actionLabel = LanguageManager.get(lang, 'events.common.fields.action') || 'Action';
+        const moderatorLabel = LanguageManager.get(lang, 'events.common.fields.moderator') || '👮 Modérateur';
 
         const member = newState.member || oldState.member;
         const userTag = member ? `${member} (${member.user.username})` : 'Inconnu';
@@ -175,8 +175,8 @@ module.exports = {
                 ? (LanguageManager.get(lang, 'events.voice.mute_micro.title_muted') || 'Utilisateur mis en sourdine (micro)')
                 : (LanguageManager.get(lang, 'events.voice.mute_micro.title_unmuted') || 'Utilisateur retiré de sourdine (micro)');
             const stateText = newState.serverMute
-                ? (LanguageManager.get(lang, 'common.muted') || 'Muted')
-                : (LanguageManager.get(lang, 'common.unmuted') || 'Unmuted');
+                ? (LanguageManager.get(lang, 'common.muted') || 'Sourdine activée')
+                : (LanguageManager.get(lang, 'common.unmuted') || 'Sourdine désactivée');
             const moderator = await findModerator(AuditLogEvent.MemberUpdate);
             const fields = [
                 { name: userLabel, value: userTag, inline: true },
@@ -193,8 +193,8 @@ module.exports = {
                 ? (LanguageManager.get(lang, 'events.voice.deaf.title_deafened') || 'Utilisateur assourdi (casque)')
                 : (LanguageManager.get(lang, 'events.voice.deaf.title_undeafened') || 'Utilisateur non assourdi (casque)');
             const stateText = newState.serverDeaf
-                ? (LanguageManager.get(lang, 'common.deafened') || 'Deafened')
-                : (LanguageManager.get(lang, 'common.undeafened') || 'Undeafened');
+                ? (LanguageManager.get(lang, 'common.deafened') || 'Assourdi')
+                : (LanguageManager.get(lang, 'common.undeafened') || 'Non assourdi');
             const moderator = await findModerator(AuditLogEvent.MemberUpdate);
             const fields = [
                 { name: userLabel, value: userTag, inline: true },

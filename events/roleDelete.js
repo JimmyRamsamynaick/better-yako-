@@ -23,12 +23,12 @@ module.exports = {
 
             const lang = guild.language || 'fr';
             const embed = new EmbedBuilder()
-                .setTitle(LanguageManager.get(lang, 'events.roles.deleted.title'))
+                .setTitle(LanguageManager.get(lang, 'events.roles.deleted.title') || '🎭 Rôle supprimé')
                 .setColor(0xFF0000)
                 .addFields(
-                    { name: LanguageManager.get(lang, 'events.roles.deleted.fields.role'), value: `\`${role.name}\``, inline: false },
-                    { name: LanguageManager.get(lang, 'events.roles.deleted.fields.color'), value: role.hexColor || '#000000', inline: true },
-                    { name: LanguageManager.get(lang, 'events.roles.deleted.fields.position'), value: `${role.position}`, inline: true }
+                    { name: LanguageManager.get(lang, 'events.common.fields.role') || '🎭 Rôle', value: `\`${role.name}\``, inline: false },
+                    { name: LanguageManager.get(lang, 'events.common.fields.color') || '🎨 Couleur', value: role.hexColor || '#000000', inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.position') || '📍 Position', value: `${role.position}`, inline: true }
                 )
                 .setTimestamp()
                 .setFooter({ text: `ID: ${role.id}` });

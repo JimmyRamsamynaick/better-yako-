@@ -25,19 +25,19 @@ module.exports = {
             const changes = [];
 
             if (oldRole.name !== newRole.name) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.name'), value: `\`${oldRole.name}\` → \`${newRole.name}\``, inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.name') || '📝 Nom', value: `\`${oldRole.name}\` → \`${newRole.name}\``, inline: false });
             }
             if (oldRole.hexColor !== newRole.hexColor) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.color'), value: `${oldRole.hexColor} → ${newRole.hexColor}`, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.color') || '🎨 Couleur', value: `${oldRole.hexColor} → ${newRole.hexColor}`, inline: true });
             }
             if (oldRole.hoist !== newRole.hoist) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.hoist'), value: `${oldRole.hoist ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')} → ${newRole.hoist ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')}`, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.hoist') || '🎭 Affiché séparément', value: `${oldRole.hoist ? (LanguageManager.get(lang, 'events.common.enabled') || 'Oui') : (LanguageManager.get(lang, 'events.common.disabled') || 'Non')} → ${newRole.hoist ? (LanguageManager.get(lang, 'events.common.enabled') || 'Oui') : (LanguageManager.get(lang, 'events.common.disabled') || 'Non')}`, inline: true });
             }
             if (oldRole.mentionable !== newRole.mentionable) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.mentionable'), value: `${oldRole.mentionable ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')} → ${newRole.mentionable ? LanguageManager.get(lang, 'common.yes') : LanguageManager.get(lang, 'common.no')}`, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.mentionable') || '🔔 Mentionnable', value: `${oldRole.mentionable ? (LanguageManager.get(lang, 'events.common.enabled') || 'Oui') : (LanguageManager.get(lang, 'events.common.disabled') || 'Non')} → ${newRole.mentionable ? (LanguageManager.get(lang, 'events.common.enabled') || 'Oui') : (LanguageManager.get(lang, 'events.common.disabled') || 'Non')}`, inline: true });
             }
             if (oldRole.position !== newRole.position) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.position'), value: `\`${oldRole.position}\` → \`${newRole.position}\``, inline: true });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.position') || '📍 Position', value: `\`${oldRole.position}\` → \`${newRole.position}\``, inline: true });
             }
 
             const oldPerms = oldRole.permissions.toArray();
@@ -46,19 +46,19 @@ module.exports = {
             const removedPerms = oldPerms.filter(p => !newPerms.includes(p));
 
             if (addedPerms.length > 0) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.perms_added'), value: addedPerms.join(', '), inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.perms_added') || '✅ Permissions ajoutées', value: addedPerms.join(', '), inline: false });
             }
             if (removedPerms.length > 0) {
-                changes.push({ name: LanguageManager.get(lang, 'events.roles.updated.fields.perms_removed'), value: removedPerms.join(', '), inline: false });
+                changes.push({ name: LanguageManager.get(lang, 'events.common.fields.perms_removed') || '❌ Permissions retirées', value: removedPerms.join(', '), inline: false });
             }
 
             if (changes.length === 0) return;
 
             const embed = new EmbedBuilder()
-                .setTitle(LanguageManager.get(lang, 'events.roles.updated.title'))
+                .setTitle(LanguageManager.get(lang, 'events.roles.updated.title') || '🎭 Rôle mis à jour')
                 .setColor(0xFFA500)
                 .addFields(
-                    { name: LanguageManager.get(lang, 'events.roles.updated.fields.role'), value: `<@&${newRole.id}> (\`${newRole.name}\`)`, inline: false },
+                    { name: LanguageManager.get(lang, 'events.common.fields.role') || '🎭 Rôle', value: `<@&${newRole.id}> (\`${newRole.name}\`)`, inline: false },
                     ...changes
                 )
                 .setTimestamp()

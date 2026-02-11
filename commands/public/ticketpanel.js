@@ -15,8 +15,8 @@ const CATEGORIES = [
     { key: 'owners', emoji: { name: '👑' } }
 ];
 
-function safeLang(key, fallback, lang = 'fr') {
-    const translation = LanguageManager.get(lang, key);
+function safeLang(key, fallback, lang = 'fr', replacements = {}) {
+    const translation = LanguageManager.get(lang, key, replacements);
     return translation && !translation.startsWith('[MISSING:') ? translation : fallback;
 }
 
@@ -78,7 +78,7 @@ async function createTicketChannel(interaction, categoryKey) {
             name: channelName,
             type: ChannelType.GuildText,
             parent: category.id,
-            reason: `Ticket ${categoryKey} ouvert par ${interaction.user.tag}`,
+            reason: safeLang('tickets.logs.created_reason', `Ticket ${categoryKey} ouvert par ${interaction.user.tag}`, lang, { category: categoryKey, user: interaction.user.tag }),
             permissionOverwrites: overwrites
         });
 
@@ -97,14 +97,17 @@ async function createTicketChannel(interaction, categoryKey) {
 
         const openEmbed = {
             color: 0x5865F2,
-            title: LanguageManager.get(lang, 'tickets.open_title_template', { category: categoryLabel }) || `Ticket ${categoryLabel}`,
-            description: LanguageManager.get(lang, 'tickets.open_description', { user: interaction.user.toString() }) || `Bonjour ${interaction.user.toString()}, bienvenue dans votre ticket !\nUn membre du staff va vous prendre en charge dans les plus brefs délais.`,
+            title: safeLang('tickets.open_title_template', `Ticket ${categoryLabel}`, lang, { category: categoryLabel }),
+            description: safeLang('tickets.open_description', `Bonjour ${interaction.user.toString()}, bienvenue dans votre ticket !\nUn membre du staff va vous prendre en charge dans les plus brefs délais.`, lang, { user: interaction.user.toString() }),
             fields: [
-                { name: LanguageManager.get(lang, 'tickets.open_fields.category') || 'Catégorie', value: categoryLabel, inline: true },
-                { name: LanguageManager.get(lang, 'tickets.open_fields.created') || 'Créé le', value: `<t:${Math.floor(channel.createdTimestamp / 1000)}:F>`, inline: true },
-                { name: LanguageManager.get(lang, 'tickets.open_reminders_label') || 'Rappels', value: LanguageManager.get(lang, 'tickets.open_reminders_content') || '→ Soyez précis dans votre demande\n→ Restez poli et respectueux\n→ Patientez, nous répondons rapidement\n→ Ne spammez pas le ticket' }
+                { name: safeLang('tickets.open_fields.category', 'Catégorie', lang), value: categoryLabel, inline: true },
+                { name: safeLang('tickets.open_fields.created', 'Créé le', lang), value: `<t:${Math.floor(channel.createdTimestamp / 1000)}:F>`, inline: true },
+                { 
+                    name: safeLang('tickets.open_reminders_label', 'Rappels', lang), 
+                    value: safeLang('tickets.open_reminders_content', '→ Soyez précis dans votre demande\n→ Restez poli et respectueux\n→ Patientez, nous répondons rapidement\n→ Ne spammez pas le ticket', lang) 
+                }
             ],
-            footer: { text: LanguageManager.get(lang, 'tickets.open_footer', { date: footerDate }) || `Ticket créé le ${footerDate}` }
+            footer: { text: safeLang('tickets.open_footer', `Ticket créé le ${footerDate}`, lang, { date: footerDate }) }
         };
 
         const closeButton = {
@@ -131,15 +134,17 @@ async function createTicketChannel(interaction, categoryKey) {
         if (guildData.tickets && guildData.tickets.staffRoleId) {
             const staffRole = interaction.guild.roles.cache.get(guildData.tickets.staffRoleId);
             if (staffRole) {
-                await channel.send(`${staffRole} Nouveau ticket ${categoryLabel} !`);
+                const staffPingMsg = LanguageManager.get(lang, 'tickets.staff_ping', { role: staffRole.toString(), category: categoryLabel }) || `${staffRole} Nouveau ticket ${categoryLabel} !`;
+                await channel.send(staffPingMsg);
             }
         }
 
-        const createdMsg = safeLang('tickets.created_confirmation', lang === 'en' ? `Ticket created: #${channel.name}` : `Ticket créé: #${channel.name}`, lang);
+        const createdMsg = safeLang('tickets.created_confirmation', `Ticket créé: #${channel.name}`, lang, { channel: channel.toString() });
+        const createdDesc = safeLang('tickets.created_confirmation_description', 'Votre ticket a été créé.', lang);
         await respond({
             embeds: [{
                 title: `✅ ${createdMsg}`,
-                description: lang === 'en' ? 'Your ticket has been created.' : 'Votre ticket a été créé.'
+                description: createdDesc
             }],
             ephemeral: true
         });
@@ -219,17 +224,17 @@ module.exports = {
                 });
             } catch (err) {
                 await interaction.editReply({
-                    embeds: [{ title: '❌ Erreur', description: err.message }]
+                    embeds: [{ title: safeLang('common.error', '❌ Erreur', lang), description: err.message }]
                 });
             }
         } else {
             const missing = [
-                !canSend ? 'Envoyer des messages' : null,
-                !canEmbed ? 'Intégrer des liens' : null,
+                !canSend ? (safeLang('common.permissions.send_messages', 'Envoyer des messages', lang)) : null,
+                !canEmbed ? (safeLang('common.permissions.embed_links', 'Intégrer des liens', lang)) : null,
             ].filter(Boolean).join(', ');
             await interaction.editReply({
                 embeds: [{
-                    title: '❌ Permissions manquantes',
+                    title: `❌ ${safeLang('common.errors.missing_permissions', 'Permissions manquantes', lang)}`,
                     description: safeLang('tickets.panel_missing_perms', `Je n’ai pas les permissions pour envoyer le panneau ici (${missing}).`, lang)
                 }]
             });
@@ -274,10 +279,15 @@ module.exports = {
 
         try {
             const closeEmbed = {
-                title: '🗑️ Ticket en cours de fermeture',
-                description: 'Ce ticket sera supprimé dans 5 secondes.',
+                title: safeLang('tickets.closing.title', '🗑️ Ticket en cours de fermeture', lang),
+                description: safeLang('tickets.closing.description', 'Ce ticket sera supprimé dans 5 secondes.', lang),
                 fields: [
-                    { name: 'Résumé', value: `• **Catégorie :** ${categoryLabel}\n• **Fermé par :** ${interaction.user.toString()}\n• **Transcript :** Sauvegardé automatiquement` }
+                    { 
+                        name: safeLang('tickets.closing.summary', 'Résumé', lang), 
+                        value: `• **${safeLang('tickets.closing.category', 'Catégorie', lang)} :** ${categoryLabel}\n` +
+                               `• **${safeLang('tickets.closing.closed_by', 'Fermé par', lang)} :** ${interaction.user.toString()}\n` +
+                               `• **${safeLang('tickets.closing.transcript', 'Transcript', lang)} :** ${safeLang('tickets.closing.auto_saved', 'Sauvegardé automatiquement', lang)}` 
+                    }
                 ],
                 timestamp: new Date()
             };
@@ -299,7 +309,8 @@ module.exports = {
                         }
 
                         const now = new Date();
-                        const fullDate = now.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        const locale = lang === 'fr' ? 'fr-FR' : 'en-US';
+                        const fullDate = now.toLocaleString(locale, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
                         const dateFileName = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
                         
                         // 1. Détection du créateur
@@ -328,14 +339,14 @@ module.exports = {
                         
                         // 3. Génération du LOG BRUT (Enveloppé dans un commentaire HTML pour être invisible au navigateur mais visible sur Discord)
                         let textLog = `<!-- TRANSCRIPT LOG\n`;
-                        textLog += `${"Envoyé".padEnd(12)} : ${fullDate}\n`;
-                        textLog += `${"Sauvegardé".padEnd(12)} : ${fullDate}\n`;
-                        textLog += `${"Salon".padEnd(12)} : ${channel.name}\n`;
-                        textLog += `${"Serveur".padEnd(12)} : ${interaction.guild.name}\n`;
+                        textLog += `${safeLang('transcript.log_fields.sent_at', 'Envoyé', lang).padEnd(12)} : ${fullDate}\n`;
+                        textLog += `${safeLang('transcript.log_fields.saved_at', 'Sauvegardé', lang).padEnd(12)} : ${fullDate}\n`;
+                        textLog += `${safeLang('transcript.log_fields.channel', 'Salon', lang).padEnd(12)} : ${channel.name}\n`;
+                        textLog += `${safeLang('transcript.log_fields.server', 'Serveur', lang).padEnd(12)} : ${interaction.guild.name}\n`;
                         textLog += `\n---------------- MESSAGE HISTORY ----------------\n\n`;
 
                         sortedMessages.forEach(msg => {
-                            const msgDate = msg.createdAt.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            const msgDate = msg.createdAt.toLocaleString(locale, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                             textLog += `[${msg.author.tag}] : ${msgDate}\n`;
                             if (msg.content) textLog += `${msg.content}\n`;
                             if (msg.embeds.length > 0) {
@@ -373,12 +384,12 @@ module.exports = {
 
                         // Message 2 : Embed "Ticket Fermé"
                         const logEmbed = new EmbedBuilder()
-                            .setTitle(`📕 Ticket Fermé`)
+                            .setTitle(safeLang('transcript.log_title', '📕 Ticket Fermé', lang))
                             .setColor(0xFF0000)
                             .addFields(
-                                { name: '🎫 Ticket', value: channel.name, inline: true },
-                                { name: '👤 Ouvert par', value: openerMention, inline: true },
-                                { name: '🔒 Fermé par', value: interaction.user.toString(), inline: true }
+                                { name: safeLang('transcript.log_fields.ticket', '🎫 Ticket', lang), value: channel.name, inline: true },
+                                { name: safeLang('transcript.log_fields.opened_by', '👤 Ouvert par', lang), value: openerMention, inline: true },
+                                { name: safeLang('transcript.log_fields.closed_by', '🔒 Fermé par', lang), value: interaction.user.toString(), inline: true }
                             )
                             .setFooter({ text: `${interaction.guild.name} • ${fullDate}`, iconURL: interaction.guild.iconURL() });
 

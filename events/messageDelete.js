@@ -35,11 +35,11 @@ module.exports = {
 
             // Créer le message avec le format components (i18n)
             const title = LanguageManager.get(lang, 'events.messages.deleted.title') || '🗑️ Message supprimé';
-            const authorLabel = LanguageManager.get(lang, 'events.messages.deleted.fields.author') || 'Auteur';
-            const channelLabel = LanguageManager.get(lang, 'events.messages.deleted.fields.channel') || 'Canal';
-            const dateLabel = LanguageManager.get(lang, 'events.messages.deleted.fields.date') || 'Date';
-            const contentTitle = LanguageManager.get(lang, 'events.messages.deleted.fields.content_title') || '📝 Contenu du message';
-            const attachmentsTitle = LanguageManager.get(lang, 'events.messages.deleted.fields.attachments_title') || '📎 Pièces jointes';
+            const authorLabel = LanguageManager.get(lang, 'events.common.fields.author') || 'Auteur';
+            const channelLabel = LanguageManager.get(lang, 'events.common.fields.channel') || 'Canal';
+            const dateLabel = LanguageManager.get(lang, 'events.common.fields.date') || 'Date';
+            const contentTitle = LanguageManager.get(lang, 'events.common.fields.content_title') || '📝 Contenu';
+            const attachmentsTitle = LanguageManager.get(lang, 'events.common.fields.attachments_title') || '📎 Pièces jointes';
             const attachmentsLabel = LanguageManager.get(lang, 'common.attachments') || 'Pièces jointes';
 
             let content = `## ${title}\n\n`;

@@ -29,13 +29,14 @@ module.exports = {
             }
 
             if (enableServerLogs && logChannel) {
+                const lang = (guild && guild.language) ? guild.language : 'fr';
                 const embed = new EmbedBuilder()
-                .setTitle('📥 Membre rejoint')
+                .setTitle(LanguageManager.get(lang, 'events.members.added.title') || '📥 Membre rejoint')
                 .setColor(0x00FF00)
                 .addFields(
-                    { name: '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
-                    { name: '📅 Compte créé', value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:F>`, inline: true },
-                    { name: '👥 Nombre de membres', value: `${member.guild.memberCount}`, inline: true }
+                    { name: LanguageManager.get(lang, 'events.common.fields.user') || '👤 Utilisateur', value: `${member.user} (${member.user.tag})`, inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.account_created') || '📅 Compte créé', value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:F>`, inline: true },
+                    { name: LanguageManager.get(lang, 'events.common.fields.member_count') || '👥 Nombre de membres', value: `${member.guild.memberCount}`, inline: true }
                 )
                 .setTimestamp()
                 .setFooter({ text: `ID: ${member.user.id}` });
