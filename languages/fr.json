@@ -731,10 +731,17 @@
             }
         },
         "channels": {
-            "created": { "title": "➕ Canal créé" },
-            "deleted": { "title": "➖ Canal supprimé" },
+            "created": { 
+                "title": "➕ Canal créé",
+                "title_base": "Canal créé"
+            },
+            "deleted": { 
+                "title": "➖ Canal supprimé",
+                "title_base": "Canal supprimé"
+            },
             "updated": { 
                 "title": "🔄 Canal modifié",
+                "title_base": "Canal modifié",
                 "changes": {
                     "perms_added": "✅ Permissions ajoutées pour",
                     "perms_removed": "❌ Permissions retirées pour",

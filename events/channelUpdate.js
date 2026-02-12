@@ -177,7 +177,7 @@ module.exports = {
                 };
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`${channelTypeEmoji[newChannel.type] || '📝'} ${LanguageManager.get(lang, 'events.channels.updated.title') || 'Canal modifié'}`)
+                    .setTitle(`${channelTypeEmoji[newChannel.type] || '📝'} ${LanguageManager.get(lang, 'events.channels.updated.title_base') || 'Canal modifié'}`)
                     .setColor(0xFFA500)
                     .addFields(
                         { name: LanguageManager.get(lang, 'events.common.fields.channel') || '📍 Canal', value: `${newChannel} (\`${newChannel.name}\`)`, inline: false },

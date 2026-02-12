@@ -78,7 +78,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle(`${channelTypeEmoji[channel.type] || '📝'} ${LanguageManager.get(lang, 'events.channels.deleted.title') || 'Canal supprimé'}`)
+                .setTitle(`${channelTypeEmoji[channel.type] || '📝'} ${LanguageManager.get(lang, 'events.channels.deleted.title_base') || 'Canal supprimé'}`)
                 .setColor(0xFF0000)
                 .addFields(fields)
                 .setTimestamp()
