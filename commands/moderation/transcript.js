@@ -23,14 +23,14 @@ module.exports = {
         const guildDoc = await Guild.findOne({ guildId: guild.id });
         if (!guildDoc || !guildDoc.tickets || !guildDoc.tickets.transcriptChannelId) {
             return interaction.editReply({
-                content: LanguageManager.get(lang, 'transcript.error_no_channel') || '❌ Le salon des transcripts n\'est pas configuré.'
+                content: LanguageManager.get(lang, 'commands.transcript.error_no_channel') || '❌ Le salon des transcripts n\'est pas configuré.'
             });
         }
 
         const transcriptChannel = guild.channels.cache.get(guildDoc.tickets.transcriptChannelId);
         if (!transcriptChannel) {
             return interaction.editReply({
-                content: LanguageManager.get(lang, 'transcript.error_no_channel') || '❌ Le salon des transcripts est introuvable.'
+                content: LanguageManager.get(lang, 'commands.transcript.error_no_channel') || '❌ Le salon des transcripts est introuvable.'
             });
         }
 
@@ -40,7 +40,7 @@ module.exports = {
         }
 
         await interaction.editReply({
-            content: LanguageManager.get(lang, 'transcript.generating') || '⏳ Génération du transcript en cours...'
+            content: LanguageManager.get(lang, 'commands.transcript.generating') || '⏳ Génération du transcript en cours...'
         });
 
         try {
@@ -88,7 +88,7 @@ module.exports = {
 
             // 6. Confirmation à l'utilisateur
             await interaction.editReply({
-                content: LanguageManager.get(lang, 'transcript.success', { channel: transcriptChannel.toString() }) || `✅ Transcript généré et envoyé dans ${transcriptChannel.toString()}.`
+                content: LanguageManager.get(lang, 'commands.transcript.success', { channel: transcriptChannel.toString() }) || `✅ Transcript généré et envoyé dans ${transcriptChannel.toString()}.`
             });
 
         } catch (error) {
