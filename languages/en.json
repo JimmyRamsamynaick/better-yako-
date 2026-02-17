@@ -280,8 +280,26 @@
                 "no_specific_channels": "Specific channels: None configured",
                 "useful_commands": "Useful commands:",
                 "cmd_setchannel": "• `/setlogs setchannel` - Configure a specific channel",
-                "cmd_config": "• `/setlogs config` - Change global log types"
-            }
+                "cmd_config": "• `/setlogs config` - Change global log types",
+                "cmd_removechannel": "• `/setlogs removechannel` - Remove a specific log channel",
+                "enabled_label": "✅ Enabled",
+                "disabled_label": "❌ Disabled",
+                "deleted_channel": "Deleted channel ({id})"
+            },
+            "invalid_types": "❌ Invalid log types. Available types: {validTypes}",
+            "types": {
+                "voice": "🔊 Voice",
+                "message": "💬 Message",
+                "channels": "📁 Channels",
+                "roles": "🎭 Roles",
+                "server": "⚙️ Server"
+            },
+            "channel_set_success": "✅ Channel {channel} configured for types: {types}",
+            "channel_removed_success": "✅ Channel {channel} removed from logs",
+            "channel_configured": "✅ Channel {channel} configured for log types: {types}",
+            "no_channels_configured": "❌ No specific channel is configured for logs.",
+            "channel_not_found": "❌ Channel {channel} is not configured for logs.",
+            "channel_removed": "✅ Channel {channel} removed from log configuration."
         },
         "setlang": {
             "description": "Change the bot's language",
