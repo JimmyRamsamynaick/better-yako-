@@ -82,9 +82,9 @@ async function createTicketChannel(interaction, categoryKey) {
             permissionOverwrites: overwrites
         });
 
-        // Enregistrer les métadonnées du ticket pour les logs de suppression
         setTicketMeta(channel.id, {
             openerUserId: interaction.user.id,
+            openerId: interaction.user.id,
             openerTag: interaction.user.tag,
             categoryKey,
             createdAt: channel.createdTimestamp
@@ -93,7 +93,15 @@ async function createTicketChannel(interaction, categoryKey) {
         const categoryLabel = safeLang(`tickets.categories.${categoryKey}.label`, categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1), lang);
 
         const locale = lang === 'en' ? 'en-US' : 'fr-FR';
-        const footerDate = new Date(channel.createdTimestamp).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+        const createdDate = new Date(channel.createdTimestamp);
+        const createdDisplay = createdDate.toLocaleString(locale, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        const footerDate = createdDate.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
 
         const openEmbed = {
             color: 0x5865F2,
@@ -101,7 +109,7 @@ async function createTicketChannel(interaction, categoryKey) {
             description: safeLang('tickets.open_description', `Bonjour ${interaction.user.toString()}, bienvenue dans votre ticket !\nUn membre du staff va vous prendre en charge dans les plus brefs délais.`, lang, { user: interaction.user.toString() }),
             fields: [
                 { name: safeLang('tickets.open_fields.category', 'Catégorie', lang), value: categoryLabel, inline: true },
-                { name: safeLang('tickets.open_fields.created', 'Créé le', lang), value: `<t:${Math.floor(channel.createdTimestamp / 1000)}:F>`, inline: true },
+                { name: safeLang('tickets.open_fields.created', 'Créé le', lang), value: createdDisplay, inline: true },
                 { 
                     name: safeLang('tickets.open_reminders_label', 'Rappels', lang), 
                     value: safeLang('tickets.open_reminders_content', '→ Soyez précis dans votre demande\n→ Restez poli et respectueux\n→ Patientez, nous répondons rapidement\n→ Ne spammez pas le ticket', lang) 

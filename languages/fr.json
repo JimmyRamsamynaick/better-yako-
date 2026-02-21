@@ -594,6 +594,22 @@
             "success": "Catégorie de tickets définie sur {category}",
             "transcript_success": "Salon des transcripts défini sur {channel}"
         },
+        "ticket": {
+            "description": "Gérer un ticket",
+            "add_description": "Ajouter un membre au ticket",
+            "add_member_option": "Membre à ajouter au ticket",
+            "claim_description": "Prendre en charge le ticket (claim)",
+            "add_success": "{member} a été ajouté au ticket.",
+            "claim_success": "Ce ticket a été claim par {member}.",
+            "errors": {
+                "not_in_ticket": "Cette commande doit être utilisée dans un salon de ticket.",
+                "member_not_found": "Membre introuvable sur ce serveur.",
+                "add_failed": "Impossible d’ajouter ce membre au ticket.",
+                "not_staff": "Seul un membre du staff peut claim ce ticket.",
+                "already_claimed": "Ce ticket est déjà claim par un autre membre du staff.",
+                "claim_failed": "Impossible de claim ce ticket."
+            }
+        },
         "transcript": {
             "description": "Générer un transcript du ticket actuel",
             "error_no_channel": "❌ Le salon des transcripts n'est pas configuré. Utilisez `/settickets settranscript`.",
