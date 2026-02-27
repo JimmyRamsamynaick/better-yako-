@@ -28,6 +28,204 @@
         "disabled": "Disabled",
         "missing_permissions": "Missing permissions"
     },
+    "pay": {
+        "description": "Transfer coins to another user",
+        "user_option": "The user to give coins to",
+        "amount_option": "The amount to transfer",
+        "logs": {
+            "title": "💸 Money Transfer",
+            "sender": "Sender",
+            "target": "Recipient",
+            "amount": "Amount",
+            "date": "Date"
+        },
+        "error": {
+            "self_transfer": "You cannot transfer money to yourself.",
+            "bot_transfer": "You cannot transfer money to a bot.",
+            "insufficient_funds": "Insufficient funds. You have {balance} 🪙, you are trying to send {amount} 🪙.",
+            "transaction_failed": "Transaction failed. Please try again."
+        },
+        "success": {
+            "title": "✅ Success",
+            "desc": "**{amount} 🪙** sent to {target} !"
+        }
+    },
+    "calc": {
+        "description": "Advanced calculator",
+        "expression_option": "Mathematical expression",
+        "error": "❌ Calculation error.",
+        "result": "🧮 Expression: {expression}\n= {result}",
+        "ai_result": "🧮 {answer}",
+        "ai_prompt": "Solve this mathematical expression or problem precisely. Give only the numeric result if possible, otherwise the steps then the result:\n{expression}"
+    },
+    "premium": {
+        "admin_required": "❌ Administrator permission required.",
+        "description": "Manage premium subscription",
+        "buy": {
+            "description": "Buy a premium key (PayPal)",
+            "email_option": "Your email",
+            "pseudo_option": "Your Discord username",
+            "error_create": "❌ Unable to create PayPal payment. Please try again later.",
+            "success_create": "✅ Payment created. Thank you!\n\nPayPal Link: {approveLink}\n\nAfter payment confirmation, an administrator will generate your key and send it to you.",
+            "error_general": "❌ Error creating PayPal payment.",
+            "success_paypalme": "✅ Thank you!\n\nPayment via PayPal.me: {link}\n\nPlease include in the payment note: \"Yako Premium - {pseudo} - {email}\".\nUpon receipt, a premium key will be generated and sent to you.",
+            "no_config": "⚠️ PayPal payment not configured. Contact an administrator."
+        },
+        "generate": {
+            "description": "Generate premium keys (Admin)",
+            "count_option": "Number of keys",
+            "days_option": "Validity days",
+            "success": "✅ Keys generated (valid for {days} days):\n{list}"
+        },
+        "redeem": {
+            "description": "Redeem a premium key",
+            "key_option": "Premium key",
+            "invalid": "❌ Invalid key.",
+            "used_or_revoked": "❌ This key has already been used or revoked.",
+            "expired": "❌ This key has expired.",
+            "success": "✅ Key redeemed. Premium active until {date}."
+        },
+        "info": {
+            "description": "Show server premium status",
+            "title": "📦 Premium",
+            "status_active": "Active ✅",
+            "status_inactive": "Inactive ❌",
+            "expires_at": "Expires on: {date}",
+            "linked_key": "Linked key: {key}",
+            "not_defined": "Not defined",
+            "none": "None",
+            "status_line": "Status: {status}"
+        },
+        "revoke": {
+            "description": "Revoke a premium key (Admin)",
+            "key_option": "Premium key to revoke",
+            "not_found": "❌ Key not found.",
+            "already_revoked": "ℹ️ This key is already revoked.",
+            "success": "✅ Key revoked and premium disabled for the associated server if applicable."
+        }
+    },
+    "balance": {
+        "title": "💰 {user}'s Balance",
+        "content": "**{amount}** coins"
+    },
+    "shop": {
+        "list": {
+            "title": "🛒 Yako Shop",
+            "desc": "Use `/shop buy <id>` to buy an item.",
+            "cosmetics": "🎨 Cosmetics (Colors)",
+            "roles": "🎭 Custom Roles",
+            "custom_role_note": "⚠️ **Note:** For custom roles, please open a ticket after your purchase to provide details (Name and Color)."
+        },
+        "logs": {
+            "success_title": "✅ Configuration saved",
+            "success_desc": "Shop log channel set to {channel}.",
+            "purchase_title": "🛒 New shop purchase",
+            "user": "User",
+            "item": "Item",
+            "price": "Price",
+            "new_balance": "New balance",
+            "date": "Date"
+        },
+        "error": {
+            "not_found": "Item not found.",
+            "insufficient_funds": "Insufficient funds. You have {balance} 🪙, you need {price}.",
+            "out_of_stock": "This item is out of stock.",
+            "role_create": "Error creating role. Check my permissions.",
+            "no_details": "You must specify a name for your custom role in the `details` option.",
+            "no_color": "You must specify a hex color (e.g. #FF0000) for this role.",
+            "invalid_color": "Invalid color format. Use hexadecimal format (e.g. #FF0000)."
+        },
+        "success": {
+            "title": "🧾 Purchase confirmed!",
+            "desc": "Congratulations {user}!\nYou bought **{item}** for `{price} 🪙`.\n\n*Your new balance: {balance} 🪙*",
+            "custom_role_desc": "Congratulations {user}!\nYou bought **{item}** for `{price} 🪙`.\n\n⚠️ **Action required:**\nPlease open a ticket to claim your custom role and provide details (Name and Color).\n\n*Your new balance: {balance} 🪙*"
+        },
+        "admin": {
+            "no_perm": "You do not have permission.",
+            "give_success": "**{amount} 🪙** added to {user}'s account.",
+            "remove_success": "**{amount} 🪙** removed from {user}'s account.",
+            "remove_fail": "Unable to remove this amount (insufficient funds or error)."
+        },
+        "item_format": "**ID {id}** - {name} : `{price} 🪙`",
+        "item_format_desc": "**ID {id}** - {name} : `{price} 🪙`\n*{description}*",
+        "role_reason": "Shop purchase by {user}",
+        "admin_logs": {
+            "give_title": "💰 Money Give (Admin)",
+            "remove_title": "💸 Money Remove (Admin)",
+            "admin": "Admin",
+            "beneficiary": "Beneficiary",
+            "target": "Target",
+            "amount": "Amount",
+            "date": "Date"
+        }
+    },
+    "leveling": {
+        "description": "Configure the leveling system (Admin)",
+        "toggle": {
+            "description": "Enable or disable the leveling system",
+            "enabled_option": "Enable?",
+            "success": "✅ The leveling system has been **{status}**."
+        },
+        "config": {
+            "description": "Configure XP gains",
+            "message_xp": "XP per message (default: 15)",
+            "voice_xp": "XP per minute in voice (default: 10)",
+            "levelup_channel": "Channel for level up messages (Empty = current channel)",
+            "success": "✅ Configuration updated:\n- XP Message: {messageXp}\n- XP Voice/min: {voiceXp}\n- Level Up Channel: {channel}"
+        },
+        "rank": {
+            "description": "Display your level or another user's level",
+            "target_option": "The user whose level you want to see",
+            "disabled": "❌ The leveling system is disabled on this server.",
+            "embed": {
+                "title": "{user}'s Profile",
+                "level": "Level",
+                "xp": "XP",
+                "rank": "Rank",
+                "progress": "Progress",
+                "xp_required": "XP Required",
+                "messages": "Messages",
+                "voice_time": "Voice Time",
+                "coins": "Coins",
+                "footer": "Yako Leveling System"
+            }
+        },
+        "setlevel": {
+            "description": "Modify a user's level or XP (Admin)",
+            "user_option": "The user to modify",
+            "type_option": "What you want to modify",
+            "amount_option": "The new amount",
+            "success": "✅ {user}'s **{type}** has been set to **{amount}**. (Current Level: {level}, XP: {xp})"
+        },
+        "leaderboard": {
+            "description": "Display the server leaderboard",
+            "embed": {
+                "title": "{server} Leaderboards",
+                "description": "Here are the leaderboards for the most active members of the server!",
+                "server_stats_title": "📊 Server Statistics:",
+                "total_xp": "Total XP",
+                "total_messages": "Total messages",
+                "total_voice": "Total voice",
+                "total_coins": "Total coins",
+                "user_stats_title": "👤 Your Statistics:",
+                "level_xp": "Level {level} ({xp} XP)",
+                "messages": "messages",
+                "voice": "in voice",
+                "coins": "coins",
+                "footer": "Leaderboards updated in real-time",
+                "select_placeholder": "Choose a leaderboard to display"
+            },
+            "types": {
+                "messages": "Messages Leaderboard",
+                "voice": "Voice Leaderboard",
+                "level": "Level Leaderboard",
+                "coins": "Economy Leaderboard",
+                "home": "Overview"
+            },
+            "empty": "No data available."
+        },
+        "levelup_message_default": "Congratulations {user}, you leveled up to level {level}! (+{coins} 🪙)"
+    },
     "commands": {
         "ping": {
             "description": "Check the bot's latency",
@@ -107,15 +305,16 @@
             "default_instructions": "**💡 Instructions:**\n• Use the dropdown menu below to choose a category\n• Each category contains specific commands\n• All commands are available based on your permissions",
             "select_placeholder": "🔍 Select a category...",
             "moderation_title": "🛡️ Moderation Commands",
-            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute (temporary)\n**`/unmute`** - Unmute\n**`/warn`** - Warn a member\n**`/unwarn`** - Remove a warning\n**`/warnlist`** - Warning list\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice ban`** - Forbids access to all voice and stage channels throughout the server (global by default). If the member is in voice, they are immediately disconnected.\n**`/voice unban`** - Restores access to all voice and stage channels (global).\n**`/voice kick`** - Kicks a member from their voice channel (immediate disconnection).\n**`/serverstats`** - Server statistics (auto category, total/humans/bots)\n**`/setupmute`** - Configure the mute system\n**`/setlogs`** - Configure logs\n**`/settickets`** - Configure tickets\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome message (admin, channel)\n**`/reloadlangs`** - Reload language files (Admin)",
+            "moderation_description": "**`/ban`** - Ban a member\n**`/unban`** - Unban a member\n**`/kick`** - Kick a member\n**`/mute`** - Mute (temporary)\n**`/unmute`** - Unmute\n**`/warn`** - Warn a member\n**`/unwarn`** - Remove a warning\n**`/warnlist`** - Warning list\n**`/clear`** - Delete messages\n**`/lock`** - Lock a channel\n**`/unlock`** - Unlock a channel\n**`/voice`** - Voice moderation (ban, unban, kick)\n**`/antiraid`** - Configure anti-raid protections\n**`/serverstats`** - Server statistics\n**`/setupmute`** - Configure the mute system\n**`/setlogs`** - Configure logs\n**`/settickets`** - Configure tickets\n**`/setlang`** - Change language\n**`/setwelcome`** - Configure welcome message\n**`/reloadlangs`** - Reload language files (Admin)\n**`/transcript`** - Generate a transcript of the ticket",
             "moderation_option": "Moderation",
             "moderation_desc": "Server management tools",
+            "serverstats_line": "**`/serverstats`** - Server statistics (auto category, total/humans/bots)",
             "economy_title": "💰 Economy Commands",
-            "economy_description": "**`/balance`** - Show your balance\n**`/shop`** - Access the shop (items, roles)\n**`/shop give`** - Give coins (Admin)\n**`/shop remove`** - Remove coins (Admin)",
+            "economy_description": "**`/balance`** - Show your balance\n**`/shop`** - Access the shop (items, roles)\n**`/shop give`** - Give coins (Admin)\n**`/shop remove`** - Remove coins (Admin)\n**`/pay`** - Transfer coins",
             "economy_option": "Economy",
             "economy_desc": "Shop and coin management",
             "public_title": "👥 Public Commands",
-            "public_description": "**`/help`** - Show this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/ticketpanel`** - Send ticket panel\n**`/vote`** - Vote for the bot on Top.gg",
+            "public_description": "**`/help`** - Show this help\n**`/ping`** - Check latency\n**`/serverinfo`** - Server information\n**`/userinfo`** - User information\n**`/ticket`** - Manage a ticket (add, claim)\n**`/ticketpanel`** - Send ticket panel\n**`/vote`** - Vote for the bot on Top.gg",
             "public_option": "Public",
             "public_desc": "Commands for all members",
             "levels_title": "📊 Leveling System",
@@ -123,7 +322,7 @@
             "levels_option": "Levels",
             "levels_desc": "Experience and ranking system",
             "premium_title": "⭐ Premium Commands",
-            "premium_description": "**`/ask`** - Ask a question to the AI\n\n*Advanced features reserved for premium servers*",
+            "premium_description": "**`/ask`** - Ask a question to the AI\n**`/calc`** - Advanced calculator\n**`/premium`** - Manage premium subscription\n\n*Advanced features reserved for premium servers*",
             "premium_option": "Premium",
             "premium_desc": "Exclusive premium features",
             "footer_text": "Need help? Contact the staff or use the appropriate commands!"
@@ -405,51 +604,33 @@
             "generating": "⏳ Generating transcript...",
             "success": "✅ Transcript generated and sent to {channel}."
         },
+        "ticket": {
+            "description": "Manage a ticket",
+            "add_description": "Add a member to the ticket",
+            "add_member_option": "Member to add to the ticket",
+            "claim_description": "Claim the ticket",
+            "errors": {
+                "not_in_ticket": "This command must be used in a ticket channel.",
+                "member_not_found": "Member not found on this server."
+            }
+        },
         "ticketpanel": {
             "description": "Send a ticket panel",
             "title": "🎫 Support Center",
             "content": "Choose a ticket category below.",
-            "footer": "The staff will answer you quickly.",
-            "close_button_label": "Close ticket",
-            "created_confirmation": "Ticket created: {channel}",
-            "created_confirmation_description": "Your ticket has been created.",
-            "staff_ping": "{role} New ticket {category}!",
-            "errors": {
-                "no_category_setup": "Ticket category not configured. Use /settickets.",
-                "invalid_category": "Configured category not found.",
-                "channel_not_found": "Ticket channel not found."
-            },
-            "logs": {
-                "created": "Ticket created by {user} in #{channel} ({category})",
-                "created_reason": "Ticket {category} opened by {user}",
-                "closed": "Ticket closed by {user} in #{channel}"
-            },
-            "categories": {
-                "support": {
-                    "label": "Support",
-                    "description": "Ask the staff for help"
-                },
-                "report": {
-                    "label": "Report",
-                    "description": "Report a problem or user"
-                },
-                "other": {
-                    "label": "Other",
-                    "description": "Other request"
-                },
-                "recrutement": {
-                    "label": "Recruitment",
-                    "description": "Want to join us?"
-                },
-                "partenariat": {
-                    "label": "Partnership",
-                    "description": "Collaborate with us"
-                },
-                "fondateur": {
-                    "label": "Founders",
-                    "description": "Directly contact the founders"
-                }
-            }
+            "footer": "The staff will answer you quickly."
+        },
+        "ask": {
+            "description": "Ask a question to the AI",
+            "message_option": "Your question",
+            "title": "🤖 AI Assistant",
+            "question": "Question",
+            "response": "Response",
+            "error_title": "❌ AI Error",
+            "error": "An error occurred while generating the response.",
+            "premium_required_title": "💎 Premium Required",
+            "premium_required": "This command requires a premium server. ⭐\nContact the support team for more information.",
+            "footer": "Question asked by {username}"
         }
     },
     "transcript": {

@@ -18,11 +18,11 @@ module.exports = {
                     'en-US': LanguageManager.get('en', 'commands.help.category_option') || 'Commands category'
                 })
                 .addChoices(
-                    { name: 'Modération', value: 'moderation' },
-                    { name: 'Économie', value: 'economy' },
-                    { name: 'Niveaux', value: 'levels' },
-                    { name: 'Public', value: 'public' },
-                    { name: 'Premium', value: 'premium' }
+                    { name: 'Modération', nameLocalizations: { 'en-US': 'Moderation' }, value: 'moderation' },
+                    { name: 'Économie', nameLocalizations: { 'en-US': 'Economy' }, value: 'economy' },
+                    { name: 'Niveaux', nameLocalizations: { 'en-US': 'Levels' }, value: 'levels' },
+                    { name: 'Public', nameLocalizations: { 'en-US': 'Public' }, value: 'public' },
+                    { name: 'Premium', nameLocalizations: { 'en-US': 'Premium' }, value: 'premium' }
                 )),
     
     async execute(interaction) {

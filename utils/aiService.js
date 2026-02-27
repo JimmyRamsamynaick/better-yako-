@@ -30,6 +30,10 @@ class AIService {
             return "Désolé, je ne peux pas répondre à cette question pour le moment. 😅";
         }
     }
+
+    static async generateResponse(question, userId) {
+        return this.ask(question, '');
+    }
 }
 
 module.exports = AIService;

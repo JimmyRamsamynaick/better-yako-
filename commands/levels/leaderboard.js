@@ -23,11 +23,10 @@ function formatVoiceTime(minutes) {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('leaderboard')
-        .setDescription('Affiche le classement du serveur')
+        .setDescription(LanguageManager.get('fr', 'leveling.leaderboard.description'))
         .setDescriptionLocalizations({
-            'fr': 'Affiche le classement du serveur',
-            'en-US': 'Displays the server leaderboard',
-            'en-GB': 'Displays the server leaderboard'
+            'en-US': LanguageManager.get('en', 'leveling.leaderboard.description'),
+            'en-GB': LanguageManager.get('en', 'leveling.leaderboard.description')
         }),
     async execute(interaction) {
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });

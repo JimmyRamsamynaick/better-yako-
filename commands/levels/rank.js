@@ -20,19 +20,17 @@ function formatVoiceTime(minutes) {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('rank')
-        .setDescription('Affiche votre niveau ou celui d\'un autre utilisateur')
+        .setDescription(LanguageManager.get('fr', 'leveling.rank.description'))
         .setDescriptionLocalizations({
-            'fr': 'Affiche votre niveau ou celui d\'un autre utilisateur',
-            'en-US': 'Displays your level or another user\'s level',
-            'en-GB': 'Displays your level or another user\'s level'
+            'en-US': LanguageManager.get('en', 'leveling.rank.description'),
+            'en-GB': LanguageManager.get('en', 'leveling.rank.description')
         })
         .addUserOption(option => 
             option.setName('target')
-                .setDescription('L\'utilisateur dont vous voulez voir le niveau')
+                .setDescription(LanguageManager.get('fr', 'leveling.rank.target_option'))
                 .setDescriptionLocalizations({
-                    'fr': 'L\'utilisateur dont vous voulez voir le niveau',
-                    'en-US': 'The user whose level you want to see',
-                    'en-GB': 'The user whose level you want to see'
+                    'en-US': LanguageManager.get('en', 'leveling.rank.target_option'),
+                    'en-GB': LanguageManager.get('en', 'leveling.rank.target_option')
                 })
                 .setRequired(false)),
     async execute(interaction) {

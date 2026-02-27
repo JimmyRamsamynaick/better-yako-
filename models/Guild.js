@@ -132,6 +132,10 @@ const guildSchema = new Schema({
         type: Boolean,
         default: false
     },
+    premiumUntil: {
+        type: Date,
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now

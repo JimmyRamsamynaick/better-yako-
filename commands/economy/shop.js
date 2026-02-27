@@ -7,38 +7,86 @@ const Guild = require('../../models/Guild');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('shop')
-        .setDescription('Système de boutique et d\'économie')
+        .setDescription(LanguageManager.get('fr', 'shop.description'))
+        .setDescriptionLocalizations({
+            'en-US': LanguageManager.get('en', 'shop.description')
+        })
         .addSubcommand(subcommand =>
             subcommand
                 .setName('list')
-                .setDescription('Affiche les items disponibles dans la boutique'))
+                .setDescription(LanguageManager.get('fr', 'shop.list_description'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'shop.list_description')
+                }))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('buy')
-                .setDescription('Acheter un item')
+                .setDescription(LanguageManager.get('fr', 'shop.buy_description'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'shop.buy_description')
+                })
                 .addIntegerOption(option =>
                     option.setName('id')
-                        .setDescription('ID de l\'item à acheter')
+                        .setDescription(LanguageManager.get('fr', 'shop.buy_id_option'))
+                        .setDescriptionLocalizations({
+                            'en-US': LanguageManager.get('en', 'shop.buy_id_option')
+                        })
                         .setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('give')
-                .setDescription('Donner des coins (Admin)')
-                .addUserOption(option => option.setName('user').setDescription('Utilisateur').setRequired(true))
-                .addIntegerOption(option => option.setName('amount').setDescription('Montant').setRequired(true)))
+                .setDescription(LanguageManager.get('fr', 'shop.give_description'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'shop.give_description')
+                })
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription(LanguageManager.get('fr', 'shop.user_option'))
+                        .setDescriptionLocalizations({
+                            'en-US': LanguageManager.get('en', 'shop.user_option')
+                        })
+                        .setRequired(true))
+                .addIntegerOption(option => 
+                    option.setName('amount')
+                        .setDescription(LanguageManager.get('fr', 'shop.amount_option'))
+                        .setDescriptionLocalizations({
+                            'en-US': LanguageManager.get('en', 'shop.amount_option')
+                        })
+                        .setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('remove')
-                .setDescription('Retirer des coins (Admin)')
-                .addUserOption(option => option.setName('user').setDescription('Utilisateur').setRequired(true))
-                .addIntegerOption(option => option.setName('amount').setDescription('Montant').setRequired(true)))
+                .setDescription(LanguageManager.get('fr', 'shop.remove_description'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'shop.remove_description')
+                })
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription(LanguageManager.get('fr', 'shop.user_option'))
+                        .setDescriptionLocalizations({
+                            'en-US': LanguageManager.get('en', 'shop.user_option')
+                        })
+                        .setRequired(true))
+                .addIntegerOption(option => 
+                    option.setName('amount')
+                        .setDescription(LanguageManager.get('fr', 'shop.amount_option'))
+                        .setDescriptionLocalizations({
+                            'en-US': LanguageManager.get('en', 'shop.amount_option')
+                        })
+                        .setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('setlogs')
-                .setDescription('Configurer le salon de logs pour les achats (Admin)')
+                .setDescription(LanguageManager.get('fr', 'shop.setlogs_description'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'shop.setlogs_description')
+                })
                 .addChannelOption(option => 
                     option.setName('channel')
-                        .setDescription('Le salon où envoyer les logs d\'achat')
+                        .setDescription(LanguageManager.get('fr', 'shop.setlogs_channel_option'))
+                        .setDescriptionLocalizations({
+                            'en-US': LanguageManager.get('en', 'shop.setlogs_channel_option')
+                        })
                         .addChannelTypes(ChannelType.GuildText)
                         .setRequired(true))),
     
@@ -184,14 +232,14 @@ module.exports = {
                     const logChannel = interaction.guild.channels.cache.get(guildData.shopLogs.channelId);
                     if (logChannel) {
                         const logEmbed = {
-                            title: '🛒 Nouvel achat boutique',
+                            title: LanguageManager.get(lang, 'shop.logs.purchase_title'),
                             color: 0xFFA500, // Orange
                             fields: [
-                                { name: 'Utilisateur', value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
-                                { name: 'Item', value: `${item.name} (ID: ${item.id})`, inline: true },
-                                { name: 'Prix', value: `${item.price} 🪙`, inline: true },
-                                { name: 'Nouveau solde', value: `${balance - item.price} 🪙`, inline: true },
-                                { name: 'Date', value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
+                                { name: LanguageManager.get(lang, 'shop.logs.user'), value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
+                                { name: LanguageManager.get(lang, 'shop.logs.item'), value: `${item.name} (ID: ${item.id})`, inline: true },
+                                { name: LanguageManager.get(lang, 'shop.logs.price'), value: `${item.price} 🪙`, inline: true },
+                                { name: LanguageManager.get(lang, 'shop.logs.new_balance'), value: `${balance - item.price} 🪙`, inline: true },
+                                { name: LanguageManager.get(lang, 'shop.logs.date'), value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
                             ]
                         };
                         await logChannel.send({ embeds: [logEmbed] });

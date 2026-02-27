@@ -7,14 +7,23 @@ const Guild = require('../../models/Guild');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('pay')
-        .setDescription('Transférer des coins à un autre utilisateur')
+        .setDescription(LanguageManager.get('fr', 'pay.description'))
+        .setDescriptionLocalizations({
+            'en-US': LanguageManager.get('en', 'pay.description')
+        })
         .addUserOption(option => 
             option.setName('user')
-                .setDescription('L\'utilisateur à qui donner des coins')
+                .setDescription(LanguageManager.get('fr', 'pay.user_option'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'pay.user_option')
+                })
                 .setRequired(true))
         .addIntegerOption(option => 
             option.setName('amount')
-                .setDescription('Le montant à transférer')
+                .setDescription(LanguageManager.get('fr', 'pay.amount_option'))
+                .setDescriptionLocalizations({
+                    'en-US': LanguageManager.get('en', 'pay.amount_option')
+                })
                 .setMinValue(1)
                 .setRequired(true)),
     
@@ -58,13 +67,13 @@ module.exports = {
                 const logChannel = interaction.guild.channels.cache.get(guildData.shopLogs.channelId);
                 if (logChannel) {
                     const logEmbed = {
-                        title: '💸 Transfert d\'argent',
+                        title: LanguageManager.get(lang, 'pay.logs.title'),
                         color: 0x3498DB, // Bleu
                         fields: [
-                            { name: 'Expéditeur', value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
-                            { name: 'Destinataire', value: `${target.tag} (${target.id})`, inline: true },
-                            { name: 'Montant', value: `${amount} 🪙`, inline: true },
-                            { name: 'Date', value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
+                            { name: LanguageManager.get(lang, 'pay.logs.sender'), value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
+                            { name: LanguageManager.get(lang, 'pay.logs.target'), value: `${target.tag} (${target.id})`, inline: true },
+                            { name: LanguageManager.get(lang, 'pay.logs.amount'), value: `${amount} 🪙`, inline: true },
+                            { name: LanguageManager.get(lang, 'pay.logs.date'), value: `<t:${Math.floor(Date.now() / 1000)}:f>` }
                         ]
                     };
                     await logChannel.send({ embeds: [logEmbed] });

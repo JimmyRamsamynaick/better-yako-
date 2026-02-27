@@ -559,6 +559,21 @@ class BotEmbeds {
         };
     }
 
+    static createAskErrorEmbed(guildId = null, lang = 'fr') {
+        const title = LanguageManager.get(lang, 'commands.ask.error_title') || '❌ AI Error';
+        const message = LanguageManager.get(lang, 'commands.ask.error') || 'An error occurred while generating the response.';
+        return {
+            components: [{
+                type: 17,
+                components: [{
+                    type: 10,
+                    content: `## ${title}\n\n${message}`
+                }]
+            }],
+            flags: 32768
+        };
+    }
+
     /**
      * Embed pour erreur premium requis
      */
@@ -988,9 +1003,7 @@ class BotEmbeds {
                         let text = `## 🛡️ ${LanguageManager.get(lang, 'commands.help.moderation_title')}
 ${base}`;
                         if (typeof base === 'string' && !base.includes('/serverstats')) {
-                            const line = lang === 'en'
-                                ? '**`/serverstats`** - Server statistics (auto category, total/humans/bots)'
-                                : '**`/serverstats`** - Statistiques du serveur (catégorie auto, total/humains/bots)';
+                            const line = LanguageManager.get(lang, 'commands.help.serverstats_line') || '**`/serverstats`** - Server statistics (auto category, total/humans/bots)';
                             text = `${text}\n${line}`;
                         }
                         categoryContent = text;

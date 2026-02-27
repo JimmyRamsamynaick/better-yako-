@@ -7,9 +7,9 @@ const { ComponentsV3 } = require('../../utils/ComponentsV3');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('transcript')
-        .setDescription('Générer un transcript du ticket actuel')
+        .setDescription(LanguageManager.get('fr', 'commands.transcript.description'))
         .setDescriptionLocalizations({
-            'en-US': 'Generate a transcript of the current ticket'
+            'en-US': LanguageManager.get('en', 'commands.transcript.description')
         })
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
@@ -46,7 +46,7 @@ module.exports = {
         try {
             // 2. Détection du créateur du ticket (souvent stocké dans le topic ou via le nom du salon)
             // On essaie de récupérer l'user à partir du nom du salon (format classique ticket-nom ou nom-id)
-            let ticketCreator = "Inconnu";
+            let ticketCreator = LanguageManager.get(lang, 'common.unknown') || "Inconnu";
             const channelNameParts = channel.name.split('-');
             if (channelNameParts.length > 1) {
                 ticketCreator = channelNameParts[1];
@@ -94,7 +94,7 @@ module.exports = {
         } catch (error) {
             console.error('Erreur transcript:', error);
             await interaction.editReply({
-                content: '❌ Une erreur est survenue lors de la génération du transcript.'
+                content: LanguageManager.get(lang, 'errors.command_execution') || '❌ Une erreur est survenue lors de la génération du transcript.'
             });
         }
     }

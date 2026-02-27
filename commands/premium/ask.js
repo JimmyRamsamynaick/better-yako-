@@ -1,7 +1,8 @@
 // commands/premium/ask.js
 const { SlashCommandBuilder } = require('discord.js');
 const Guild = require('../../models/Guild');
-const AIService = require('../../utils/aiService');
+const useGemini = !!(process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY);
+const AIService = useGemini ? require('../../utils/aiServiceGemini') : require('../../utils/aiService');
 const BotEmbeds = require('../../utils/embeds');
 const LanguageManager = require('../../utils/languageManager');
 
@@ -31,7 +32,8 @@ module.exports = {
         const lang = guildData?.language || 'fr';
 
         // Vérifier si le serveur a le premium
-        if (!guildData.isPremium) {
+        const premiumValid = !!(guildData?.premium && (!guildData.premiumUntil || new Date(guildData.premiumUntil) > new Date()));
+        if (!premiumValid) {
             const premiumRequiredEmbed = BotEmbeds.createPremiumRequiredEmbed(interaction.guild.id, lang);
             return interaction.reply({
                 ...premiumRequiredEmbed,
@@ -45,24 +47,23 @@ module.exports = {
 
         try {
             const response = await AIService.generateResponse(message, interaction.user.id);
-            
-            const responseEmbed = BotEmbeds.createAskResponseEmbed(
+            const payload = BotEmbeds.createAskResponseEmbed(
+                message,
                 response,
                 interaction.guild.id,
                 lang
             );
-            
-            await interaction.editReply({ embeds: [responseEmbed] });
+            await interaction.editReply(payload);
             
         } catch (error) {
             console.error('Erreur lors de la génération de la réponse IA:', error);
             
-            const errorEmbed = BotEmbeds.createAskErrorEmbed(
+            const errorPayload = BotEmbeds.createAskErrorEmbed(
                 interaction.guild.id,
                 lang
             );
             
-            await interaction.editReply({ embeds: [errorEmbed] });
+            await interaction.editReply(errorPayload);
         }
     }
 };
