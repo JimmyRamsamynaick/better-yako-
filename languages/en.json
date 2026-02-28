@@ -19,14 +19,37 @@
         "joined_at": "Joined at",
         "created_at": "Created at",
         "roles": "Roles",
-        "permissions": "Permissions",
+        "permissions": {
+            "send_messages": "Send messages",
+            "embed_links": "Embed links"
+        },
+        "errors": {
+            "missing_permissions": "Missing permissions"
+        },
+        "channel_types": {
+            "text": "Text",
+            "voice": "Voice",
+            "category": "Category",
+            "announcements": "Announcements",
+            "stage": "Stage",
+            "forum": "Forum"
+        },
+        "no_reason": "No reason provided",
+        "permanent": "Permanent",
+        "messages_deleted": "Messages deleted",
+        "deleted_messages_list": "Deleted messages list",
+        "no_content": "*[Message without content]*",
+        "more_messages": "other message(s)",
+        "unlimited": "Unlimited",
+        "attachments": "Attachments",
+        "success": "Success",
+        "no_permission": "You do not have permission.",
         "muted": "Muted",
         "unmuted": "Unmuted",
         "deafened": "Deafened",
         "undeafened": "Undeafened",
         "enabled": "Enabled",
-        "disabled": "Disabled",
-        "missing_permissions": "Missing permissions"
+        "disabled": "Disabled"
     },
     "pay": {
         "description": "Transfer coins to another user",

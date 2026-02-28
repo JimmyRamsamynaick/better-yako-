@@ -22,6 +22,8 @@
         "disabled": "Désactivé",
         "unlimited": "Illimité",
         "unknown": "Inconnu",
+        "success": "Succès",
+        "no_permission": "Vous n'avez pas la permission.",
         "permissions": {
             "send_messages": "Envoyer des messages",
             "embed_links": "Intégrer des liens"
