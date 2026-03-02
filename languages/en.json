@@ -253,8 +253,9 @@
         "ping": {
             "description": "Check the bot's latency",
             "title": "🏓 Pong!",
-            "latency": "Bot latency",
-            "api_latency": "API latency"
+            "footer": "Bot performance",
+            "details": "**Bot latency:** {latency}ms",
+            "api_latency_label": "API latency"
         },
         "ban": {
             "description": "Ban a member from the server",
