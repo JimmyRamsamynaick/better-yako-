@@ -305,7 +305,8 @@
             "error_hierarchy": "Vous ne pouvez pas bannir {user} (rôle supérieur ou égal)",
             "error_bot_permissions_title": "❌ Permissions du bot insuffisantes",
             "error_bot_permissions": "Je n'ai pas les permissions nécessaires pour bannir ce membre",
-            "error_already_banned": "Cet utilisateur est déjà banni"
+            "error_already_banned": "Cet utilisateur est déjà banni",
+            "error_bot": "Je ne peux pas me bannir moi-même"
         },
         "kick": {
             "description": "Expulser un membre du serveur",
