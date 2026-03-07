@@ -37,7 +37,8 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
     
     async execute(interaction) {
-        // Ne pas différer tout de suite: répondre immédiatement aux validations rapides
+        // Différer immédiatement pour éviter le timeout de 3 secondes (erreur 10062)
+        await interaction.deferReply({ ephemeral: false });
 
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
@@ -46,8 +47,6 @@ module.exports = {
         const user = interaction.options.getUser('user');
         const duration = interaction.options.getString('duration');
         const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
-
-        // deferReply déjà effectué plus haut
 
         // Vérifier les permissions de l'utilisateur avec overrides de rôles
         const hasModerate = interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers);
@@ -61,9 +60,10 @@ module.exports = {
                 interaction.guild.id,
                 'errors.no_permission',
                 {},
-                false
+                false,
+                lang
             );
-            return interaction.reply(payload);
+            return interaction.editReply(payload);
         }
 
         // Vérifier les permissions du bot
@@ -72,9 +72,10 @@ module.exports = {
                 interaction.guild.id,
                 'errors.bot_no_permission',
                 {},
-                false
+                false,
+                lang
             );
-            return interaction.reply(payload);
+            return interaction.editReply(payload);
         }
 
         if (user.id === interaction.user.id) {
@@ -82,9 +83,10 @@ module.exports = {
                 interaction.guild.id,
                 'commands.mute.error_self',
                 {},
-                false
+                false,
+                lang
             );
-            return interaction.reply(payload);
+            return interaction.editReply(payload);
         }
 
         try {
@@ -95,9 +97,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.mute.error_no_setup',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                return interaction.reply(payload);
+                return interaction.editReply(payload);
             }
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
@@ -106,9 +109,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.mute.error_role_not_found',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                return interaction.reply(payload);
+                return interaction.editReply(payload);
             }
 
             // Vérifier état role + DB pour éviter contradictions
@@ -122,14 +126,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.mute.error_already_muted',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                return interaction.reply(payload);
-            }
-
-            // À partir d'ici, on peut différer pour exécuter les actions (rôle + DB)
-            if (!interaction.deferred && !interaction.replied) {
-                await interaction.deferReply({ ephemeral: false });
+                return interaction.editReply(payload);
             }
 
             let muteUntil = null;
@@ -229,7 +229,8 @@ module.exports = {
                 interaction.guild.id,
                 'commands.mute.success_title',
                 successMessage,
-                false
+                false,
+                lang
             );
             await interaction.editReply(successPayload);
 
@@ -293,13 +294,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.mute.error',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply(payload);
-                } else {
-                    await interaction.reply(payload);
-                }
+                await interaction.editReply(payload);
             } catch (_) {}
         }
     }

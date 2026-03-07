@@ -29,7 +29,8 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
     
     async execute(interaction) {
-        // Répondre immédiatement pour validations rapides; différer seulement avant actions
+        // Différer immédiatement pour éviter le timeout de 3 secondes
+        await interaction.deferReply({ ephemeral: false });
 
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
@@ -38,17 +39,16 @@ module.exports = {
         const user = interaction.options.getUser('user');
         const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
 
-        // deferReply déjà effectué plus haut
-
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
             const payload = await ComponentsV3.errorEmbed(
                 interaction.guild.id,
                 'errors.no_permission',
                 {},
-                false
+                false,
+                lang
             );
-            return interaction.reply(payload);
+            return interaction.editReply(payload);
         }
 
         // Vérifier les permissions du bot
@@ -57,9 +57,10 @@ module.exports = {
                 interaction.guild.id,
                 'errors.bot_no_permission',
                 {},
-                false
+                false,
+                lang
             );
-            return interaction.reply(payload);
+            return interaction.editReply(payload);
         }
 
         try {
@@ -70,9 +71,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.unmute.error_no_setup',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                return interaction.reply(payload);
+                return interaction.editReply(payload);
             }
 
             const muteRole = interaction.guild.roles.cache.get(guildData.muteRole);
@@ -81,9 +83,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.unmute.error_role_not_found',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                return interaction.reply(payload);
+                return interaction.editReply(payload);
             }
 
             // Vérifier état role + DB pour éviter contradictions
@@ -97,14 +100,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.unmute.error_not_muted',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                return interaction.reply(payload);
-            }
-
-            // À partir d'ici, différer pour actions (remove role + DB)
-            if (!interaction.deferred && !interaction.replied) {
-                await interaction.deferReply({ ephemeral: false });
+                return interaction.editReply(payload);
             }
 
             // Lever le timeout s'il existe et retirer le rôle s'il est présent
@@ -136,7 +135,8 @@ module.exports = {
                 interaction.guild.id,
                 'commands.unmute.success_title',
                 successMessage,
-                false
+                false,
+                lang
             );
             await interaction.editReply(successPayload);
 
@@ -147,13 +147,10 @@ module.exports = {
                     interaction.guild.id,
                     'commands.unmute.error',
                     {},
-                    false
+                    false,
+                    lang
                 );
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply(payload);
-                } else {
-                    await interaction.reply(payload);
-                }
+                await interaction.editReply(payload);
             } catch (_) {}
         }
     }
