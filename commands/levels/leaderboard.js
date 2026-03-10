@@ -29,189 +29,200 @@ module.exports = {
             'en-GB': LanguageManager.get('en', 'leveling.leaderboard.description')
         }),
     async execute(interaction) {
-        const guildData = await Guild.findOne({ guildId: interaction.guild.id });
-        const economyData = await EconomyManager.getEconomy(interaction.guild.id);
-        const lang = guildData ? (guildData.language || 'fr') : 'fr';
+        await interaction.deferReply({ ephemeral: true });
 
-        if (!guildData || !guildData.users || guildData.users.length === 0) {
-            return interaction.reply({ content: LanguageManager.get(lang, 'leveling.leaderboard.empty'), ephemeral: true });
-        }
+        try {
+            const guildData = await Guild.findOne({ guildId: interaction.guild.id });
+            const economyData = await EconomyManager.getEconomy(interaction.guild.id);
+            const lang = guildData ? (guildData.language || 'fr') : 'fr';
 
-        // --- Helper function for generating Payload (Components V3) ---
-        const getPayload = async (selectedType) => {
-            // Calculate Stats
-            const totalXp = guildData.users.reduce((acc, u) => acc + (u.xp || 0), 0);
-            const totalMessages = guildData.users.reduce((acc, u) => acc + (u.messageCount || 0), 0);
-            const totalVoice = guildData.users.reduce((acc, u) => acc + (u.voiceTime || 0), 0);
-            const totalCoins = economyData.users.reduce((acc, u) => acc + (u.balance || 0), 0);
+            if (!guildData || !Array.isArray(guildData.users) || guildData.users.length === 0) {
+                return interaction.editReply({ content: LanguageManager.get(lang, 'leveling.leaderboard.empty') || 'Aucune donnée disponible.' });
+            }
+
+            const economyUsers = Array.isArray(economyData?.users) ? economyData.users : [];
+
+            // --- Helper function for generating Payload (Components V3) ---
+            const getPayload = async (selectedType) => {
+                // Calculate Stats
+                const totalXp = guildData.users.reduce((acc, u) => acc + (u.xp || 0), 0);
+                const totalMessages = guildData.users.reduce((acc, u) => acc + (u.messageCount || 0), 0);
+                const totalVoice = guildData.users.reduce((acc, u) => acc + (u.voiceTime || 0), 0);
+                const totalCoins = economyUsers.reduce((acc, u) => acc + (u.balance || 0), 0);
             
-            const currentUser = guildData.users.find(u => u.userId === interaction.user.id);
-            const userLevel = currentUser ? (currentUser.level || 0) : 0;
-            const userXp = currentUser ? (currentUser.xp || 0) : 0;
-            const userMessages = currentUser ? (currentUser.messageCount || 0) : 0;
-            const userVoice = currentUser ? (currentUser.voiceTime || 0) : 0;
+                const currentUser = guildData.users.find(u => u.userId === interaction.user.id);
+                const userLevel = currentUser ? (currentUser.level || 0) : 0;
+                const userXp = currentUser ? (currentUser.xp || 0) : 0;
+                const userMessages = currentUser ? (currentUser.messageCount || 0) : 0;
+                const userVoice = currentUser ? (currentUser.voiceTime || 0) : 0;
             
-            const currentEconomyUser = economyData.users.find(u => u.userId === interaction.user.id);
-            const userCoins = currentEconomyUser ? (currentEconomyUser.balance || 0) : 0;
+                const currentEconomyUser = economyUsers.find(u => u.userId === interaction.user.id);
+                const userCoins = currentEconomyUser ? (currentEconomyUser.balance || 0) : 0;
 
-            // 1. Stats Text Block
-            const serverStatsTitle = LanguageManager.get(lang, 'leveling.leaderboard.embed.server_stats_title');
-            const userStatsTitle = LanguageManager.get(lang, 'leveling.leaderboard.embed.user_stats_title').replace('Vos', interaction.user.username).replace('Your', interaction.user.username);
+                // 1. Stats Text Block
+                const serverStatsTitle = LanguageManager.get(lang, 'leveling.leaderboard.embed.server_stats_title') || (lang === 'en' ? 'Server Statistics:' : 'Statistiques du serveur :');
+                const userStatsTitleRaw = LanguageManager.get(lang, 'leveling.leaderboard.embed.user_stats_title') || (lang === 'en' ? 'Your Statistics:' : 'Vos Statistiques :');
+                const userStatsTitle = userStatsTitleRaw.replace('Vos', interaction.user.username).replace('Your', interaction.user.username);
             
-            const statsText = `### 🌙 • ${LanguageManager.get(lang, 'leveling.leaderboard.embed.title', { server: interaction.guild.name })}\n` +
-                `${LanguageManager.get(lang, 'leveling.leaderboard.embed.description')}\n\n` +
-                `### ${serverStatsTitle}\n` +
-                `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_xp')}:** \`${formatNumber(totalXp)}\`\n` +
-                `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_messages')}:** \`${formatNumber(totalMessages)}\`\n` +
-                `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_voice')}:** \`${formatVoiceTime(totalVoice)}\`\n` +
-                `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_coins')}:** \`${formatNumber(Math.floor(totalCoins))}\`\n\n` +
-                `### ${userStatsTitle}\n` +
-                `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.level_xp', { level: userLevel, xp: formatNumber(Math.floor(userXp)) })}**\n` +
-                `\`${formatNumber(userMessages)}\` **${LanguageManager.get(lang, 'leveling.leaderboard.embed.messages')}**\n` +
-                `\`${formatVoiceTime(userVoice)}\` **${LanguageManager.get(lang, 'leveling.leaderboard.embed.voice')}**\n` +
-                `\`${formatNumber(Math.floor(userCoins))}\` **${LanguageManager.get(lang, 'leveling.leaderboard.embed.coins')}**`;
+                const statsText = `### 🌙 • ${LanguageManager.get(lang, 'leveling.leaderboard.embed.title', { server: interaction.guild.name }) || `${interaction.guild.name} • Leaderboard`}\n` +
+                    `${LanguageManager.get(lang, 'leveling.leaderboard.embed.description') || ''}\n\n` +
+                    `### ${serverStatsTitle}\n` +
+                    `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_xp') || 'XP total'}:** \`${formatNumber(totalXp)}\`\n` +
+                    `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_messages') || 'Messages total'}:** \`${formatNumber(totalMessages)}\`\n` +
+                    `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_voice') || 'Vocal total'}:** \`${formatVoiceTime(totalVoice)}\`\n` +
+                    `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.total_coins') || 'Coins total'}:** \`${formatNumber(Math.floor(totalCoins))}\`\n\n` +
+                    `### ${userStatsTitle}\n` +
+                    `**${LanguageManager.get(lang, 'leveling.leaderboard.embed.level_xp', { level: userLevel, xp: formatNumber(Math.floor(userXp)) }) || `Niveau ${userLevel} (${formatNumber(Math.floor(userXp))} XP)`}**\n` +
+                    `\`${formatNumber(userMessages)}\` **${LanguageManager.get(lang, 'leveling.leaderboard.embed.messages') || 'messages'}**\n` +
+                    `\`${formatVoiceTime(userVoice)}\` **${LanguageManager.get(lang, 'leveling.leaderboard.embed.voice') || 'en vocal'}**\n` +
+                    `\`${formatNumber(Math.floor(userCoins))}\` **${LanguageManager.get(lang, 'leveling.leaderboard.embed.coins') || 'coins'}**`;
 
-            // 2. Leaderboard Text Block (if not home)
-            let leaderboardText = '';
-            if (selectedType !== 'home') {
-                const medals = ['🥇', '🥈', '🥉'];
-                let sortedUsers = [];
-                let title = '';
+                // 2. Leaderboard Text Block (if not home)
+                let leaderboardText = '';
+                if (selectedType !== 'home') {
+                    const medals = ['🥇', '🥈', '🥉'];
+                    let sortedUsers = [];
+                    let title = '';
 
-                const getName = async (userId) => {
-                    let member = interaction.guild.members.cache.get(userId);
-                    if (!member) {
-                        try { member = await interaction.guild.members.fetch(userId); } catch (_) {}
+                    const getName = async (userId) => {
+                        let member = interaction.guild.members.cache.get(userId);
+                        if (!member) {
+                            try { member = await interaction.guild.members.fetch(userId); } catch (_) {}
+                        }
+                        if (member) return member.user.username.padEnd(15, ' ');
+                        
+                        try {
+                            const user = await interaction.client.users.fetch(userId);
+                            return user.username.padEnd(15, ' ');
+                        } catch (_) {
+                            return (LanguageManager.get(lang, 'common.unknown') || 'Unknown').padEnd(15, ' ');
+                        }
+                    };
+
+                    let formatLine = async () => {};
+
+                    if (selectedType === 'messages') {
+                        sortedUsers = [...guildData.users].sort((a, b) => (b.messageCount || 0) - (a.messageCount || 0));
+                        title = `💬 ${LanguageManager.get(lang, 'leveling.leaderboard.types.messages') || 'Messages'}`;
+                        formatLine = async (u, i) => {
+                            const name = await getName(u.userId);
+                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(u.messageCount || 0)} messages`;
+                        };
+                    } else if (selectedType === 'voice') {
+                        sortedUsers = [...guildData.users].sort((a, b) => (b.voiceTime || 0) - (a.voiceTime || 0));
+                        title = `🎤 ${LanguageManager.get(lang, 'leveling.leaderboard.types.voice') || 'Vocal'}`;
+                        formatLine = async (u, i) => {
+                            const name = await getName(u.userId);
+                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatVoiceTime(u.voiceTime || 0)}`;
+                        };
+                    } else if (selectedType === 'level') {
+                        sortedUsers = [...guildData.users].sort((a, b) => (b.xp || 0) - (a.xp || 0));
+                        title = `🏆 ${LanguageManager.get(lang, 'leveling.leaderboard.types.level') || 'Niveaux'}`;
+                        formatLine = async (u, i) => {
+                            const name = await getName(u.userId);
+                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - Lv.${u.level || 0} (${formatNumber(Math.floor(u.xp || 0))} XP)`;
+                        };
+                    } else if (selectedType === 'coins') {
+                        sortedUsers = [...economyUsers].sort((a, b) => (b.balance || 0) - (a.balance || 0));
+                        title = `💰 ${LanguageManager.get(lang, 'leveling.leaderboard.types.coins') || 'Économie'}`;
+                        formatLine = async (u, i) => {
+                            const name = await getName(u.userId);
+                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(Math.floor(u.balance || 0))} coins`;
+                        };
                     }
-                    if (member) return member.user.username.padEnd(15, ' ');
-                    
-                    try {
-                        const user = await interaction.client.users.fetch(userId);
-                        return user.username.padEnd(15, ' ');
-                    } catch (_) {
-                        return LanguageManager.get(lang, 'common.unknown').padEnd(15, ' ');
+
+                    const top10 = sortedUsers.slice(0, 10);
+                    const list = (await Promise.all(top10.map((u, i) => formatLine(u, i)))).join('\n') || LanguageManager.get(lang, 'leveling.leaderboard.empty') || 'Aucune donnée disponible.';
+
+                    const maxCodeBlock = 1600;
+                    const safeList = list.length > maxCodeBlock ? (list.slice(0, maxCodeBlock) + '\n...') : list;
+                    leaderboardText = `### ${title}\n\`\`\`js\n${safeList}\n\`\`\``;
+                }
+
+                // 3. Select Menu
+                const selectMenu = new StringSelectMenuBuilder()
+                    .setCustomId('leaderboard_select')
+                    .setPlaceholder(LanguageManager.get(lang, 'leveling.leaderboard.embed.select_placeholder') || (lang === 'en' ? 'Choose a leaderboard' : 'Choisir un classement'))
+                    .addOptions([
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.home') || (lang === 'en' ? 'Overview' : 'Aperçu'), value: 'home', emoji: '🏠', default: selectedType === 'home' },
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.messages') || (lang === 'en' ? 'Messages' : 'Messages'), value: 'messages', emoji: '💬', default: selectedType === 'messages' },
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.voice') || (lang === 'en' ? 'Voice' : 'Vocal'), value: 'voice', emoji: '🎤', default: selectedType === 'voice' },
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.level') || (lang === 'en' ? 'Levels' : 'Niveaux'), value: 'level', emoji: '🏆', default: selectedType === 'level' },
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.coins') || (lang === 'en' ? 'Economy' : 'Économie'), value: 'coins', emoji: '💰', default: selectedType === 'coins' }
+                    ]);
+
+                // 4. Build Inner Components (Layout)
+                const innerComponents = [
+                    {
+                        type: 10,
+                        content: statsText
+                    },
+                    {
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    },
+                    {
+                        type: 1,
+                        components: [selectMenu.toJSON()]
                     }
+                ];
+
+                if (leaderboardText) {
+                    innerComponents.push({
+                        type: 14,
+                        divider: true,
+                        spacing: 2
+                    });
+                    innerComponents.push({
+                        type: 10,
+                        content: leaderboardText
+                    });
+                }
+
+                // Footer
+                innerComponents.push({
+                    type: 14,
+                    divider: true,
+                    spacing: 2
+                });
+                innerComponents.push({
+                    type: 10,
+                    content: `*${LanguageManager.get(lang, 'leveling.leaderboard.embed.footer') || (lang === 'en' ? 'Leaderboards updated in real-time' : 'Classements mis à jour en temps réel')}*`
+                });
+
+                return {
+                    content: '',
+                    components: [{
+                        type: 17,
+                        components: innerComponents
+                    }]
                 };
-
-                let formatLine = async () => {};
-
-                if (selectedType === 'messages') {
-                    sortedUsers = [...guildData.users].sort((a, b) => (b.messageCount || 0) - (a.messageCount || 0));
-                    title = `💬 ${LanguageManager.get(lang, 'leveling.leaderboard.types.messages')}`;
-                    formatLine = async (u, i) => {
-                        const name = await getName(u.userId);
-                        return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(u.messageCount || 0)} messages`;
-                    };
-                } else if (selectedType === 'voice') {
-                    sortedUsers = [...guildData.users].sort((a, b) => (b.voiceTime || 0) - (a.voiceTime || 0));
-                    title = `🎤 ${LanguageManager.get(lang, 'leveling.leaderboard.types.voice')}`;
-                    formatLine = async (u, i) => {
-                        const name = await getName(u.userId);
-                        return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatVoiceTime(u.voiceTime || 0)}`;
-                    };
-                } else if (selectedType === 'level') {
-                    sortedUsers = [...guildData.users].sort((a, b) => (b.xp || 0) - (a.xp || 0));
-                    title = `🏆 ${LanguageManager.get(lang, 'leveling.leaderboard.types.level')}`;
-                    formatLine = async (u, i) => {
-                        const name = await getName(u.userId);
-                        return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - Lv.${u.level || 0} (${formatNumber(Math.floor(u.xp || 0))} XP)`;
-                    };
-                } else if (selectedType === 'coins') {
-                    sortedUsers = [...economyData.users].sort((a, b) => (b.balance || 0) - (a.balance || 0));
-                    title = `💰 ${LanguageManager.get(lang, 'leveling.leaderboard.types.coins')}`;
-                    formatLine = async (u, i) => {
-                        const name = await getName(u.userId);
-                        return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(Math.floor(u.balance || 0))} coins`;
-                    };
-                }
-
-                const top10 = sortedUsers.slice(0, 10);
-                const list = (await Promise.all(top10.map((u, i) => formatLine(u, i)))).join('\n') || LanguageManager.get(lang, 'leveling.leaderboard.empty');
-                
-                leaderboardText = `### ${title}\n\`\`\`js\n${list}\n\`\`\``;
-            }
-
-            // 3. Select Menu
-            const selectMenu = new StringSelectMenuBuilder()
-                .setCustomId('leaderboard_select')
-                .setPlaceholder(LanguageManager.get(lang, 'leveling.leaderboard.embed.select_placeholder'))
-                .addOptions([
-                    { label: LanguageManager.get(lang, 'leveling.leaderboard.types.home'), value: 'home', emoji: '🏠', default: selectedType === 'home' },
-                    { label: LanguageManager.get(lang, 'leveling.leaderboard.types.messages'), value: 'messages', emoji: '💬', default: selectedType === 'messages' },
-                    { label: LanguageManager.get(lang, 'leveling.leaderboard.types.voice'), value: 'voice', emoji: '🎤', default: selectedType === 'voice' },
-                    { label: LanguageManager.get(lang, 'leveling.leaderboard.types.level'), value: 'level', emoji: '🏆', default: selectedType === 'level' },
-                    { label: LanguageManager.get(lang, 'leveling.leaderboard.types.coins'), value: 'coins', emoji: '💰', default: selectedType === 'coins' }
-                ]);
-
-            // 4. Build Inner Components (Layout)
-            const innerComponents = [
-                {
-                    type: 10,
-                    content: statsText
-                },
-                {
-                    type: 14,
-                    divider: true,
-                    spacing: 2
-                },
-                {
-                    type: 1, // ActionRow containing the menu
-                    components: [selectMenu.toJSON()]
-                }
-            ];
-
-            if (leaderboardText) {
-                innerComponents.push({
-                    type: 14,
-                    divider: true,
-                    spacing: 2
-                });
-                innerComponents.push({
-                    type: 10,
-                    content: leaderboardText
-                });
-            }
-
-            // Footer
-            innerComponents.push({
-                type: 14,
-                divider: true,
-                spacing: 2
-            });
-            innerComponents.push({
-                type: 10,
-                content: `*${LanguageManager.get(lang, 'leveling.leaderboard.embed.footer')}*`
-            });
-
-            // Return V3 Payload
-            return {
-                content: '',
-                components: [{
-                    type: 17,
-                    components: innerComponents
-                }],
-                flags: 32768
             };
-        };
 
-        // --- Initial Reply ---
+            // --- Initial Reply ---
 
-        const initialPayload = await getPayload('home');
-        const response = await interaction.reply({ ...initialPayload, fetchReply: true });
+            const initialPayload = await getPayload('home');
+            const response = await interaction.editReply(initialPayload);
 
-        // --- Collector ---
+            // --- Collector ---
 
-        const collector = response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 300000 }); // 5 minutes
+            const collector = response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 300000 });
 
-        collector.on('collect', async i => {
-            if (i.user.id !== interaction.user.id) {
-                return i.reply({ content: 'Ce n\'est pas votre menu !', ephemeral: true });
-            }
+            collector.on('collect', async i => {
+                if (i.user.id !== interaction.user.id) {
+                    return i.reply({ content: 'Ce n\'est pas votre menu !', ephemeral: true });
+                }
 
-            const selection = i.values[0];
-            const newPayload = await getPayload(selection);
+                await i.deferUpdate();
+                const selection = i.values[0];
+                const newPayload = await getPayload(selection);
 
-            await i.update(newPayload);
-        });
+                await i.editReply(newPayload);
+            });
+        } catch (error) {
+            console.error('[leaderboard] erreur:', error);
+            return interaction.editReply({ content: '❌ Erreur lors de la génération du leaderboard.' });
+        }
     },
 };
