@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, StringSelectMenuBuilder, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, StringSelectMenuBuilder, ComponentType, MessageFlags } = require('discord.js');
 const Guild = require('../../models/Guild');
 const EconomyManager = require('../../utils/economyManager');
 const LanguageManager = require('../../utils/languageManager');
@@ -196,7 +196,8 @@ module.exports = {
                     components: [{
                         type: 17,
                         components: innerComponents
-                    }]
+                    }],
+                    flags: MessageFlags.IsComponentsV2
                 };
             };
 
