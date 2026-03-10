@@ -4,7 +4,15 @@ const EconomyManager = require('../../utils/economyManager');
 const LanguageManager = require('../../utils/languageManager');
 
 function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    if (num === null || num === undefined) return '0';
+    if (typeof num === 'bigint') {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    const n = Number(num);
+    if (!Number.isFinite(n)) return '0';
+    const digits = n.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 0 });
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 function formatVoiceTime(minutes) {
@@ -29,7 +37,7 @@ module.exports = {
             'en-GB': LanguageManager.get('en', 'leveling.leaderboard.description')
         }),
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ ephemeral: false });
 
         try {
             const guildData = await Guild.findOne({ guildId: interaction.guild.id });
@@ -45,10 +53,10 @@ module.exports = {
             // --- Helper function for generating Payload (Components V3) ---
             const getPayload = async (selectedType) => {
                 // Calculate Stats
-                const totalXp = guildData.users.reduce((acc, u) => acc + (u.xp || 0), 0);
-                const totalMessages = guildData.users.reduce((acc, u) => acc + (u.messageCount || 0), 0);
-                const totalVoice = guildData.users.reduce((acc, u) => acc + (u.voiceTime || 0), 0);
-                const totalCoins = economyUsers.reduce((acc, u) => acc + (u.balance || 0), 0);
+                const totalXp = guildData.users.reduce((acc, u) => acc + (Number.isFinite(Number(u.xp)) ? Math.floor(Number(u.xp)) : 0), 0);
+                const totalMessages = guildData.users.reduce((acc, u) => acc + (Number.isFinite(Number(u.messageCount)) ? Math.floor(Number(u.messageCount)) : 0), 0);
+                const totalVoice = guildData.users.reduce((acc, u) => acc + (Number.isFinite(Number(u.voiceTime)) ? Number(u.voiceTime) : 0), 0);
+                const totalCoins = economyUsers.reduce((acc, u) => acc + (Number.isFinite(Number(u.balance)) ? Math.floor(Number(u.balance)) : 0), 0);
             
                 const currentUser = guildData.users.find(u => u.userId === interaction.user.id);
                 const userLevel = currentUser ? (currentUser.level || 0) : 0;
