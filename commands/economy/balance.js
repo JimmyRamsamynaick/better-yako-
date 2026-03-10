@@ -11,18 +11,29 @@ module.exports = {
                 .setDescription('L\'utilisateur dont vous voulez voir le solde')
                 .setRequired(false)),
     async execute(interaction) {
-        const target = interaction.options.getUser('user') || interaction.user;
-        const balance = await EconomyManager.getBalance(interaction.guild.id, target.id);
-        
-        const response = await ComponentsV3.createEmbed({
-            guildId: interaction.guild.id,
-            titleKey: 'balance.title',
-            titlePlaceholders: { user: target.username },
-            contentKey: 'balance.content',
-            contentPlaceholders: { amount: Math.floor(balance) },
-            ephemeral: false
-        });
+        await interaction.deferReply({ ephemeral: false });
 
-        await interaction.reply(response);
+        try {
+            if (!interaction.guild) {
+                return interaction.editReply({ content: '❌ Cette commande doit être utilisée sur un serveur.' });
+            }
+
+            const target = interaction.options.getUser('user') || interaction.user;
+            const balance = await EconomyManager.getBalance(interaction.guild.id, target.id);
+
+            const response = await ComponentsV3.createEmbed({
+                guildId: interaction.guild.id,
+                titleKey: 'balance.title',
+                titlePlaceholders: { user: target.username },
+                contentKey: 'balance.content',
+                contentPlaceholders: { amount: Math.floor(balance) },
+                ephemeral: false
+            });
+
+            return interaction.editReply(response);
+        } catch (error) {
+            console.error('[balance] erreur:', error);
+            return interaction.editReply({ content: '❌ Erreur lors de la récupération du solde.' });
+        }
     }
 };
