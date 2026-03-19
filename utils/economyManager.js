@@ -75,6 +75,12 @@ class EconomyManager {
     }
 
     static async removeCoins(guildId, userId, amount) {
+        // First ensure user exists in document
+        await Economy.updateOne(
+            { guildId, "users.userId": { $ne: userId } },
+            { $push: { users: { userId, balance: 0 } } }
+        );
+
         // Mise à jour atomique seulement si le solde est suffisant
         const result = await Economy.updateOne(
             { 
