@@ -150,6 +150,7 @@ module.exports = {
                         currentHandIndex++;
                         await i.update({ embeds: [getEmbed()], components: getButtons() });
                     } else {
+                        await i.deferUpdate();
                         collector.stop('done');
                     }
                 } else {
@@ -160,12 +161,14 @@ module.exports = {
                     currentHandIndex++;
                     await i.update({ embeds: [getEmbed()], components: getButtons() });
                 } else {
+                    await i.deferUpdate();
                     collector.stop('done');
                 }
             } else if (i.customId === 'double') {
                 const balance = await EconomyManager.getBalance(guildId, userId);
                 if (balance < bet) return i.reply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }), ephemeral: true });
                 
+                await i.deferUpdate();
                 await EconomyManager.removeCoins(guildId, userId, bet);
                 bets[0] *= 2;
                 isDouble = true;
