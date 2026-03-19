@@ -37,7 +37,8 @@ module.exports = {
                             { name: '💬 Message', value: 'message' },
                             { name: '📁 Channel (Salon)', value: 'channels' },
                             { name: '🎭 Role (Rôle)', value: 'roles' },
-                            { name: '⚙️ Server (Serveur)', value: 'server' }
+                            { name: '⚙️ Server (Serveur)', value: 'server' },
+                            { name: '🎰 Casino', value: 'casino' }
                         )
                         .setRequired(true))
                 .addBooleanOption(option =>

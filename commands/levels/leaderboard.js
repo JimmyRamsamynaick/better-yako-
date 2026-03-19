@@ -137,6 +137,13 @@ module.exports = {
                             const name = await getName(u.userId);
                             return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(Math.floor(u.balance || 0))} coins`;
                         };
+                    } else if (selectedType === 'casino') {
+                        sortedUsers = [...economyUsers].sort((a, b) => (b.casinoStats?.totalGains || 0) - (a.casinoStats?.totalGains || 0));
+                        title = `🎰 ${LanguageManager.get(lang, 'leveling.leaderboard.types.casino') || 'Casino'}`;
+                        formatLine = async (u, i) => {
+                            const name = await getName(u.userId);
+                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(Math.floor(u.casinoStats?.totalGains || 0))} coins gagnés`;
+                        };
                     }
 
                     const top10 = sortedUsers.slice(0, 10);
@@ -156,7 +163,8 @@ module.exports = {
                         { label: LanguageManager.get(lang, 'leveling.leaderboard.types.messages') || (lang === 'en' ? 'Messages' : 'Messages'), value: 'messages', emoji: '💬', default: selectedType === 'messages' },
                         { label: LanguageManager.get(lang, 'leveling.leaderboard.types.voice') || (lang === 'en' ? 'Voice' : 'Vocal'), value: 'voice', emoji: '🎤', default: selectedType === 'voice' },
                         { label: LanguageManager.get(lang, 'leveling.leaderboard.types.level') || (lang === 'en' ? 'Levels' : 'Niveaux'), value: 'level', emoji: '🏆', default: selectedType === 'level' },
-                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.coins') || (lang === 'en' ? 'Economy' : 'Économie'), value: 'coins', emoji: '💰', default: selectedType === 'coins' }
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.coins') || (lang === 'en' ? 'Economy' : 'Économie'), value: 'coins', emoji: '💰', default: selectedType === 'coins' },
+                        { label: LanguageManager.get(lang, 'leveling.leaderboard.types.casino') || (lang === 'en' ? 'Casino' : 'Casino'), value: 'casino', emoji: '🎰', default: selectedType === 'casino' }
                     ]);
 
                 // 4. Build Inner Components (Layout)

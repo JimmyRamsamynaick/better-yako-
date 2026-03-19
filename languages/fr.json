@@ -123,6 +123,7 @@
                 "voice": "Classement Vocal",
                 "level": "Classement Niveaux",
                 "coins": "Classement Économie",
+                "casino": "Classement Casino",
                 "home": "Vue d'ensemble"
             },
             "empty": "Aucune donnée disponible."
@@ -203,6 +204,86 @@
             "not_found": "❌ Clé introuvable.",
             "already_revoked": "ℹ️ Cette clé est déjà révoquée.",
             "success": "✅ Clé révoquée et premium désactivé pour le serveur associé le cas échéant."
+        }
+    },
+    "casino": {
+        "title": "🎰 Casino de Yako",
+        "description": "Bienvenue au casino ! Choisissez un jeu pour parier vos coins.",
+        "balance": "Votre solde : **{balance}** 🪙",
+        "bet_amount": "Montant de la mise",
+        "cooldown": "⏰ Doucement ! Attendez **{time}s** avant de rejouer.",
+        "errors": {
+            "insufficient_funds": "❌ Solde insuffisant ! Vous avez besoin de **{amount}** 🪙.",
+            "min_bet": "❌ La mise minimale est de **{amount}** 🪙.",
+            "max_bet": "❌ La mise maximale est de **{amount}** 🪙.",
+            "invalid_choice": "❌ Choix invalide."
+        },
+        "coinflip": {
+            "description": "Jouez à pile ou face et doublez votre mise !",
+            "choice_option": "Pile ou Face",
+            "heads": "Pile",
+            "tails": "Face",
+            "flipping": "🪙 La pièce tourne...",
+            "win": "🎉 Félicitations ! C'est **{result}**. Vous gagnez **{amount}** 🪙 !",
+            "loss": "😢 Dommage... C'est **{result}**. Vous perdez **{amount}** 🪙."
+        },
+        "blackjack": {
+            "description": "Battez le croupier sans dépasser 21 !",
+            "bet_option": "Montant à parier",
+            "player_hand": "Votre main : {cards} (Total: **{total}**)",
+            "dealer_hand": "Main du croupier : {cards} (Total: **{total}**)",
+            "actions": "Choisissez une action :",
+            "hit": "Tirer",
+            "stand": "Rester",
+            "win": "🎉 Vous gagnez **{amount}** 🪙 !",
+            "loss": "😢 Vous perdez **{amount}** 🪙.",
+            "push": "🤝 Égalité ! Votre mise vous est rendue.",
+            "blackjack": "🔥 BLACKJACK ! Vous gagnez **{amount}** 🪙 !",
+            "bust": "💥 Vous avez dépassé 21 ! Perdu."
+        },
+        "roulette": {
+            "description": "Pariez sur la roue de la fortune !",
+            "choice_option": "Votre pari (couleur, nombre, pair/impair)",
+            "spinning": "🎡 La roue tourne...",
+            "result": "La bille s'arrête sur : **{result}** ({color})",
+            "win": "🎉 Bien joué ! Vous gagnez **{amount}** 🪙 !",
+            "loss": "😢 Perdu... Vous perdez **{amount}** 🪙."
+        },
+        "slots": {
+            "description": "Tentez votre chance à la machine à sous !",
+            "spinning": "🎰 [ {s1} | {s2} | {s3} ]",
+            "win": "🎉 JACKPOT ! Vous gagnez **{amount}** 🪙 !",
+            "small_win": "✨ Pas mal ! Vous gagnez **{amount}** 🪙 !",
+            "loss": "😢 Perdu... Essayez encore !"
+        },
+        "mines": {
+            "description": "Évitez les bombes pour multiplier vos gains !",
+            "grid": "Grille de Mines",
+            "hit_mine": "💥 BOUM ! Vous avez touché une mine. Vous perdez **{amount}** 🪙.",
+            "cashout": "💰 Vous vous retirez avec **{amount}** 🪙 !",
+            "continue": "Choisissez une case ou retirez vos gains."
+        },
+        "poker": {
+            "description": "Obtenez la meilleure main de poker !",
+            "hand": "Votre main : {cards}",
+            "result": "Main : **{rank}**",
+            "win": "🎉 Vous gagnez **{amount}** 🪙 !",
+            "loss": "😢 Vous perdez **{amount}** 🪙."
+        },
+        "dice": {
+            "description": "Devinez le résultat du dé (1-6) !",
+            "guess_option": "Votre pronostic (1-6)",
+            "rolling": "🎲 Le dé roule...",
+            "win": "🎉 Exact ! C'était un **{result}**. Vous gagnez **{amount}** 🪙 !",
+            "loss": "😢 Raté... C'était un **{result}**. Vous perdez **{amount}** 🪙."
+        },
+        "stats": {
+            "description": "Affichez vos statistiques au casino",
+            "title": "📊 Stats Casino - {user}",
+            "games_played": "Parties jouées",
+            "total_gains": "Gains totaux",
+            "total_losses": "Pertes totales",
+            "net_profit": "Profit net"
         }
     },
     "balance": {

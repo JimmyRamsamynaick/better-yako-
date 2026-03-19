@@ -20,7 +20,12 @@ const economySchema = new Schema({
             itemId: { type: Number },
             purchasedAt: { type: Date, default: Date.now },
             customRoleId: { type: String, default: null } // Si c'est un rôle custom créé
-        }]
+        }],
+        casinoStats: {
+            totalGains: { type: Number, default: 0 },
+            totalLosses: { type: Number, default: 0 },
+            gamesPlayed: { type: Number, default: 0 }
+        }
     }],
     shopItems: [shopItemSchema]
 });

@@ -243,11 +243,92 @@
                 "voice": "Voice Leaderboard",
                 "level": "Level Leaderboard",
                 "coins": "Economy Leaderboard",
+                "casino": "Casino Leaderboard",
                 "home": "Overview"
             },
             "empty": "No data available."
         },
         "levelup_message_default": "Congratulations {user}, you leveled up to level {level}! (+{coins} 🪙)"
+    },
+    "casino": {
+        "title": "🎰 Yako's Casino",
+        "description": "Welcome to the casino! Choose a game to bet your coins.",
+        "balance": "Your balance: **{balance}** 🪙",
+        "bet_amount": "Bet amount",
+        "cooldown": "⏰ Slow down! Wait **{time}s** before playing again.",
+        "errors": {
+            "insufficient_funds": "❌ Insufficient funds! You need **{amount}** 🪙.",
+            "min_bet": "❌ Minimum bet is **{amount}** 🪙.",
+            "max_bet": "❌ Maximum bet is **{amount}** 🪙.",
+            "invalid_choice": "❌ Invalid choice."
+        },
+        "coinflip": {
+            "description": "Play heads or tails and double your bet!",
+            "choice_option": "Heads or Tails",
+            "heads": "Heads",
+            "tails": "Tails",
+            "flipping": "🪙 The coin is flipping...",
+            "win": "🎉 Congratulations! It's **{result}**. You win **{amount}** 🪙 !",
+            "loss": "😢 Too bad... It's **{result}**. You lose **{amount}** 🪙."
+        },
+        "blackjack": {
+            "description": "Beat the dealer without going over 21!",
+            "bet_option": "Amount to bet",
+            "player_hand": "Your hand: {cards} (Total: **{total}**)",
+            "dealer_hand": "Dealer's hand: {cards} (Total: **{total}**)",
+            "actions": "Choose an action:",
+            "hit": "Hit",
+            "stand": "Stand",
+            "win": "🎉 You win **{amount}** 🪙 !",
+            "loss": "😢 You lose **{amount}** 🪙.",
+            "push": "🤝 Push! Your bet is returned.",
+            "blackjack": "🔥 BLACKJACK! You win **{amount}** 🪙 !",
+            "bust": "💥 You busted! Lost."
+        },
+        "roulette": {
+            "description": "Bet on the wheel of fortune!",
+            "choice_option": "Your bet (color, number, even/odd)",
+            "spinning": "🎡 The wheel is spinning...",
+            "result": "The ball stops on: **{result}** ({color})",
+            "win": "🎉 Well done! You win **{amount}** 🪙 !",
+            "loss": "😢 Lost... You lose **{amount}** 🪙."
+        },
+        "slots": {
+            "description": "Try your luck at the slot machine!",
+            "spinning": "🎰 [ {s1} | {s2} | {s3} ]",
+            "win": "🎉 JACKPOT! You win **{amount}** 🪙 !",
+            "small_win": "✨ Not bad! You win **{amount}** 🪙 !",
+            "loss": "😢 Lost... Try again!"
+        },
+        "mines": {
+            "description": "Avoid the bombs to multiply your gains!",
+            "grid": "Mines Grid",
+            "hit_mine": "💥 BOOM! You hit a mine. You lose **{amount}** 🪙.",
+            "cashout": "💰 You cashed out with **{amount}** 🪙 !",
+            "continue": "Choose a cell or cash out."
+        },
+        "poker": {
+            "description": "Get the best poker hand!",
+            "hand": "Your hand: {cards}",
+            "result": "Hand: **{rank}**",
+            "win": "🎉 You win **{amount}** 🪙 !",
+            "loss": "😢 You lose **{amount}** 🪙."
+        },
+        "dice": {
+            "description": "Guess the dice result (1-6)!",
+            "guess_option": "Your guess (1-6)",
+            "rolling": "🎲 The dice is rolling...",
+            "win": "🎉 Correct! It was a **{result}**. You win **{amount}** 🪙 !",
+            "loss": "😢 Missed... It was a **{result}**. You lose **{amount}** 🪙."
+        },
+        "stats": {
+            "description": "Display your casino statistics",
+            "title": "📊 Casino Stats - {user}",
+            "games_played": "Games played",
+            "total_gains": "Total gains",
+            "total_losses": "Total losses",
+            "net_profit": "Net profit"
+        }
     },
     "commands": {
         "ping": {

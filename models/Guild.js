@@ -64,7 +64,8 @@ const guildSchema = new Schema({
                 message: { type: Boolean, default: false },
                 channels: { type: Boolean, default: false },
                 roles: { type: Boolean, default: false },
-                server: { type: Boolean, default: false }
+                server: { type: Boolean, default: false },
+                casino: { type: Boolean, default: false }
             }
         }],
         channelId: {
@@ -76,7 +77,8 @@ const guildSchema = new Schema({
             message: { type: Boolean, default: true },
             server: { type: Boolean, default: true },
             roles: { type: Boolean, default: true },
-            channels: { type: Boolean, default: true }
+            channels: { type: Boolean, default: true },
+            casino: { type: Boolean, default: true }
         }
     },
     welcome: {

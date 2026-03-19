@@ -35,6 +35,7 @@ class ComponentsV3 {
             footerPlaceholders = {},
             addDividers = true,
             ephemeral = true,
+            color,
             langOverride
         } = options;
 
@@ -195,14 +196,22 @@ class ComponentsV3 {
 
         // Si non-éphémère, retourner un embed classique compatible avec les messages publics
         if (!ephemeral) {
-            const embed = {};
-            if (imageUrl) embed.image = { url: imageUrl };
-            if (titleKey) embed.title = LanguageManager.get(lang, titleKey, titlePlaceholders);
+            const embed = {
+                color: typeof color === 'string' ? parseInt(color.replace('#', ''), 16) : (color || 0x2b2d31)
+            };
+            
+            let finalTitle = '';
+            if (titleKey) finalTitle = LanguageManager.get(lang, titleKey, titlePlaceholders);
 
             const descriptionParts = [];
+            
+            // Header image as large title if no imageUrl but title exists
+            if (finalTitle) embed.title = finalTitle;
+
             if (contentKey) {
                 descriptionParts.push(LanguageManager.get(lang, contentKey, contentPlaceholders));
             }
+            
             additionalContent.forEach(item => {
                 if (typeof item === 'string') {
                     descriptionParts.push(item);
@@ -212,11 +221,16 @@ class ComponentsV3 {
                         item.content;
                     descriptionParts.push(text);
                 } else if (item.type === 'divider') {
-                    descriptionParts.push('');
+                    descriptionParts.push('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬');
                 }
             });
-            if (descriptionParts.length > 0) embed.description = descriptionParts.join('\n');
+
+            if (descriptionParts.length > 0) {
+                embed.description = descriptionParts.join('\n\n');
+            }
+
             if (footerKey) embed.footer = { text: LanguageManager.get(lang, footerKey, footerPlaceholders) };
+            if (imageUrl) embed.thumbnail = { url: imageUrl };
 
             return { embeds: [embed] };
         }
