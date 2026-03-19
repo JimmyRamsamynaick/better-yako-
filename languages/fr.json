@@ -235,6 +235,8 @@
             "actions": "Choisissez une action :",
             "hit": "Tirer",
             "stand": "Rester",
+            "double": "Doubler",
+            "split": "Split",
             "win": "🎉 Vous gagnez **{amount}** 🪙 !",
             "loss": "😢 Vous perdez **{amount}** 🪙.",
             "push": "🤝 Égalité ! Votre mise vous est rendue.",

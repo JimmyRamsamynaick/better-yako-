@@ -54,7 +54,7 @@ module.exports = {
 
         const guildId = interaction.guild.id;
         const userId = interaction.user.id;
-        const bet = interaction.options.getInteger('mise');
+        let bet = interaction.options.getInteger('mise');
 
         const lang = (await require('../../models/Guild').findOne({ guildId }))?.language || 'fr';
 
@@ -80,7 +80,7 @@ module.exports = {
             return interaction.editReply({ content: errorMsg });
         }
 
-        // Remove Bet first
+        // Remove initial bet
         const removed = await EconomyManager.removeCoins(guildId, userId, bet);
         if (!removed) {
             return interaction.editReply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }) });
@@ -89,46 +89,98 @@ module.exports = {
         await CasinoManager.setCooldown(userId, guildId);
 
         const deck = createDeck();
-        const playerHand = [deck.pop(), deck.pop()];
+        let playerHands = [[deck.pop(), deck.pop()]];
+        let currentHandIndex = 0;
         const dealerHand = [deck.pop(), deck.pop()];
-
-        let playerTotal = calculateHand(playerHand);
         let dealerTotal = calculateHand(dealerHand);
+        let isDouble = false;
+        let bets = [bet];
 
-        const row = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('hit').setLabel(LanguageManager.get(lang, 'casino.blackjack.hit')).setStyle(ButtonStyle.Primary),
+        const getEmbed = () => {
+            const fields = playerHands.map((hand, index) => ({
+                name: (playerHands.length > 1 ? `✋ Main ${index + 1}${index === currentHandIndex ? ' (Active)' : ''}` : 'Votre main'),
+                value: `${formatHand(hand)} (Total: **${calculateHand(hand)}**)${isDouble && playerHands.length === 1 ? ' [DOUBLE]' : ''}`,
+                inline: false
+            }));
+
+            fields.push({
+                name: 'Main du croupier',
+                value: currentHandIndex < playerHands.length ? `${dealerHand[0].value}${dealerHand[0].suit} ? (Total: ?)` : `${formatHand(dealerHand)} (Total: **${dealerTotal}**)`,
+                inline: false
+            });
+
+            return {
+                title: LanguageManager.get(lang, 'casino.blackjack.description'),
+                color: 0x2b2d31,
+                fields: fields
+            };
+        };
+
+        const getButtons = () => {
+            const currentHand = playerHands[currentHandIndex];
+            const currentTotal = calculateHand(currentHand);
+            const canSplit = playerHands.length === 1 && currentHand.length === 2 && currentHand[0].value === currentHand[1].value;
+            const canDouble = playerHands.length === 1 && currentHand.length === 2;
+
+            const row = new ActionRowBuilder().addComponents(
+                new ButtonBuilder().setCustomId('hit').setLabel(LanguageManager.get(lang, 'casino.blackjack.hit')).setStyle(ButtonStyle.Primary).setDisabled(currentTotal >= 21),
                 new ButtonBuilder().setCustomId('stand').setLabel(LanguageManager.get(lang, 'casino.blackjack.stand')).setStyle(ButtonStyle.Secondary)
             );
 
-        const embedData = {
-            title: LanguageManager.get(lang, 'casino.blackjack.description'),
-            color: 0x2b2d31,
-            fields: [
-                { name: LanguageManager.get(lang, 'casino.blackjack.player_hand', { cards: formatHand(playerHand), total: playerTotal }), value: '\u200b' },
-                { name: LanguageManager.get(lang, 'casino.blackjack.dealer_hand', { cards: `${dealerHand[0].value}${dealerHand[0].suit} ?`, total: '?' }), value: '\u200b' }
-            ]
+            if (canDouble) {
+                row.addComponents(new ButtonBuilder().setCustomId('double').setLabel(LanguageManager.get(lang, 'casino.blackjack.double')).setStyle(ButtonStyle.Success));
+            }
+            if (canSplit) {
+                row.addComponents(new ButtonBuilder().setCustomId('split').setLabel(LanguageManager.get(lang, 'casino.blackjack.split')).setStyle(ButtonStyle.Danger));
+            }
+
+            return [row];
         };
 
-        const response = await interaction.editReply({ embeds: [embedData], components: [row] });
-
-        const collector = response.createMessageComponentCollector({ componentType: ComponentType.Button, time: 60000 });
+        const msg = await interaction.editReply({ embeds: [getEmbed()], components: getButtons() });
+        const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 60000 });
 
         collector.on('collect', async i => {
             if (i.user.id !== userId) return i.reply({ content: 'Pas votre jeu !', ephemeral: true });
 
             if (i.customId === 'hit') {
-                playerHand.push(deck.pop());
-                playerTotal = calculateHand(playerHand);
-
-                if (playerTotal > 21) {
-                    collector.stop('bust');
+                playerHands[currentHandIndex].push(deck.pop());
+                if (calculateHand(playerHands[currentHandIndex]) >= 21) {
+                    if (currentHandIndex < playerHands.length - 1) {
+                        currentHandIndex++;
+                        await i.update({ embeds: [getEmbed()], components: getButtons() });
+                    } else {
+                        collector.stop('done');
+                    }
                 } else {
-                    embedData.fields[0].name = LanguageManager.get(lang, 'casino.blackjack.player_hand', { cards: formatHand(playerHand), total: playerTotal });
-                    await i.update({ embeds: [embedData] });
+                    await i.update({ embeds: [getEmbed()], components: getButtons() });
                 }
             } else if (i.customId === 'stand') {
-                collector.stop('stand');
+                if (currentHandIndex < playerHands.length - 1) {
+                    currentHandIndex++;
+                    await i.update({ embeds: [getEmbed()], components: getButtons() });
+                } else {
+                    collector.stop('done');
+                }
+            } else if (i.customId === 'double') {
+                const balance = await EconomyManager.getBalance(guildId, userId);
+                if (balance < bet) return i.reply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }), ephemeral: true });
+                
+                await EconomyManager.removeCoins(guildId, userId, bet);
+                bets[0] *= 2;
+                isDouble = true;
+                playerHands[0].push(deck.pop());
+                collector.stop('done');
+            } else if (i.customId === 'split') {
+                const balance = await EconomyManager.getBalance(guildId, userId);
+                if (balance < bet) return i.reply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }), ephemeral: true });
+
+                await EconomyManager.removeCoins(guildId, userId, bet);
+                const firstCard = playerHands[0].shift();
+                const secondCard = playerHands[0].shift();
+                playerHands = [[firstCard, deck.pop()], [secondCard, deck.pop()]];
+                bets = [bet, bet];
+                await i.update({ embeds: [getEmbed()], components: getButtons() });
             }
         });
 
@@ -139,48 +191,49 @@ module.exports = {
                 dealerTotal = calculateHand(dealerHand);
             }
 
-            let resultMsg = '';
-            let winAmount = 0;
-            let isWin = false;
-            let isPush = false;
+            let finalEmbed = getEmbed();
+            let finalResults = [];
+            let totalWin = 0;
+            let totalLoss = 0;
 
-            if (reason === 'bust') {
-                resultMsg = LanguageManager.get(lang, 'casino.blackjack.bust');
-                await CasinoManager.recordGame(guildId, userId, bet, 0, false);
-                await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: 'Blackjack', bet, result: 'Bust', amount: bet });
-            } else if (playerTotal > 21) {
-                resultMsg = LanguageManager.get(lang, 'casino.blackjack.bust');
-                await CasinoManager.recordGame(guildId, userId, bet, 0, false);
-                await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: 'Blackjack', bet, result: 'Bust', amount: bet });
-            } else if (dealerTotal > 21 || playerTotal > dealerTotal) {
-                // Check for Blackjack
-                if (playerTotal === 21 && playerHand.length === 2) {
-                    winAmount = Math.floor(bet * 2.5);
-                    resultMsg = LanguageManager.get(lang, 'casino.blackjack.blackjack', { amount: winAmount });
+            for (let i = 0; i < playerHands.length; i++) {
+                const hand = playerHands[i];
+                const total = calculateHand(hand);
+                const currentBet = bets[i];
+                let result = '';
+
+                if (total > 21) {
+                    result = LanguageManager.get(lang, 'casino.blackjack.bust');
+                    totalLoss += currentBet;
+                    await CasinoManager.recordGame(guildId, userId, currentBet, 0, false);
+                    await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: `Blackjack (Hand ${i+1})`, bet: currentBet, result: 'Bust', amount: currentBet });
+                } else if (dealerTotal > 21 || total > dealerTotal) {
+                    let winAmount = currentBet * 2;
+                    if (total === 21 && hand.length === 2 && !isDouble && playerHands.length === 1) {
+                        winAmount = Math.floor(currentBet * 2.5);
+                        result = LanguageManager.get(lang, 'casino.blackjack.blackjack', { amount: winAmount });
+                    } else {
+                        result = LanguageManager.get(lang, 'casino.blackjack.win', { amount: winAmount });
+                    }
+                    totalWin += winAmount;
+                    await EconomyManager.addCoins(guildId, userId, winAmount);
+                    await CasinoManager.recordGame(guildId, userId, currentBet, winAmount - currentBet, true);
+                    await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: `Blackjack (Hand ${i+1})`, bet: currentBet, result: 'Win', amount: winAmount });
+                } else if (total < dealerTotal) {
+                    result = LanguageManager.get(lang, 'casino.blackjack.loss', { amount: currentBet });
+                    totalLoss += currentBet;
+                    await CasinoManager.recordGame(guildId, userId, currentBet, 0, false);
+                    await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: `Blackjack (Hand ${i+1})`, bet: currentBet, result: 'Loss', amount: currentBet });
                 } else {
-                    winAmount = bet * 2;
-                    resultMsg = LanguageManager.get(lang, 'casino.blackjack.win', { amount: winAmount });
+                    result = LanguageManager.get(lang, 'casino.blackjack.push');
+                    await EconomyManager.addCoins(guildId, userId, currentBet);
+                    await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: `Blackjack (Hand ${i+1})`, bet: currentBet, result: 'Push', amount: 0 });
                 }
-                isWin = true;
-                await EconomyManager.addCoins(guildId, userId, winAmount);
-                await CasinoManager.recordGame(guildId, userId, bet, winAmount - bet, true);
-                await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: 'Blackjack', bet, result: 'Win', amount: winAmount });
-            } else if (playerTotal < dealerTotal) {
-                resultMsg = LanguageManager.get(lang, 'casino.blackjack.loss', { amount: bet });
-                await CasinoManager.recordGame(guildId, userId, bet, 0, false);
-                await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: 'Blackjack', bet, result: 'Loss', amount: bet });
-            } else {
-                resultMsg = LanguageManager.get(lang, 'casino.blackjack.push');
-                isPush = true;
-                await EconomyManager.addCoins(guildId, userId, bet); // Return bet
-                await Logger.log(interaction.guild, 'casino', '', { user: interaction.user, game: 'Blackjack', bet, result: 'Push', amount: 0 });
+                finalResults.push(`Main ${i + 1}: ${result}`);
             }
 
-            embedData.fields[0].name = LanguageManager.get(lang, 'casino.blackjack.player_hand', { cards: formatHand(playerHand), total: playerTotal });
-            embedData.fields[1].name = LanguageManager.get(lang, 'casino.blackjack.dealer_hand', { cards: formatHand(dealerHand), total: dealerTotal });
-            embedData.description = `**${resultMsg}**`;
-            
-            await interaction.editReply({ embeds: [embedData], components: [] });
+            finalEmbed.description = `**Résultats :**\n${finalResults.join('\n')}`;
+            await interaction.editReply({ embeds: [finalEmbed], components: [] });
         });
     }
 };

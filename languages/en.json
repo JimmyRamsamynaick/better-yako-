@@ -279,6 +279,8 @@
             "actions": "Choose an action:",
             "hit": "Hit",
             "stand": "Stand",
+            "double": "Double",
+            "split": "Split",
             "win": "🎉 You win **{amount}** 🪙 !",
             "loss": "😢 You lose **{amount}** 🪙.",
             "push": "🤝 Push! Your bet is returned.",

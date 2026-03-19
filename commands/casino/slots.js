@@ -73,10 +73,13 @@ module.exports = {
 
         if (s1 === s2 && s2 === s3) {
             isWin = true;
-            multiplier = 10;
+            // Différents multiplicateurs selon le symbole
+            const multipliers = { '🍒': 10, '🍋': 15, '🔔': 20, '⭐': 30, '💎': 50 };
+            multiplier = multipliers[s1] || 10;
             winKey = 'casino.slots.win';
         } else if (s1 === s2 || s2 === s3 || s1 === s3) {
             isWin = true;
+            // Petit gain si 2 symboles identiques
             multiplier = 2;
             winKey = 'casino.slots.small_win';
         }
