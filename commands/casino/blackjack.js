@@ -96,16 +96,16 @@ module.exports = {
         let isDouble = false;
         let bets = [bet];
 
-        const getEmbed = () => {
+        const getEmbed = (showDealer = false) => {
             const fields = playerHands.map((hand, index) => ({
-                name: (playerHands.length > 1 ? `✋ Main ${index + 1}${index === currentHandIndex ? ' (Active)' : ''}` : 'Votre main'),
+                name: (playerHands.length > 1 ? `✋ Main ${index + 1}${index === currentHandIndex && !showDealer ? ' (Active)' : ''}` : 'Votre main'),
                 value: `${formatHand(hand)} (Total: **${calculateHand(hand)}**)${isDouble && playerHands.length === 1 ? ' [DOUBLE]' : ''}`,
                 inline: false
             }));
 
             fields.push({
                 name: 'Main du croupier',
-                value: currentHandIndex < playerHands.length ? `${dealerHand[0].value}${dealerHand[0].suit} ? (Total: ?)` : `${formatHand(dealerHand)} (Total: **${dealerTotal}**)`,
+                value: showDealer ? `${formatHand(dealerHand)} (Total: **${dealerTotal}**)` : `${dealerHand[0].value}${dealerHand[0].suit} ? (Total: ? )`,
                 inline: false
             });
 
@@ -194,7 +194,7 @@ module.exports = {
                 dealerTotal = calculateHand(dealerHand);
             }
 
-            let finalEmbed = getEmbed();
+            let finalEmbed = getEmbed(true);
             let finalResults = [];
             let totalWin = 0;
             let totalLoss = 0;
