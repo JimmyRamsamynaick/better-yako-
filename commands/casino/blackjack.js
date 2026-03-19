@@ -169,7 +169,7 @@ module.exports = {
                 if (balance < bet) return i.reply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }), ephemeral: true });
                 
                 await i.deferUpdate();
-                await EconomyManager.removeCoins(guildId, userId, bet);
+                EconomyManager.removeCoins(guildId, userId, bet); // Pas d'await pour accélérer l'interaction
                 bets[0] *= 2;
                 isDouble = true;
                 playerHands[0].push(deck.pop());
@@ -178,7 +178,8 @@ module.exports = {
                 const balance = await EconomyManager.getBalance(guildId, userId);
                 if (balance < bet) return i.reply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }), ephemeral: true });
 
-                await EconomyManager.removeCoins(guildId, userId, bet);
+                await i.deferUpdate();
+                EconomyManager.removeCoins(guildId, userId, bet); // Pas d'await pour accélérer l'interaction
                 const firstCard = playerHands[0].shift();
                 const secondCard = playerHands[0].shift();
                 playerHands = [[firstCard, deck.pop()], [secondCard, deck.pop()]];
