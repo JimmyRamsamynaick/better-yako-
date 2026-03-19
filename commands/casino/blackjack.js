@@ -80,13 +80,13 @@ module.exports = {
             return interaction.editReply({ content: errorMsg });
         }
 
-        CasinoManager.setCooldown(userId, guildId);
-
         // Remove Bet first
         const removed = await EconomyManager.removeCoins(guildId, userId, bet);
         if (!removed) {
             return interaction.editReply({ content: LanguageManager.get(lang, 'casino.errors.insufficient_funds', { amount: bet }) });
         }
+
+        await CasinoManager.setCooldown(userId, guildId);
 
         const deck = createDeck();
         const playerHand = [deck.pop(), deck.pop()];

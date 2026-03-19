@@ -81,6 +81,9 @@ class EconomyManager {
             { $push: { users: { userId, balance: 0 } } }
         );
 
+        // Debug: Log balance before removal
+        const before = await this.getBalance(guildId, userId);
+
         // Mise à jour atomique seulement si le solde est suffisant
         const result = await Economy.updateOne(
             { 
@@ -90,6 +93,12 @@ class EconomyManager {
             },
             { $inc: { "users.$.balance": -amount } }
         );
+
+        // Debug: Log balance after removal
+        if (result.modifiedCount > 0) {
+            const after = await this.getBalance(guildId, userId);
+            console.log(`[Economy] Removed ${amount} from ${userId}. Before: ${before}, After: ${after}`);
+        }
 
         return result.modifiedCount > 0;
     }
