@@ -142,7 +142,8 @@ module.exports = {
                         title = `🎰 ${LanguageManager.get(lang, 'leveling.leaderboard.types.casino') || 'Casino'}`;
                         formatLine = async (u, i) => {
                             const name = await getName(u.userId);
-                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(Math.floor(u.casinoStats?.totalGains || 0))} coins gagnés`;
+                            const gains = u.casinoStats?.totalGains || 0;
+                            return `${medals[i] || (i + 1).toString().padEnd(2, ' ')} ${name} - ${formatNumber(Math.floor(gains))} coins gagnés`;
                         };
                     }
 

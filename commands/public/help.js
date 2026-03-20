@@ -20,6 +20,7 @@ module.exports = {
                 .addChoices(
                     { name: 'Modération', nameLocalizations: { 'en-US': 'Moderation' }, value: 'moderation' },
                     { name: 'Économie', nameLocalizations: { 'en-US': 'Economy' }, value: 'economy' },
+                    { name: 'Casino', nameLocalizations: { 'en-US': 'Casino' }, value: 'casino' },
                     { name: 'Niveaux', nameLocalizations: { 'en-US': 'Levels' }, value: 'levels' },
                     { name: 'Public', nameLocalizations: { 'en-US': 'Public' }, value: 'public' },
                     { name: 'Premium', nameLocalizations: { 'en-US': 'Premium' }, value: 'premium' }

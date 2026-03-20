@@ -1012,11 +1012,17 @@ ${base}`;
                 case 'economy':
                     categoryContent = `## 💰 ${LanguageManager.get(lang, 'commands.help.economy_title')}\n${LanguageManager.get(lang, 'commands.help.economy_description')}`;
                     break;
+                case 'casino':
+                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.casino_title')}\n${LanguageManager.get(lang, 'commands.help.casino_description')}`;
+                    break;
                 case 'public':
                     categoryContent = `## 👥 ${LanguageManager.get(lang, 'commands.help.public_title')}\n${LanguageManager.get(lang, 'commands.help.public_description')}`;
                     break;
                 case 'levels':
                     categoryContent = `## 📊 ${LanguageManager.get(lang, 'commands.help.levels_title')}\n${LanguageManager.get(lang, 'commands.help.levels_description')}`;
+                    break;
+                case 'casino':
+                    categoryContent = `## ${LanguageManager.get(lang, 'commands.help.casino_title')}\n${LanguageManager.get(lang, 'commands.help.casino_description')}`;
                     break;
                 case 'premium':
                     categoryContent = `## ⭐ ${LanguageManager.get(lang, 'commands.help.premium_title')}\n${LanguageManager.get(lang, 'commands.help.premium_description')}`;
@@ -1066,6 +1072,14 @@ ${base}`;
                             description: LanguageManager.get(lang, 'commands.help.economy_desc'),
                             emoji: {
                                 name: "💰"
+                            }
+                        },
+                        {
+                            label: LanguageManager.get(lang, 'commands.help.casino_option'),
+                            value: "casino",
+                            description: LanguageManager.get(lang, 'commands.help.casino_desc'),
+                            emoji: {
+                                name: "🎰"
                             }
                         },
                         {
