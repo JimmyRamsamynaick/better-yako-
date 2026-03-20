@@ -23,6 +23,19 @@ class EconomyManager {
                 await this.deduplicateUsers(guildId);
                 economy = await Economy.findOne({ guildId });
             }
+
+            // Vérification/Mise à jour des descriptions d'items (migration auto)
+            const needsItemUpdate = economy.shopItems.some(i => i.description && i.description.includes('non supporté par Discord natif'));
+            if (needsItemUpdate) {
+                economy.shopItems = economy.shopItems.map(item => {
+                    if (item.description && item.description.includes('non supporté par Discord natif')) {
+                        // On nettoie la description pour ne garder que la partie propre
+                        item.description = item.description.split(' (non supporté')[0];
+                    }
+                    return item;
+                });
+                await Economy.updateOne({ guildId }, { $set: { shopItems: economy.shopItems } });
+            }
         }
         return economy;
     }
