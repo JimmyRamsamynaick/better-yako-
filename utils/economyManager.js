@@ -75,16 +75,7 @@ class EconomyManager {
     }
 
     static async removeCoins(guildId, userId, amount) {
-        // First ensure user exists in document
-        await Economy.updateOne(
-            { guildId, "users.userId": { $ne: userId } },
-            { $push: { users: { userId, balance: 0 } } }
-        );
-
-        // Debug: Log balance before removal
-        const before = await this.getBalance(guildId, userId);
-
-        // Mise à jour atomique seulement si le solde est suffisant
+        // Mise à jour atomique seulement si l'utilisateur existe ET a assez de coins
         const result = await Economy.updateOne(
             { 
                 guildId, 
@@ -94,10 +85,15 @@ class EconomyManager {
             { $inc: { "users.$.balance": -amount } }
         );
 
-        // Debug: Log balance after removal
-        if (result.modifiedCount > 0) {
-            const after = await this.getBalance(guildId, userId);
-            console.log(`[Economy] Removed ${amount} from ${userId}. Before: ${before}, After: ${after}`);
+        // Si l'utilisateur n'existait pas, on le crée avec 0 (mais l'opération échouera car balance < amount)
+        if (result.matchedCount === 0) {
+            const userCheck = await Economy.findOne({ guildId, "users.userId": userId });
+            if (!userCheck) {
+                await Economy.updateOne(
+                    { guildId, "users.userId": { $ne: userId } },
+                    { $push: { users: { userId, balance: 0 } } }
+                );
+            }
         }
 
         return result.modifiedCount > 0;
