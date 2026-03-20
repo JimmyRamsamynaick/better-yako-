@@ -10,14 +10,54 @@ class EconomyManager {
                 await economy.save();
             } catch (err) {
                 if (err.code === 11000) {
-                    // Si déjà créé par un autre processus, on le récupère
                     economy = await Economy.findOne({ guildId });
                 } else {
                     throw err;
                 }
             }
+        } else {
+            // Nettoyage des doublons si nécessaire (lié aux anciens bugs de concurrence)
+            const seenIds = new Set();
+            const hasDuplicates = economy.users.some(u => seenIds.has(u.userId) || !seenIds.add(u.userId));
+            if (hasDuplicates) {
+                await this.deduplicateUsers(guildId);
+                economy = await Economy.findOne({ guildId });
+            }
         }
         return economy;
+    }
+
+    static async deduplicateUsers(guildId) {
+        const economy = await Economy.findOne({ guildId });
+        if (!economy) return;
+
+        const usersMap = new Map();
+        
+        for (const user of economy.users) {
+            if (!usersMap.has(user.userId)) {
+                usersMap.set(user.userId, user.toObject());
+            } else {
+                const existing = usersMap.get(user.userId);
+                // On fusionne les soldes et les stats
+                existing.balance += (user.balance || 0);
+                
+                if (!existing.casinoStats) existing.casinoStats = { totalGains: 0, totalLosses: 0, gamesPlayed: 0 };
+                if (user.casinoStats) {
+                    existing.casinoStats.totalGains = (existing.casinoStats.totalGains || 0) + (user.casinoStats.totalGains || 0);
+                    existing.casinoStats.totalLosses = (existing.casinoStats.totalLosses || 0) + (user.casinoStats.totalLosses || 0);
+                    existing.casinoStats.gamesPlayed = (existing.casinoStats.gamesPlayed || 0) + (user.casinoStats.gamesPlayed || 0);
+                }
+                // On fusionne l'inventaire
+                if (user.inventory && user.inventory.length > 0) {
+                    existing.inventory = [...(existing.inventory || []), ...user.inventory];
+                }
+            }
+        }
+
+        await Economy.updateOne(
+            { guildId },
+            { $set: { users: Array.from(usersMap.values()) } }
+        );
     }
 
     static async seedDefaultItems(economy) {
@@ -75,25 +115,32 @@ class EconomyManager {
     }
 
     static async removeCoins(guildId, userId, amount) {
-        // Mise à jour atomique seulement si l'utilisateur existe ET a assez de coins
+        // S'assurer que le document économie existe
+        await this.getEconomy(guildId);
+
+        // Mise à jour atomique sécurisée : on utilise $elemMatch pour s'assurer 
+        // que c'est le MÊME utilisateur qui a l'ID et le solde suffisant.
         const result = await Economy.updateOne(
             { 
                 guildId, 
-                "users.userId": userId, 
-                "users.balance": { $gte: amount } 
+                users: { 
+                    $elemMatch: { 
+                        userId: userId, 
+                        balance: { $gte: amount } 
+                    } 
+                } 
             },
             { $inc: { "users.$.balance": -amount } }
         );
 
-        // Si l'utilisateur n'existait pas, on le crée avec 0 (mais l'opération échouera car balance < amount)
+        // Si l'utilisateur n'a pas été trouvé (soit ID absent, soit solde insuffisant)
         if (result.matchedCount === 0) {
-            const userCheck = await Economy.findOne({ guildId, "users.userId": userId });
-            if (!userCheck) {
-                await Economy.updateOne(
-                    { guildId, "users.userId": { $ne: userId } },
-                    { $push: { users: { userId, balance: 0 } } }
-                );
-            }
+            // On tente d'ajouter l'utilisateur s'il n'existe pas du tout (avec sécurité anti-doublon)
+            await Economy.updateOne(
+                { guildId, "users.userId": { $ne: userId } },
+                { $push: { users: { userId, balance: 0 } } }
+            );
+            return false;
         }
 
         return result.modifiedCount > 0;
