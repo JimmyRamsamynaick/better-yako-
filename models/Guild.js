@@ -141,7 +141,13 @@ const guildSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    lockedChannels: [
+        {
+            channelId: { type: String, required: true },
+            originalPermissions: { type: Object, required: true }
+        }
+    ]
 });
 
 // Sanitize legacy data: ensure users[*].warnings is always an array of objects

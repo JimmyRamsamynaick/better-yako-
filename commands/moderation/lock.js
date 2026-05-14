@@ -17,7 +17,13 @@ module.exports = {
                 .setDescriptionLocalizations({
                     'en-US': LanguageManager.get('en', 'commands.lock.channel_option') || 'The channel to lock'
                 })
-                .addChannelTypes(ChannelType.GuildText, ChannelType.GuildVoice)
+                .addChannelTypes(
+                    ChannelType.GuildText,
+                    ChannelType.GuildVoice,
+                    ChannelType.GuildAnnouncement,
+                    ChannelType.GuildForum,
+                    ChannelType.GuildMedia
+                )
                 .setRequired(false))
         .addStringOption(option =>
             option.setName('reason')
@@ -29,17 +35,19 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
     
     async execute(interaction) {
+        await interaction.deferReply();
+        
         // Récupérer la langue du serveur
         const guildData = await Guild.findOne({ guildId: interaction.guild.id });
         const lang = guildData?.language || 'fr';
 
         const channel = interaction.options.getChannel('channel') || interaction.channel;
-        const reason = interaction.options.getString('reason') || require('../../utils/languageManager').get(lang, 'common.no_reason');
+        const reason = interaction.options.getString('reason') || LanguageManager.get(lang, 'common.no_reason');
 
         // Vérifier les permissions de l'utilisateur
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
             const noPermEmbed = BotEmbeds.createNoPermissionEmbed(interaction.guild.id, lang);
-            return interaction.reply({
+            return interaction.editReply({
                 ...noPermEmbed,
                 ephemeral: true
             });
@@ -48,28 +56,82 @@ module.exports = {
         // Vérifier les permissions du bot
         if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageChannels)) {
             const botNoPermEmbed = BotEmbeds.createBotNoPermissionEmbed(interaction.guild.id, lang);
-            return interaction.reply({
+            return interaction.editReply({
                 ...botNoPermEmbed,
                 ephemeral: true
             });
         }
 
         try {
-            const everyone = interaction.guild.roles.everyone;
+            const textChannelTypes = [
+                ChannelType.GuildText,
+                ChannelType.GuildAnnouncement,
+                ChannelType.GuildForum,
+                ChannelType.GuildMedia
+            ];
 
-            if (channel.type === ChannelType.GuildText) {
-                await channel.permissionOverwrites.edit(everyone, {
-                    SendMessages: false,
-                    AddReactions: false,
-                    CreatePublicThreads: false,
-                    CreatePrivateThreads: false,
-                    SendMessagesInThreads: false
-                }, { reason });
-            } else if (channel.type === ChannelType.GuildVoice) {
-                await channel.permissionOverwrites.edit(everyone, {
-                    Connect: false
-                }, { reason });
+            const textPermissions = {
+                SendMessages: false,
+                AddReactions: false,
+                CreatePublicThreads: false,
+                CreatePrivateThreads: false,
+                SendMessagesInThreads: false
+            };
+
+            const voicePermissions = {
+                Connect: false,
+                Speak: false
+            };
+
+            // Save original permissions
+            const originalPermissions = {};
+            for (const overwrite of channel.permissionOverwrites.cache.values()) {
+                originalPermissions[overwrite.id] = {
+                    allow: overwrite.allow.bitfield.toString(),
+                    deny: overwrite.deny.bitfield.toString()
+                };
             }
+
+            // Apply lock permissions
+            const permissionPromises = [];
+            for (const overwrite of channel.permissionOverwrites.cache.values()) {
+                if (textChannelTypes.includes(channel.type)) {
+                    permissionPromises.push(
+                        channel.permissionOverwrites.edit(overwrite.id, textPermissions, { reason })
+                    );
+                } else if (channel.type === ChannelType.GuildVoice) {
+                    permissionPromises.push(
+                        channel.permissionOverwrites.edit(overwrite.id, voicePermissions, { reason })
+                    );
+                }
+            }
+
+            // Also apply to @everyone
+            if (textChannelTypes.includes(channel.type)) {
+                permissionPromises.push(
+                    channel.permissionOverwrites.edit(interaction.guild.roles.everyone, textPermissions, { reason })
+                );
+            } else if (channel.type === ChannelType.GuildVoice) {
+                permissionPromises.push(
+                    channel.permissionOverwrites.edit(interaction.guild.roles.everyone, voicePermissions, { reason })
+                );
+            }
+
+            await Promise.all(permissionPromises);
+
+            // Save to database
+            await Guild.updateOne(
+                { guildId: interaction.guild.id },
+                { 
+                    $push: { 
+                        lockedChannels: { 
+                            channelId: channel.id, 
+                            originalPermissions: originalPermissions 
+                        } 
+                    } 
+                },
+                { upsert: true }
+            );
 
             const successEmbed = BotEmbeds.createLockSuccessEmbed(
                 channel,
@@ -79,7 +141,7 @@ module.exports = {
                 lang
             );
             
-            await interaction.reply(successEmbed);
+            await interaction.editReply(successEmbed);
 
             // Envoyer dans les logs si configuré
             if (guildData && guildData.logs.enabled && guildData.logs.types.channels) {
@@ -121,7 +183,7 @@ module.exports = {
                 interaction.guild.id,
                 lang
             );
-            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            await interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
         }
     }
 };
